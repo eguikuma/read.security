@@ -1,12 +1,13 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: アプリケーションセキュリティ（入力を信頼しない）
+---
 
-# 06-application-security：アプリケーションセキュリティ（入力を信頼しない）
+# [06-application-security：アプリケーションセキュリティ（入力を信頼しない）](#application-security) {#application-security}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-前のトピック [05-access-control](./05-access-control.md) では、アクセス制御モデルの仕組みを学びました
+前のトピック [05-access-control](../05-access-control/) では、アクセス制御モデルの仕組みを学びました
 
 - アクセス制御は主体（Subject）、客体（Object）、操作（Action）の三要素で構成される
 - DAC は所有者が権限を自由に管理するモデルであり、UNIX ファイルパーミッションが代表例である
@@ -32,7 +33,7 @@ SQL インジェクションや XSS（クロスサイトスクリプティング
 
 ---
 
-## 日常の例え
+## [日常の例え](#everyday-analogy) {#everyday-analogy}
 
 アプリケーションセキュリティの仕組みを、日常の例えで見てみましょう
 
@@ -88,7 +89,7 @@ CSRF は、ログイン済みのユーザーに対して、意図しない操作
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 このページでは、以下の概念を学びます
 
@@ -126,28 +127,28 @@ CSRF は、ログイン済みのユーザーに対して、意図しない操作
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [なぜアプリケーションセキュリティが必要か](#なぜアプリケーションセキュリティが必要か)
-2. [入力を信頼しないの原則](#入力を信頼しないの原則)
-3. [インジェクション攻撃](#インジェクション攻撃)
-4. [クロスサイトスクリプティング（XSS）](#クロスサイトスクリプティングxss)
-5. [コマンドインジェクションとプロンプトインジェクション](#コマンドインジェクションとプロンプトインジェクション)
-6. [CSRF（クロスサイトリクエストフォージェリ）](#csrfクロスサイトリクエストフォージェリ)
-7. [入力検証と出力エンコーディング](#入力検証と出力エンコーディング)
-8. [多層防御（Defense in Depth）](#多層防御defense-in-depth)
-9. [セキュリティヘッダとブラウザの防御](#セキュリティヘッダとブラウザの防御)
-10. [OWASP Top 10 による脅威の体系化](#owasp-top-10-による脅威の体系化)
-11. [防御レイヤの全体像](#防御レイヤの全体像)
-12. [次のトピックへ](#次のトピックへ)
-13. [用語集](#用語集)
-14. [参考資料](#参考資料)
+1. [なぜアプリケーションセキュリティが必要か](#why-application-security)
+2. [入力を信頼しないの原則](#never-trust-input)
+3. [インジェクション攻撃](#injection-attacks)
+4. [クロスサイトスクリプティング（XSS）](#xss)
+5. [コマンドインジェクションとプロンプトインジェクション](#command-and-prompt-injection)
+6. [CSRF（クロスサイトリクエストフォージェリ）](#csrf)
+7. [入力検証と出力エンコーディング](#input-validation-and-output-encoding)
+8. [多層防御（Defense in Depth）](#defense-in-depth)
+9. [セキュリティヘッダとブラウザの防御](#security-headers)
+10. [OWASP Top 10 による脅威の体系化](#owasp-top-10)
+11. [防御レイヤの全体像](#defense-layer-overview)
+12. [次のトピックへ](#next-topic)
+13. [用語集](#glossary)
+14. [参考資料](#references)
 
 ---
 
-## なぜアプリケーションセキュリティが必要か
+## [なぜアプリケーションセキュリティが必要か](#why-application-security) {#why-application-security}
 
-### これまでの防御レイヤ
+### [これまでの防御レイヤ](#defense-layers-so-far) {#defense-layers-so-far}
 
 このリポジトリでは、セキュリティの防御レイヤを 1 つずつ積み重ねてきました
 
@@ -169,35 +170,36 @@ CSRF は、ログイン済みのユーザーに対して、意図しない操作
   └────────────────────────────────────────────┘
 ```
 
-[01-cryptography](./01-cryptography.md) でデータを暗号化し、[02-tls](./02-tls.md) で通信路を保護し、[03-certificate](./03-certificate.md) でサーバーの身元を確認し、[04-authentication](./04-authentication.md) でユーザーの身元を確認し、[05-access-control](./05-access-control.md) でアクセス権限を管理しました
+[01-cryptography](../01-cryptography/) でデータを暗号化し、[02-tls](../02-tls/) で通信路を保護し、[03-certificate](../03-certificate/) でサーバーの身元を確認し、[04-authentication](../04-authentication/) でユーザーの身元を確認し、[05-access-control](../05-access-control/) でアクセス権限を管理しました
 
 しかし、これらの防御レイヤはすべて「誰がアクセスしているか」「通信は安全か」という問いに答えるものです
 
 <strong>「アクセスの内容自体が安全か」</strong>という問いには、まだ答えていません
 
-### TLS では防げない脅威
+### [TLS では防げない脅威](#threats-tls-cannot-prevent) {#threats-tls-cannot-prevent}
 
-[02-tls](./02-tls.md) では、TLS が防げない脅威としてアプリケーションの脆弱性（SQL インジェクション等）を挙げました
+[02-tls](../02-tls/) では、TLS が防げない脅威としてアプリケーションの脆弱性（SQL インジェクション等）を挙げました
 
 TLS は通信路を暗号化するプロトコルであり、通信の中身が悪意あるものかどうかは判断しません
 
 正当な認証情報を持ち、正当な権限でアクセスし、TLS で保護された通信路を使っていても、送信する<strong>入力の中身</strong>が悪意あるものであれば、アプリケーションは攻撃を受けます
 
-| 防御レイヤ   | 防御する脅威             | 防御できない脅威                   |
+{: .labeled}
+| 防御レイヤ | 防御する脅威 | 防御できない脅威 |
 | ------------ | ------------------------ | ---------------------------------- |
-| 暗号化       | データの盗聴と改ざん     | 正当な経路での悪意ある入力         |
-| TLS          | 通信路の盗聴と中間者攻撃 | アプリケーションレベルの脆弱性     |
-| 証明書       | サーバーの偽装           | 正規サーバーへの悪意あるリクエスト |
-| 認証         | なりすまし               | 認証済みユーザーからの悪意ある入力 |
-| アクセス制御 | 権限外の操作             | 権限内での悪意ある入力             |
+| 暗号化 | データの盗聴と改ざん | 正当な経路での悪意ある入力 |
+| TLS | 通信路の盗聴と中間者攻撃 | アプリケーションレベルの脆弱性 |
+| 証明書 | サーバーの偽装 | 正規サーバーへの悪意あるリクエスト |
+| 認証 | なりすまし | 認証済みユーザーからの悪意ある入力 |
+| アクセス制御 | 権限外の操作 | 権限内での悪意ある入力 |
 
 アプリケーションセキュリティは、この「権限内での悪意ある入力」を防御するレイヤです
 
 ---
 
-## 入力を信頼しないの原則
+## [入力を信頼しないの原則](#never-trust-input) {#never-trust-input}
 
-### 信頼境界とは
+### [信頼境界とは](#what-is-trust-boundary) {#what-is-trust-boundary}
 
 アプリケーションセキュリティの最も基本的な原則は、<strong>入力を信頼しない</strong>（Never Trust Input）です
 
@@ -231,28 +233,29 @@ TLS は通信路を暗号化するプロトコルであり、通信の中身が�
 
 信頼境界の外側から来るデータは、すべて潜在的に悪意があるものとして扱います
 
-これは [05-access-control](./05-access-control.md) で学んだ<strong>デフォルト拒否</strong>の考え方と同じです
+これは [05-access-control](../05-access-control/) で学んだ<strong>デフォルト拒否</strong>の考え方と同じです
 
 「明示的に安全と確認されるまで、すべての入力は信頼しない」という方針です
 
-### 外部入力の種類
+### [外部入力の種類](#external-input-types) {#external-input-types}
 
 信頼境界の外側から来る入力は、想像以上に多岐にわたります
 
-| 入力の種類           | 例                              |
+{: .labeled}
+| 入力の種類 | 例 |
 | -------------------- | ------------------------------- |
-| URL パラメータ       | `?id=123` のようなクエリ文字列  |
-| フォームデータ       | ログインフォームの入力値        |
-| HTTP ヘッダ          | User-Agent、Referer、Cookie     |
-| ファイルアップロード | 画像、ドキュメント              |
-| API リクエスト       | JSON ボディ、XML データ         |
-| URL パス             | `/users/123/profile` のパス部分 |
+| URL パラメータ | `?id=123` のようなクエリ文字列 |
+| フォームデータ | ログインフォームの入力値 |
+| HTTP ヘッダ | User-Agent、Referer、Cookie |
+| ファイルアップロード | 画像、ドキュメント |
+| API リクエスト | JSON ボディ、XML データ |
+| URL パス | `/users/123/profile` のパス部分 |
 
 これらすべてが攻撃の経路となりえます
 
 「ユーザーが直接入力する値」だけでなく、HTTP ヘッダや Cookie など、ブラウザが自動的に付与する値も信頼境界の外側です
 
-### コードとデータの境界
+### [コードとデータの境界](#code-and-data-boundary) {#code-and-data-boundary}
 
 入力を信頼しないの原則が特に重要になるのは、<strong>コードとデータの境界</strong>が曖昧な場面です
 
@@ -266,9 +269,9 @@ TLS は通信路を暗号化するプロトコルであり、通信の中身が�
 
 ---
 
-## インジェクション攻撃
+## [インジェクション攻撃](#injection-attacks) {#injection-attacks}
 
-### SQL インジェクションとは
+### [SQL インジェクションとは](#what-is-sql-injection) {#what-is-sql-injection}
 
 <strong>SQL インジェクション</strong>は、データベースへの問い合わせ文（SQL クエリ）に悪意ある入力を注入する攻撃です
 
@@ -278,7 +281,7 @@ CWE（Common Weakness Enumeration）では、SQL インジェクションを次�
 
 > 製品が外部入力を使って SQL コマンドの全部または一部を構築するが、下流コンポーネントに送信される際に SQL コマンドを変更しうる特殊要素を無害化しない、または誤って無害化する
 
-### SQL インジェクションの仕組み
+### [SQL インジェクションの仕組み](#sql-injection-mechanism) {#sql-injection-mechanism}
 
 ログインフォームを例に、SQL インジェクションがどのように機能するかを見てみましょう
 
@@ -316,7 +319,7 @@ CWE（Common Weakness Enumeration）では、SQL インジェクションを次�
 
 <strong>データ</strong>として扱われるべき入力が、<strong>コード</strong>（SQL の命令）として解釈されてしまいます
 
-### パラメータ化クエリの原則
+### [パラメータ化クエリの原則](#parameterized-query-principle) {#parameterized-query-principle}
 
 SQL インジェクションの根本的な防御は、<strong>コードとデータを構造的に分離する</strong>ことです
 
@@ -343,19 +346,20 @@ SQL インジェクションの根本的な防御は、<strong>コードとデ�
 
 どのような文字列が入力されても、それがクエリの構造を変更することはありません
 
-| 観点           | 文字列連結（脆弱）   | パラメータ化クエリ（安全） |
+{: .labeled}
+| 観点 | 文字列連結（脆弱） | パラメータ化クエリ（安全） |
 | -------------- | -------------------- | -------------------------- |
-| コードとデータ | 混在                 | 分離                       |
-| 入力の解釈     | SQL の一部として解釈 | 常にデータとして解釈       |
-| 防御の仕組み   | なし                 | 構造的に分離               |
+| コードとデータ | 混在 | 分離 |
+| 入力の解釈 | SQL の一部として解釈 | 常にデータとして解釈 |
+| 防御の仕組み | なし | 構造的に分離 |
 
 この「コードとデータの構造的な分離」の原則は、SQL インジェクションだけでなく、すべてのインジェクション攻撃に共通する防御の基本です
 
 ---
 
-## クロスサイトスクリプティング（XSS）
+## [クロスサイトスクリプティング（XSS）](#xss) {#xss}
 
-### XSS とは
+### [XSS とは](#what-is-xss) {#what-is-xss}
 
 <strong>クロスサイトスクリプティング</strong>（XSS：Cross-Site Scripting）は、Web ページに悪意あるスクリプトを注入する攻撃です
 
@@ -369,7 +373,7 @@ SQL インジェクションが<strong>データベース</strong>を標的に�
 
 根本原因は同じで、「データとして扱うべき入力が、コード（JavaScript）として解釈される」ことです
 
-### XSS の仕組み
+### [XSS の仕組み](#xss-mechanism) {#xss-mechanism}
 
 ユーザーが投稿した内容をそのまま Web ページに表示するアプリケーションを考えます
 
@@ -404,7 +408,7 @@ SQL インジェクションが<strong>データベース</strong>を標的に�
 
 そのため、被害者のセッション情報（Cookie）の窃取や、ページ内容の改ざんが可能になります
 
-### XSS の種類
+### [XSS の種類](#xss-types) {#xss-types}
 
 XSS には、スクリプトの配信方法によって 3 つの種類があります
 
@@ -420,15 +424,16 @@ XSS には、スクリプトの配信方法によって 3 つの種類があり�
 
 サーバー側の処理を経ずにブラウザ内で完結する点が、他の 2 種類と異なります
 
-| 種類          | スクリプトの保存先 | 実行の契機       |
+{: .labeled}
+| 種類 | スクリプトの保存先 | 実行の契機 |
 | ------------- | ------------------ | ---------------- |
-| Stored XSS    | データベース       | ページの表示     |
-| Reflected XSS | URL パラメータ     | URL のクリック   |
-| DOM-based XSS | URL パラメータ     | ブラウザ側の処理 |
+| Stored XSS | データベース | ページの表示 |
+| Reflected XSS | URL パラメータ | URL のクリック |
+| DOM-based XSS | URL パラメータ | ブラウザ側の処理 |
 
-### XSS と Cookie
+### [XSS と Cookie](#xss-and-cookie) {#xss-and-cookie}
 
-[04-authentication](./04-authentication.md) では、Cookie の属性として <strong>HttpOnly</strong> を学びました
+[04-authentication](../04-authentication/) では、Cookie の属性として <strong>HttpOnly</strong> を学びました
 
 HttpOnly 属性が設定された Cookie は、JavaScript からアクセスできません
 
@@ -438,7 +443,7 @@ XSS でスクリプトが実行されても、HttpOnly が設定されたセッ�
 
 ただし、HttpOnly は XSS そのものを防ぐ仕組みではなく、XSS が成功した場合の<strong>被害を限定する</strong>仕組みです
 
-### 出力エンコーディングの原則
+### [出力エンコーディングの原則](#xss-output-encoding-principle) {#xss-output-encoding-principle}
 
 XSS の根本的な防御は、ユーザーの入力を HTML に出力する際に<strong>出力エンコーディング</strong>（エスケープ処理）を行うことです
 
@@ -450,12 +455,13 @@ XSS の根本的な防御は、ユーザーの入力を HTML に出力する際�
 
 `<` を `&lt;` に変換すると、ブラウザは `<` という文字として表示し、タグとしては解釈しません
 
-| 特殊文字 | エンコード後 | 説明                                 |
+{: .labeled}
+| 特殊文字 | エンコード後 | 説明 |
 | -------- | ------------ | ------------------------------------ |
-| `<`      | `&lt;`       | HTML タグの開始として解釈されない    |
-| `>`      | `&gt;`       | HTML タグの終了として解釈されない    |
-| `&`      | `&amp;`      | エンティティの開始として解釈されない |
-| `"`      | `&quot;`     | 属性値の区切りとして解釈されない     |
+| `<` | `&lt;` | HTML タグの開始として解釈されない |
+| `>` | `&gt;` | HTML タグの終了として解釈されない |
+| `&` | `&amp;` | エンティティの開始として解釈されない |
+| `"` | `&quot;` | 属性値の区切りとして解釈されない |
 
 出力エンコーディングの原則は、SQL インジェクションにおけるパラメータ化クエリの原則と同じです
 
@@ -463,9 +469,9 @@ XSS の根本的な防御は、ユーザーの入力を HTML に出力する際�
 
 ---
 
-## コマンドインジェクションとプロンプトインジェクション
+## [コマンドインジェクションとプロンプトインジェクション](#command-and-prompt-injection) {#command-and-prompt-injection}
 
-### コマンドインジェクション
+### [コマンドインジェクション](#command-injection) {#command-injection}
 
 <strong>コマンドインジェクション</strong>は、アプリケーションが OS のコマンドを実行する際に、悪意ある入力を注入する攻撃です
 
@@ -495,7 +501,7 @@ XSS の根本的な防御は、ユーザーの入力を HTML に出力する際�
 
 防御の原則も同じで、コマンドの構造とデータを分離する（直接的にコマンド文字列を構築せず、引数として渡す）ことです
 
-### プロンプトインジェクション
+### [プロンプトインジェクション](#prompt-injection) {#prompt-injection}
 
 <strong>プロンプトインジェクション</strong>は、インジェクション攻撃の最も新しい形態です
 
@@ -524,16 +530,17 @@ AI（大規模言語モデル）に対して、開発者が意図した指示を
 
 この点がプロンプトインジェクションの防御を特に難しくしています
 
-### インジェクション攻撃の統一的な理解
+### [インジェクション攻撃の統一的な理解](#injection-attacks-unified) {#injection-attacks-unified}
 
 SQL インジェクション、XSS、コマンドインジェクション、プロンプトインジェクションは、すべて同じ根本原因を持つ攻撃です
 
-| 攻撃                       | 注入先             | コード（命令）     | データ（入力） | 根本原因             |
+{: .labeled}
+| 攻撃 | 注入先 | コード（命令） | データ（入力） | 根本原因 |
 | -------------------------- | ------------------ | ------------------ | -------------- | -------------------- |
-| SQL インジェクション       | データベースクエリ | SQL 文             | ユーザー入力   | コードとデータの混同 |
-| XSS                        | ブラウザ           | JavaScript / HTML  | ユーザー入力   | コードとデータの混同 |
-| コマンドインジェクション   | OS コマンド        | シェルコマンド     | ユーザー入力   | コードとデータの混同 |
-| プロンプトインジェクション | AI モデル          | システムプロンプト | ユーザー入力   | 指示とデータの混同   |
+| SQL インジェクション | データベースクエリ | SQL 文 | ユーザー入力 | コードとデータの混同 |
+| XSS | ブラウザ | JavaScript / HTML | ユーザー入力 | コードとデータの混同 |
+| コマンドインジェクション | OS コマンド | シェルコマンド | ユーザー入力 | コードとデータの混同 |
+| プロンプトインジェクション | AI モデル | システムプロンプト | ユーザー入力 | 指示とデータの混同 |
 
 対象が異なるだけで、「<strong>信頼できない入力が、意図しない命令として解釈される</strong>」という構造は共通しています
 
@@ -541,9 +548,9 @@ SQL インジェクション、XSS、コマンドインジェクション、プ�
 
 ---
 
-## CSRF（クロスサイトリクエストフォージェリ）
+## [CSRF（クロスサイトリクエストフォージェリ）](#csrf) {#csrf}
 
-### CSRF とは
+### [CSRF とは](#what-is-csrf) {#what-is-csrf}
 
 <strong>CSRF</strong>（Cross-Site Request Forgery、クロスサイトリクエストフォージェリ）は、認証済みユーザーのセッションを悪用して、ユーザーが意図しないリクエストを送信させる攻撃です
 
@@ -551,7 +558,7 @@ SQL インジェクション、XSS、コマンドインジェクション、プ�
 
 代わりに、ブラウザが Cookie を自動的に送信する仕組みを悪用して、被害者の認証情報を使った不正なリクエストを偽造します
 
-### CSRF の仕組み
+### [CSRF の仕組み](#csrf-mechanism) {#csrf-mechanism}
 
 ```
   CSRF 攻撃の流れ：
@@ -588,7 +595,7 @@ SQL インジェクション、XSS、コマンドインジェクション、プ�
 
 銀行サイトは有効なセッション Cookie を受け取るため、正当なリクエストとして処理してしまいます
 
-### CSRF の防御
+### [CSRF の防御](#csrf-defense) {#csrf-defense}
 
 CSRF の防御には、主に 2 つの手法があります
 
@@ -598,31 +605,33 @@ CSRF の防御には、主に 2 つの手法があります
 
 攻撃者は被害者のブラウザに表示されるトークンの値を知ることができないため、正当なリクエストを偽造できません
 
-<strong>SameSite Cookie</strong> は、[04-authentication](./04-authentication.md) で学んだ Cookie の属性です
+<strong>SameSite Cookie</strong> は、[04-authentication](../04-authentication/) で学んだ Cookie の属性です
 
 SameSite 属性を設定すると、異なるサイトからのリクエストに Cookie を含めるかどうかを制御できます
 
-| 防御手法        | 仕組み                                           | 防御の原理                   |
+{: .labeled}
+| 防御手法 | 仕組み | 防御の原理 |
 | --------------- | ------------------------------------------------ | ---------------------------- |
-| CSRF トークン   | 予測不可能な値でリクエストの正当性を検証         | 攻撃者がトークンを知りえない |
-| SameSite Cookie | 異なるサイトからのリクエストに Cookie を含めない | Cookie の自動送信を制限      |
+| CSRF トークン | 予測不可能な値でリクエストの正当性を検証 | 攻撃者がトークンを知りえない |
+| SameSite Cookie | 異なるサイトからのリクエストに Cookie を含めない | Cookie の自動送信を制限 |
 
 ---
 
-## 入力検証と出力エンコーディング
+## [入力検証と出力エンコーディング](#input-validation-and-output-encoding) {#input-validation-and-output-encoding}
 
-### 入力検証の原則
+### [入力検証の原則](#input-validation-principle) {#input-validation-principle}
 
 <strong>入力検証</strong>（Input Validation）は、信頼境界を越えてアプリケーションに入る入力が、期待する形式に合致しているかを確認する処理です
 
-入力検証の基本方針は、[05-access-control](./05-access-control.md) で学んだ<strong>許可リスト方式</strong>（ホワイトリスト）です
+入力検証の基本方針は、[05-access-control](../05-access-control/) で学んだ<strong>許可リスト方式</strong>（ホワイトリスト）です
 
 「許可する値のパターンを定義し、それに合致しないものはすべて拒否する」というアプローチです
 
-| 方式           | 方針                   | 例                               |
+{: .labeled}
+| 方式 | 方針 | 例 |
 | -------------- | ---------------------- | -------------------------------- |
 | 許可リスト方式 | 許可するパターンを定義 | 数値のみ許可、特定の文字のみ許可 |
-| 拒否リスト方式 | 拒否するパターンを定義 | `<script>` を拒否                |
+| 拒否リスト方式 | 拒否するパターンを定義 | `<script>` を拒否 |
 
 拒否リスト方式は、攻撃パターンをすべて列挙する必要があり、新しい攻撃手法に対応できません
 
@@ -630,7 +639,7 @@ SameSite 属性を設定すると、異なるサイトからのリクエスト�
 
 許可リスト方式であれば、「数値のみ」「アルファベットのみ」のように許可するパターンを定義するだけで、未知の攻撃パターンも拒否できます
 
-### 出力エンコーディングの原則
+### [出力エンコーディングの原則](#output-encoding-principle) {#output-encoding-principle}
 
 入力検証が「入口」での防御であるのに対し、<strong>出力エンコーディング</strong>は「出口」での防御です
 
@@ -638,15 +647,16 @@ SameSite 属性を設定すると、異なるサイトからのリクエスト�
 
 重要なのは、<strong>出力先のコンテキストによってエンコーディングの方法が異なる</strong>ことです
 
-| 出力先      | 特殊文字の例     | エンコーディング手法  |
+{: .labeled}
+| 出力先 | 特殊文字の例 | エンコーディング手法 |
 | ----------- | ---------------- | --------------------- |
-| HTML        | `<`、`>`、`&`    | HTML エンティティ変換 |
-| SQL         | `'`、`"`         | パラメータ化クエリ    |
-| OS コマンド | `;`、パイプ、`&` | コマンド引数の分離    |
-| URL         | `&`、`=`、`?`    | URL エンコーディング  |
-| JavaScript  | `'`、`"`、`\`    | JavaScript エスケープ |
+| HTML | `<`、`>`、`&` | HTML エンティティ変換 |
+| SQL | `'`、`"` | パラメータ化クエリ |
+| OS コマンド | `;`、パイプ、`&` | コマンド引数の分離 |
+| URL | `&`、`=`、`?` | URL エンコーディング |
+| JavaScript | `'`、`"`、`\` | JavaScript エスケープ |
 
-### 入力検証と出力エンコーディングの組み合わせ
+### [入力検証と出力エンコーディングの組み合わせ](#input-validation-output-encoding-combination) {#input-validation-output-encoding-combination}
 
 入力検証と出力エンコーディングは、<strong>どちらか一方ではなく、両方を組み合わせて使う</strong>のが原則です
 
@@ -685,9 +695,9 @@ SameSite 属性を設定すると、異なるサイトからのリクエスト�
 
 ---
 
-## 多層防御（Defense in Depth）
+## [多層防御（Defense in Depth）](#defense-in-depth) {#defense-in-depth}
 
-### 単一レイヤー依存の危険性
+### [単一レイヤー依存の危険性](#single-layer-dependency-risk) {#single-layer-dependency-risk}
 
 <strong>多層防御</strong>（Defense in Depth）とは、単一の防御手段に依存せず、複数の防御層を重ねるセキュリティ設計の原則です
 
@@ -724,7 +734,7 @@ SameSite 属性を設定すると、異なるサイトからのリクエスト�
 
 <strong>認可のチェックをミドルウェアという単一のレイヤーだけに依存していた</strong>ことが問題です
 
-### 多層防御の原則
+### [多層防御の原則](#defense-in-depth-principle) {#defense-in-depth-principle}
 
 多層防御では、<strong>各レイヤーが独立して防御機能を持ち、1 つのレイヤーが突破されても他のレイヤーが防御を継続する</strong>ことを前提に設計します
 
@@ -763,20 +773,21 @@ SameSite 属性を設定すると、異なるサイトからのリクエスト�
 
 ミドルウェアでの認可チェックに加えて、アプリケーションのビジネスロジック層でも認可チェックを実装していれば、ミドルウェアがバイパスされてもビジネスロジック層で不正なアクセスを拒否できたはずです
 
-| 設計方針         | ミドルウェアバイパス時   | 結果         |
+{: .labeled}
+| 設計方針 | ミドルウェアバイパス時 | 結果 |
 | ---------------- | ------------------------ | ------------ |
-| 単一レイヤー依存 | 認可がすべて無効化       | 全データ漏洩 |
-| 多層防御         | ビジネスロジック層が防御 | 被害を限定   |
+| 単一レイヤー依存 | 認可がすべて無効化 | 全データ漏洩 |
+| 多層防御 | ビジネスロジック層が防御 | 被害を限定 |
 
-多層防御の考え方は、[05-access-control](./05-access-control.md) で学んだ capability と seccomp の組み合わせにも通じています
+多層防御の考え方は、[05-access-control](../05-access-control/) で学んだ capability と seccomp の組み合わせにも通じています
 
 capability でプロセスの権限を制限し、seccomp でシステムコールを制限することで、どちらか一方が破られても他方が防御を継続する設計でした
 
 ---
 
-## セキュリティヘッダとブラウザの防御
+## [セキュリティヘッダとブラウザの防御](#security-headers) {#security-headers}
 
-### ブラウザによる防御
+### [ブラウザによる防御](#browser-defense) {#browser-defense}
 
 Web アプリケーションでは、サーバーが HTTP レスポンスヘッダを通じてブラウザにセキュリティポリシーを伝達できます
 
@@ -784,7 +795,7 @@ Web アプリケーションでは、サーバーが HTTP レスポンスヘッ�
 
 セキュリティヘッダは、多層防御の追加レイヤとして機能します
 
-### 同一オリジンポリシーと CORS
+### [同一オリジンポリシーと CORS](#same-origin-policy-and-cors) {#same-origin-policy-and-cors}
 
 ブラウザのセキュリティの基盤となるのが<strong>同一オリジンポリシー</strong>（Same-Origin Policy）です
 
@@ -798,7 +809,7 @@ Web アプリケーションでは、サーバーが HTTP レスポンスヘッ�
 
 サーバーが HTTP レスポンスヘッダで「このオリジンからのアクセスを許可する」と明示的に宣言することで、異なるオリジン間の通信を可能にします
 
-### 主要なセキュリティヘッダ
+### [主要なセキュリティヘッダ](#major-security-headers) {#major-security-headers}
 
 <strong>Content-Security-Policy（CSP）</strong>は、ブラウザが読み込めるリソースの出処を制限するヘッダです
 
@@ -810,7 +821,7 @@ CSP は XSS に対する追加の防御層として機能します
 
 <strong>Strict-Transport-Security（HSTS）</strong>は、ブラウザに対して HTTPS 接続を強制するヘッダです
 
-[02-tls](./02-tls.md) で学んだ TLS による通信路の保護を、ブラウザレベルで確実にします
+[02-tls](../02-tls/) で学んだ TLS による通信路の保護を、ブラウザレベルで確実にします
 
 一度 HSTS ヘッダを受信したブラウザは、指定された期間、そのサイトへの HTTP 接続を自動的に HTTPS にアップグレードします
 
@@ -820,11 +831,12 @@ CSP は XSS に対する追加の防御層として機能します
 
 `nosniff` を指定すると、サーバーが宣言した MIME タイプのみを信頼し、推測を行いません
 
-| ヘッダ                    | 防御対象            | 原則                                     |
+{: .labeled}
+| ヘッダ | 防御対象 | 原則 |
 | ------------------------- | ------------------- | ---------------------------------------- |
-| Content-Security-Policy   | XSS                 | 許可リスト方式でスクリプトの実行元を制限 |
-| Strict-Transport-Security | ダウングレード攻撃  | HTTPS を強制する                         |
-| X-Content-Type-Options    | MIME スニッフィング | ブラウザの推測を禁止する                 |
+| Content-Security-Policy | XSS | 許可リスト方式でスクリプトの実行元を制限 |
+| Strict-Transport-Security | ダウングレード攻撃 | HTTPS を強制する |
+| X-Content-Type-Options | MIME スニッフィング | ブラウザの推測を禁止する |
 
 セキュリティヘッダは「アプリケーションの防御が失敗した場合の安全網」です
 
@@ -832,9 +844,9 @@ CSP は XSS に対する追加の防御層として機能します
 
 ---
 
-## OWASP Top 10 による脅威の体系化
+## [OWASP Top 10 による脅威の体系化](#owasp-top-10) {#owasp-top-10}
 
-### OWASP Top 10 とは
+### [OWASP Top 10 とは](#what-is-owasp-top-10) {#what-is-owasp-top-10}
 
 <strong>OWASP</strong>（Open Worldwide Application Security Project）は、アプリケーションセキュリティに取り組むオープンなコミュニティです
 
@@ -846,42 +858,44 @@ CSP は XSS に対する追加の防御層として機能します
 >
 > Web アプリケーションに対する最も重大なセキュリティリスクについての幅広い合意を表している
 
-### OWASP Top 10 とこのリポジトリの対応
+### [OWASP Top 10 とこのリポジトリの対応](#owasp-top-10-correspondence) {#owasp-top-10-correspondence}
 
 OWASP Top 10（2025 版）の各カテゴリは、このリポジトリで学んだ内容と対応しています
 
-| OWASP Top 10                               | 対応するトピック                                 |
+{: .labeled}
+| OWASP Top 10 | 対応するトピック |
 | ------------------------------------------ | ------------------------------------------------ |
-| A01 Broken Access Control                  | [05-access-control](./05-access-control.md)      |
-| A02 Security Misconfiguration              | このトピック（セキュリティヘッダ）               |
-| A03 Software Supply Chain Failures         | [07-supply-chain](./07-supply-chain.md)          |
-| A04 Cryptographic Failures                 | [01-cryptography](./01-cryptography.md)          |
-| A05 Injection                              | このトピック（インジェクション攻撃）             |
-| A06 Insecure Design                        | このトピック（多層防御）                         |
-| A07 Authentication Failures                | [04-authentication](./04-authentication.md)      |
-| A08 Software or Data Integrity Failures    | [07-supply-chain](./07-supply-chain.md)          |
+| A01 Broken Access Control | [05-access-control](../05-access-control/) |
+| A02 Security Misconfiguration | このトピック（セキュリティヘッダ） |
+| A03 Software Supply Chain Failures | [07-supply-chain](../07-supply-chain/) |
+| A04 Cryptographic Failures | [01-cryptography](../01-cryptography/) |
+| A05 Injection | このトピック（インジェクション攻撃） |
+| A06 Insecure Design | このトピック（多層防御） |
+| A07 Authentication Failures | [04-authentication](../04-authentication/) |
+| A08 Software or Data Integrity Failures | [07-supply-chain](../07-supply-chain/) |
 | A09 Security Logging and Alerting Failures | （監視とログの領域、このリポジトリでは扱わない） |
-| A10 Mishandling of Exceptional Conditions  | （例外処理の領域、このリポジトリでは扱わない）   |
+| A10 Mishandling of Exceptional Conditions | （例外処理の領域、このリポジトリでは扱わない） |
 
 このリポジトリの学習を通じて、OWASP Top 10 の大部分をカバーしていることが分かります
 
-### CWE との関係
+### [CWE との関係](#cwe-relationship) {#cwe-relationship}
 
 <strong>CWE</strong>（Common Weakness Enumeration）は、ソフトウェアの脆弱性を体系的に分類するデータベースです
 
 OWASP Top 10 の各カテゴリは、複数の CWE をグループ化したものです
 
-| OWASP カテゴリ | 対応する CWE の例                                                                    |
+{: .labeled}
+| OWASP カテゴリ | 対応する CWE の例 |
 | -------------- | ------------------------------------------------------------------------------------ |
-| A05 Injection  | CWE-79（XSS）、CWE-89（SQL インジェクション）、CWE-78（OS コマンドインジェクション） |
+| A05 Injection | CWE-79（XSS）、CWE-89（SQL インジェクション）、CWE-78（OS コマンドインジェクション） |
 
 CWE は個々の脆弱性を詳細に分類し、OWASP Top 10 はそれらを実務で重要な 10 のリスクカテゴリにまとめています
 
 ---
 
-## 防御レイヤの全体像
+## [防御レイヤの全体像](#defense-layer-overview) {#defense-layer-overview}
 
-### 01 から 06 までの統合
+### [01 から 06 までの統合](#chapters-integration) {#chapters-integration}
 
 このリポジトリで学んだ防御レイヤの全体像を整理します
 
@@ -912,14 +926,15 @@ CWE は個々の脆弱性を詳細に分類し、OWASP Top 10 はそれらを実
 
 各レイヤが異なる脅威を防御し、1 つのレイヤが突破されても他のレイヤが防御を継続します
 
-| レイヤ                 | 防御対象                 | このレイヤが破られた場合 |
+{: .labeled}
+| レイヤ | 防御対象 | このレイヤが破られた場合 |
 | ---------------------- | ------------------------ | ------------------------ |
-| 暗号化（01）           | データの機密性と完全性   | 他のレイヤで検知・防御   |
-| TLS（02）              | 通信路の盗聴と中間者攻撃 | 認証とアクセス制御が防御 |
-| 証明書（03）           | サーバーの偽装           | ブラウザの警告で検知     |
-| 認証（04）             | なりすまし               | アクセス制御が防御       |
-| アクセス制御（05）     | 権限外の操作             | 入力検証が防御           |
-| アプリケーション（06） | 悪意ある入力             | 多層防御で被害を限定     |
+| 暗号化（01） | データの機密性と完全性 | 他のレイヤで検知・防御 |
+| TLS（02） | 通信路の盗聴と中間者攻撃 | 認証とアクセス制御が防御 |
+| 証明書（03） | サーバーの偽装 | ブラウザの警告で検知 |
+| 認証（04） | なりすまし | アクセス制御が防御 |
+| アクセス制御（05） | 権限外の操作 | 入力検証が防御 |
+| アプリケーション（06） | 悪意ある入力 | 多層防御で被害を限定 |
 
 これが<strong>多層防御</strong>の全体像です
 
@@ -927,7 +942,7 @@ CWE は個々の脆弱性を詳細に分類し、OWASP Top 10 はそれらを実
 
 ---
 
-## 次のトピックへ
+## [次のトピックへ](#next-topic) {#next-topic}
 
 このトピックでは、以下のことを学びました
 
@@ -949,88 +964,89 @@ CWE は個々の脆弱性を詳細に分類し、OWASP Top 10 はそれらを実
 
 ビルドパイプラインやパッケージレジストリが改ざんされた場合、どのような影響が出るのでしょうか？
 
-次のトピック [07-supply-chain](./07-supply-chain.md) では、<strong>サプライチェーンセキュリティ</strong>の仕組みを学びます
+次のトピック [07-supply-chain](../07-supply-chain/) では、<strong>サプライチェーンセキュリティ</strong>の仕組みを学びます
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                                                      | 説明                                                                                                                                 |
+{: .labeled}
+| 用語 | 説明 |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| アプリケーションセキュリティ（Application Security）      | アプリケーション層の脆弱性を防御するためのセキュリティ対策の総称。入力検証、出力エンコーディング、多層防御などの原則を含む           |
-| 信頼境界（Trust Boundary）                                | 自分が制御できる領域と制御できない領域の境目。信頼境界の外側から来るデータはすべて潜在的に悪意があるものとして扱う                   |
-| 入力検証（Input Validation）                              | 外部入力が期待する形式に合致しているかを確認する処理。許可リスト方式で実装するのが原則                                               |
-| 出力エンコーディング（Output Encoding）                   | データを別のシステムに出力する際に、特殊な意味を持つ文字を安全な形式に変換する処理。出力先のコンテキストに応じた変換が必要           |
-| エスケープ（Escape）                                      | 出力エンコーディングの別名。特殊文字を安全な形式に変換することで、コードとして解釈されることを防ぐ                                   |
-| インジェクション攻撃（Injection Attack）                  | 信頼できない入力がコード（命令）として解釈される脆弱性を悪用する攻撃の総称。根本原因はコードとデータの境界の混同                     |
-| SQL インジェクション（SQL Injection）                     | データベースクエリに悪意ある入力を注入する攻撃。CWE-89 として分類される                                                              |
-| パラメータ化クエリ（Parameterized Query）                 | SQL の構造（コード）と入力値（データ）を分離してデータベースに渡す手法。SQL インジェクションの根本的な防御策                         |
-| プリペアドステートメント（Prepared Statement）            | パラメータ化クエリの別名。データベースがクエリの構造を事前に解析し、パラメータを常にデータとして扱う                                 |
-| クロスサイトスクリプティング（XSS：Cross-Site Scripting） | Web ページに悪意あるスクリプトを注入し、他のユーザーのブラウザで実行させる攻撃。CWE-79 として分類される                              |
-| Stored XSS（格納型 XSS）                                  | 悪意あるスクリプトがデータベースに保存され、ページ表示のたびに実行される XSS                                                         |
-| Reflected XSS（反射型 XSS）                               | URL パラメータに含まれるスクリプトがサーバーの応答に反映されて実行される XSS                                                         |
-| DOM-based XSS                                             | サーバーを介さず、ブラウザ側の JavaScript が入力値を直接 HTML に書き込むことで発生する XSS                                           |
-| コマンドインジェクション（Command Injection）             | OS コマンドに悪意ある入力を注入する攻撃。CWE-78 として分類される                                                                     |
-| プロンプトインジェクション（Prompt Injection）            | AI（大規模言語モデル）に対して、開発者の指示を上書きする悪意ある入力を注入する攻撃。指示とデータの構造的分離が困難                   |
-| CSRF（Cross-Site Request Forgery）                        | 認証済みユーザーのセッションを悪用して、ユーザーが意図しないリクエストを送信させる攻撃。CWE-352 として分類される                     |
-| CSRF トークン                                             | サーバーが生成する予測不可能な値。リクエストの正当性を検証するために使用される                                                       |
-| 多層防御（Defense in Depth）                              | 単一の防御手段に依存せず、複数の防御層を重ねるセキュリティ設計の原則。1 つの層が突破されても他の層が防御を継続する                   |
-| 許可リスト方式（Allowlist）                               | 許可するパターンを明示的に定義し、それ以外をすべて拒否する方式。入力検証と CSP で使用される                                          |
-| 拒否リスト方式（Denylist）                                | 拒否するパターンを列挙し、それ以外を許可する方式。新しい攻撃手法に対応できないため、許可リスト方式が推奨される                       |
-| サニタイズ（Sanitize）                                    | 入力データから潜在的に危険な要素を除去または無害化する処理                                                                           |
-| HTML エンティティ                                         | HTML で特殊文字を安全に表現するための記法。`<` を `&lt;` に変換するなど                                                              |
-| オリジン（Origin）                                        | スキーム、ホスト、ポートの 3 つの組み合わせ。同一オリジンポリシーの判定基準                                                          |
-| 同一オリジンポリシー（Same-Origin Policy）                | あるオリジンから読み込まれたスクリプトが、異なるオリジンのリソースにアクセスすることを制限するブラウザの仕組み                       |
-| CORS（Cross-Origin Resource Sharing）                     | 同一オリジンポリシーの制限を安全に緩和する仕組み。サーバーが許可するオリジンを HTTP レスポンスヘッダで宣言する                       |
-| Content-Security-Policy（CSP）                            | ブラウザが読み込めるリソースの出処を制限する HTTP レスポンスヘッダ。XSS に対する追加の防御層として機能する                           |
-| Strict-Transport-Security（HSTS）                         | ブラウザに HTTPS 接続を強制する HTTP レスポンスヘッダ。ダウングレード攻撃を防ぐ                                                      |
-| X-Content-Type-Options                                    | ブラウザの MIME タイプ推測（MIME スニッフィング）を禁止する HTTP レスポンスヘッダ                                                    |
-| MIME スニッフィング                                       | ブラウザがレスポンスの内容からファイルの種類を推測する機能。悪用されるとテキストがスクリプトとして実行される可能性がある             |
-| SameSite Cookie                                           | 異なるサイトからのリクエストに Cookie を含めるかを制御する Cookie の属性。CSRF 防御に使用される                                      |
-| HttpOnly Cookie                                           | JavaScript からのアクセスを禁止する Cookie の属性。XSS によるセッション ID の窃取を防ぐ                                              |
-| セッションハイジャック（Session Hijacking）               | セッション ID を盗み取り、そのユーザーになりすます攻撃。XSS や通信の盗聴によって発生する                                             |
-| OWASP（Open Worldwide Application Security Project）      | アプリケーションセキュリティに取り組むオープンなコミュニティ。OWASP Top 10 などのガイドラインを公開している                          |
-| OWASP Top 10                                              | Web アプリケーションにおける最も重大なセキュリティリスクを 10 のカテゴリに分類したフレームワーク                                     |
-| CWE（Common Weakness Enumeration）                        | ソフトウェアの脆弱性を体系的に分類するデータベース。OWASP Top 10 の各カテゴリは複数の CWE をグループ化したもの                       |
-| 脆弱性（Vulnerability）                                   | ソフトウェアのセキュリティ上の弱点。攻撃者に悪用されうる欠陥                                                                         |
-| 攻撃対象面（Attack Surface）                              | 攻撃者がシステムに対して攻撃を試みることのできる接点の総体。入力、インターフェース、エンドポイントなど                               |
-| ペイロード（Payload）                                     | 攻撃において実際に悪意ある動作を行うコードやデータ                                                                                   |
-| SSRF（Server-Side Request Forgery）                       | サーバーに対して、攻撃者が指定した内部リソースへのリクエストを発行させる攻撃。OWASP Top 10 の A01 Broken Access Control に分類される |
-| ミドルウェア（Middleware）                                | Web フレームワークにおいて、リクエストの受信からアプリケーションロジックの実行までの間に処理を挟む仕組み                             |
-| ミドルウェアバイパス                                      | ミドルウェアの処理をスキップしてアプリケーションに直接アクセスする攻撃。単一レイヤー依存の危険性を示す事例                           |
-| コンテキスト（Context）                                   | データが出力される先の環境。HTML、SQL、JavaScript、URL など、コンテキストごとに異なるエンコーディングが必要                          |
-| セキュリティヘッダ（Security Header）                     | Web サーバーが HTTP レスポンスに含めるセキュリティ関連のヘッダ。ブラウザにセキュリティポリシーを伝達する                             |
+| アプリケーションセキュリティ（Application Security） | アプリケーション層の脆弱性を防御するためのセキュリティ対策の総称。入力検証、出力エンコーディング、多層防御などの原則を含む |
+| 信頼境界（Trust Boundary） | 自分が制御できる領域と制御できない領域の境目。信頼境界の外側から来るデータはすべて潜在的に悪意があるものとして扱う |
+| 入力検証（Input Validation） | 外部入力が期待する形式に合致しているかを確認する処理。許可リスト方式で実装するのが原則 |
+| 出力エンコーディング（Output Encoding） | データを別のシステムに出力する際に、特殊な意味を持つ文字を安全な形式に変換する処理。出力先のコンテキストに応じた変換が必要 |
+| エスケープ（Escape） | 出力エンコーディングの別名。特殊文字を安全な形式に変換することで、コードとして解釈されることを防ぐ |
+| インジェクション攻撃（Injection Attack） | 信頼できない入力がコード（命令）として解釈される脆弱性を悪用する攻撃の総称。根本原因はコードとデータの境界の混同 |
+| SQL インジェクション（SQL Injection） | データベースクエリに悪意ある入力を注入する攻撃。CWE-89 として分類される |
+| パラメータ化クエリ（Parameterized Query） | SQL の構造（コード）と入力値（データ）を分離してデータベースに渡す手法。SQL インジェクションの根本的な防御策 |
+| プリペアドステートメント（Prepared Statement） | パラメータ化クエリの別名。データベースがクエリの構造を事前に解析し、パラメータを常にデータとして扱う |
+| クロスサイトスクリプティング（XSS：Cross-Site Scripting） | Web ページに悪意あるスクリプトを注入し、他のユーザーのブラウザで実行させる攻撃。CWE-79 として分類される |
+| Stored XSS（格納型 XSS） | 悪意あるスクリプトがデータベースに保存され、ページ表示のたびに実行される XSS |
+| Reflected XSS（反射型 XSS） | URL パラメータに含まれるスクリプトがサーバーの応答に反映されて実行される XSS |
+| DOM-based XSS | サーバーを介さず、ブラウザ側の JavaScript が入力値を直接 HTML に書き込むことで発生する XSS |
+| コマンドインジェクション（Command Injection） | OS コマンドに悪意ある入力を注入する攻撃。CWE-78 として分類される |
+| プロンプトインジェクション（Prompt Injection） | AI（大規模言語モデル）に対して、開発者の指示を上書きする悪意ある入力を注入する攻撃。指示とデータの構造的分離が困難 |
+| CSRF（Cross-Site Request Forgery） | 認証済みユーザーのセッションを悪用して、ユーザーが意図しないリクエストを送信させる攻撃。CWE-352 として分類される |
+| CSRF トークン | サーバーが生成する予測不可能な値。リクエストの正当性を検証するために使用される |
+| 多層防御（Defense in Depth） | 単一の防御手段に依存せず、複数の防御層を重ねるセキュリティ設計の原則。1 つの層が突破されても他の層が防御を継続する |
+| 許可リスト方式（Allowlist） | 許可するパターンを明示的に定義し、それ以外をすべて拒否する方式。入力検証と CSP で使用される |
+| 拒否リスト方式（Denylist） | 拒否するパターンを列挙し、それ以外を許可する方式。新しい攻撃手法に対応できないため、許可リスト方式が推奨される |
+| サニタイズ（Sanitize） | 入力データから潜在的に危険な要素を除去または無害化する処理 |
+| HTML エンティティ | HTML で特殊文字を安全に表現するための記法。`<` を `&lt;` に変換するなど |
+| オリジン（Origin） | スキーム、ホスト、ポートの 3 つの組み合わせ。同一オリジンポリシーの判定基準 |
+| 同一オリジンポリシー（Same-Origin Policy） | あるオリジンから読み込まれたスクリプトが、異なるオリジンのリソースにアクセスすることを制限するブラウザの仕組み |
+| CORS（Cross-Origin Resource Sharing） | 同一オリジンポリシーの制限を安全に緩和する仕組み。サーバーが許可するオリジンを HTTP レスポンスヘッダで宣言する |
+| Content-Security-Policy（CSP） | ブラウザが読み込めるリソースの出処を制限する HTTP レスポンスヘッダ。XSS に対する追加の防御層として機能する |
+| Strict-Transport-Security（HSTS） | ブラウザに HTTPS 接続を強制する HTTP レスポンスヘッダ。ダウングレード攻撃を防ぐ |
+| X-Content-Type-Options | ブラウザの MIME タイプ推測（MIME スニッフィング）を禁止する HTTP レスポンスヘッダ |
+| MIME スニッフィング | ブラウザがレスポンスの内容からファイルの種類を推測する機能。悪用されるとテキストがスクリプトとして実行される可能性がある |
+| SameSite Cookie | 異なるサイトからのリクエストに Cookie を含めるかを制御する Cookie の属性。CSRF 防御に使用される |
+| HttpOnly Cookie | JavaScript からのアクセスを禁止する Cookie の属性。XSS によるセッション ID の窃取を防ぐ |
+| セッションハイジャック（Session Hijacking） | セッション ID を盗み取り、そのユーザーになりすます攻撃。XSS や通信の盗聴によって発生する |
+| OWASP（Open Worldwide Application Security Project） | アプリケーションセキュリティに取り組むオープンなコミュニティ。OWASP Top 10 などのガイドラインを公開している |
+| OWASP Top 10 | Web アプリケーションにおける最も重大なセキュリティリスクを 10 のカテゴリに分類したフレームワーク |
+| CWE（Common Weakness Enumeration） | ソフトウェアの脆弱性を体系的に分類するデータベース。OWASP Top 10 の各カテゴリは複数の CWE をグループ化したもの |
+| 脆弱性（Vulnerability） | ソフトウェアのセキュリティ上の弱点。攻撃者に悪用されうる欠陥 |
+| 攻撃対象面（Attack Surface） | 攻撃者がシステムに対して攻撃を試みることのできる接点の総体。入力、インターフェース、エンドポイントなど |
+| ペイロード（Payload） | 攻撃において実際に悪意ある動作を行うコードやデータ |
+| SSRF（Server-Side Request Forgery） | サーバーに対して、攻撃者が指定した内部リソースへのリクエストを発行させる攻撃。OWASP Top 10 の A01 Broken Access Control に分類される |
+| ミドルウェア（Middleware） | Web フレームワークにおいて、リクエストの受信からアプリケーションロジックの実行までの間に処理を挟む仕組み |
+| ミドルウェアバイパス | ミドルウェアの処理をスキップしてアプリケーションに直接アクセスする攻撃。単一レイヤー依存の危険性を示す事例 |
+| コンテキスト（Context） | データが出力される先の環境。HTML、SQL、JavaScript、URL など、コンテキストごとに異なるエンコーディングが必要 |
+| セキュリティヘッダ（Security Header） | Web サーバーが HTTP レスポンスに含めるセキュリティ関連のヘッダ。ブラウザにセキュリティポリシーを伝達する |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 このページの内容は、以下のソースに基づいています
 
 <strong>アプリケーションセキュリティの体系</strong>
 
-- [OWASP Top 10 (2025)](https://owasp.org/Top10/2025/)
+- [OWASP Top 10 (2025)](https://owasp.org/Top10/2025/){:target="\_blank"}
   - Web アプリケーションの重大なセキュリティリスクの分類とガイドライン
-- [CWE - Common Weakness Enumeration](https://cwe.mitre.org/)
+- [CWE - Common Weakness Enumeration](https://cwe.mitre.org/){:target="\_blank"}
   - ソフトウェアの脆弱性の分類体系
 
 <strong>インジェクション攻撃</strong>
 
-- [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)
+- [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html){:target="\_blank"}
   - SQL インジェクションの定義と分類
-- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)
+- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html){:target="\_blank"}
   - クロスサイトスクリプティングの定義と分類
-- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)
+- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html){:target="\_blank"}
   - OS コマンドインジェクションの定義と分類
 
 <strong>リクエストレベルの攻撃</strong>
 
-- [CWE-352: Cross-Site Request Forgery (CSRF)](https://cwe.mitre.org/data/definitions/352.html)
+- [CWE-352: Cross-Site Request Forgery (CSRF)](https://cwe.mitre.org/data/definitions/352.html){:target="\_blank"}
   - CSRF の定義と分類
 
 <strong>セキュリティヘッダ</strong>
 
-- [RFC 6797 - HTTP Strict Transport Security (HSTS)](https://datatracker.ietf.org/doc/html/rfc6797)
+- [RFC 6797 - HTTP Strict Transport Security (HSTS)](https://datatracker.ietf.org/doc/html/rfc6797){:target="\_blank"}
   - HSTS の仕様
-- [Content Security Policy Level 3 - W3C](https://www.w3.org/TR/CSP3/)
+- [Content Security Policy Level 3 - W3C](https://www.w3.org/TR/CSP3/){:target="\_blank"}
   - Content-Security-Policy の仕様

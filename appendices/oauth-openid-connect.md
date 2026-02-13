@@ -1,12 +1,13 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: OAuth 2.0 と OpenID Connect の全体像
+---
 
-# appendix：OAuth 2.0 と OpenID Connect の全体像
+# [appendix：OAuth 2.0 と OpenID Connect の全体像](#oauth-openid-connect) {#oauth-openid-connect}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-[04-authentication](../04-authentication.md) では、OAuth 2.0 の<strong>認可コードフロー</strong>を詳しく学びました
+[04-authentication](../../04-authentication/) では、OAuth 2.0 の<strong>認可コードフロー</strong>を詳しく学びました
 
 サードパーティアプリケーションがユーザーの代わりにリソースにアクセスするための「委譲された権限」の仕組みです
 
@@ -18,13 +19,13 @@
 
 04-authentication の用語集では「OAuth 2.0 を拡張して認証機能を追加したプロトコル」と一行で紹介しましたが、具体的な仕組みは説明しませんでした
 
-さらに、[07-supply-chain](../07-supply-chain.md) で学んだ Sigstore の Fulcio は、<strong>OIDC 認証</strong>を使って署名者の身元を確認しています
+さらに、[07-supply-chain](../../07-supply-chain/) で学んだ Sigstore の Fulcio は、<strong>OIDC 認証</strong>を使って署名者の身元を確認しています
 
 この補足資料では、OAuth 2.0 の全体像と OpenID Connect の仕組みを学びます
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 - OAuth 2.0 の 4 つのグラントタイプと、それぞれの用途
 - OAuth 2.0 が「認証」ではない理由
@@ -34,34 +35,35 @@
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [OAuth 2.0 のグラントタイプ](#oauth-20-のグラントタイプ)
-2. [OAuth 2.0 は認証ではない](#oauth-20-は認証ではない)
-3. [OpenID Connect とは](#openid-connect-とは)
-4. [ID トークン](#id-トークン)
-5. [認可コードフロー + OpenID Connect](#認可コードフロー--openid-connect)
-6. [Sigstore における OIDC](#sigstore-における-oidc)
-7. [まとめ](#まとめ)
-8. [用語集](#用語集)
-9. [参考資料](#参考資料)
+1. [OAuth 2.0 のグラントタイプ](#oauth-grant-types)
+2. [OAuth 2.0 は認証ではない](#oauth-is-not-authentication)
+3. [OpenID Connect とは](#what-is-openid-connect)
+4. [ID トークン](#id-token)
+5. [認可コードフロー + OpenID Connect](#authorization-code-flow-with-oidc)
+6. [Sigstore における OIDC](#sigstore-oidc)
+7. [まとめ](#summary)
+8. [用語集](#glossary)
+9. [参考資料](#references)
 
 ---
 
-## OAuth 2.0 のグラントタイプ
+## [OAuth 2.0 のグラントタイプ](#oauth-grant-types) {#oauth-grant-types}
 
 OAuth 2.0（RFC 6749）は、アクセストークンを取得するための方法として<strong>4 つのグラントタイプ</strong>を定義しています
 
 04-authentication で詳しく学んだ認可コードフローは、このうちの 1 つです
 
-| グラントタイプ                                 | 用途                                                | 安全性         |
+{: .labeled}
+| グラントタイプ | 用途 | 安全性 |
 | ---------------------------------------------- | --------------------------------------------------- | -------------- |
-| 認可コードフロー                               | Web アプリケーション、モバイルアプリ（PKCE と併用） | 高い           |
-| インプリシットフロー                           | かつてのブラウザ内 JavaScript アプリ向け            | 低い（非推奨） |
-| リソースオーナーパスワードクレデンシャルフロー | ユーザーのパスワードを直接受け取る                  | 低い（非推奨） |
-| クライアントクレデンシャルフロー               | サーバー間通信（ユーザーが介在しない）              | 用途による     |
+| 認可コードフロー | Web アプリケーション、モバイルアプリ（PKCE と併用） | 高い |
+| インプリシットフロー | かつてのブラウザ内 JavaScript アプリ向け | 低い（非推奨） |
+| リソースオーナーパスワードクレデンシャルフロー | ユーザーのパスワードを直接受け取る | 低い（非推奨） |
+| クライアントクレデンシャルフロー | サーバー間通信（ユーザーが介在しない） | 用途による |
 
-### 認可コードフロー
+### [認可コードフロー](#authorization-code-flow) {#authorization-code-flow}
 
 04-authentication で学んだとおり、<strong>認可コードフロー</strong>は最も安全なグラントタイプです
 
@@ -71,7 +73,7 @@ OAuth 2.0（RFC 6749）は、アクセストークンを取得するための方
 
 アクセストークンがブラウザに直接露出しないため、トークンの漏洩リスクが低くなります
 
-### インプリシットフロー（非推奨）
+### [インプリシットフロー（非推奨）](#implicit-flow) {#implicit-flow}
 
 <strong>インプリシットフロー</strong>は、認可コードを経由せずに、認可サーバーからアクセストークンを直接返すフローです
 
@@ -81,7 +83,7 @@ OAuth 2.0（RFC 6749）は、アクセストークンを取得するための方
 
 OAuth 2.1（策定中）では、インプリシットフローは仕様から削除される予定です
 
-### リソースオーナーパスワードクレデンシャルフロー（非推奨）
+### [リソースオーナーパスワードクレデンシャルフロー（非推奨）](#resource-owner-password-flow) {#resource-owner-password-flow}
 
 このフローでは、ユーザーのパスワードをクライアントアプリケーションに直接入力します
 
@@ -89,7 +91,7 @@ OAuth 2.1（策定中）では、インプリシットフローは仕様から�
 
 04-authentication で学んだ OAuth 2.0 の本来の目的（パスワードを第三者に渡さない）に反するため、非推奨です
 
-### クライアントクレデンシャルフロー
+### [クライアントクレデンシャルフロー](#client-credentials-flow) {#client-credentials-flow}
 
 <strong>クライアントクレデンシャルフロー</strong>は、ユーザーが介在しないサーバー間通信で使われます
 
@@ -99,9 +101,9 @@ OAuth 2.1（策定中）では、インプリシットフローは仕様から�
 
 ---
 
-## OAuth 2.0 は認証ではない
+## [OAuth 2.0 は認証ではない](#oauth-is-not-authentication) {#oauth-is-not-authentication}
 
-### 認可と認証の違い
+### [認可と認証の違い](#authorization-and-authentication-difference) {#authorization-and-authentication-difference}
 
 04-authentication で学んだとおり、<strong>認証</strong>と<strong>認可</strong>は異なる概念です
 
@@ -112,7 +114,7 @@ OAuth 2.0 は<strong>認可</strong>のためのプロトコルです
 
 アクセストークンは「このクライアントは、このユーザーの代わりに、このスコープの操作を許可されている」ことを示しますが、「このユーザーが誰であるか」については何も定義していません
 
-### OAuth 2.0 を認証に使う問題
+### [OAuth 2.0 を認証に使う問題](#oauth-as-authentication-problem) {#oauth-as-authentication-problem}
 
 OAuth 2.0 のアクセストークンを使って「ユーザーの認証」を行おうとする実装があります
 
@@ -120,28 +122,30 @@ OAuth 2.0 のアクセストークンを使って「ユーザーの認証」を�
 
 しかし、この方法にはセキュリティ上の問題があります
 
-| 問題                   | 説明                                                                                                                 |
+{: .labeled}
+| 問題 | 説明 |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| トークンの対象者が不明 | アクセストークンには「誰が認証したか」「どのクライアント向けに発行されたか」の情報が標準化されていない               |
+| トークンの対象者が不明 | アクセストークンには「誰が認証したか」「どのクライアント向けに発行されたか」の情報が標準化されていない |
 | トークンの置き換え攻撃 | 悪意のあるクライアントが、別のクライアント向けに発行されたアクセストークンを使ってユーザーになりすませる可能性がある |
-| 認証のタイミングが不明 | アクセストークンは「いつユーザーが認証したか」を保証しない                                                           |
+| 認証のタイミングが不明 | アクセストークンは「いつユーザーが認証したか」を保証しない |
 
 これらの問題を解決するために、OAuth 2.0 の上に認証の仕組みを追加したのが <strong>OpenID Connect</strong> です
 
 ---
 
-## OpenID Connect とは
+## [OpenID Connect とは](#what-is-openid-connect) {#what-is-openid-connect}
 
 <strong>OpenID Connect</strong>（OIDC）は、OAuth 2.0 を拡張して<strong>認証</strong>の機能を追加したプロトコルです
 
 OpenID Connect は OAuth 2.0 の仕組みを<strong>そのまま利用</strong>しつつ、以下を追加しています
 
-| 追加要素                | 説明                                               |
+{: .labeled}
+| 追加要素 | 説明 |
 | ----------------------- | -------------------------------------------------- |
-| ID トークン             | ユーザーの認証情報を含む JWT                       |
-| UserInfo エンドポイント | ユーザーの属性情報を取得するための標準 API         |
-| 標準スコープ（openid）  | 認証を要求することを示すスコープ                   |
-| 標準クレーム            | ユーザー情報の表現方法の標準化（name、email など） |
+| ID トークン | ユーザーの認証情報を含む JWT |
+| UserInfo エンドポイント | ユーザーの属性情報を取得するための標準 API |
+| 標準スコープ（openid） | 認証を要求することを示すスコープ |
+| 標準クレーム | ユーザー情報の表現方法の標準化（name、email など） |
 
 OAuth 2.0 が「このクライアントはリソースにアクセスしてよい」を扱うのに対し、OpenID Connect は「このユーザーは確かに認証された」を扱います
 
@@ -155,25 +159,26 @@ OAuth 2.0 が「このクライアントはリソースにアクセスしてよ�
 
 ---
 
-## ID トークン
+## [ID トークン](#id-token) {#id-token}
 
-### ID トークンの構造
+### [ID トークンの構造](#id-token-structure) {#id-token-structure}
 
 <strong>ID トークン</strong>は、04-authentication で学んだ <strong>JWT</strong>（JSON Web Token）形式で表現されます
 
 ID トークンには、ユーザーの認証に関する情報が<strong>クレーム（claims）</strong>として含まれています
 
-| クレーム          | 説明                                                         |
+{: .labeled}
+| クレーム | 説明 |
 | ----------------- | ------------------------------------------------------------ |
-| iss（Issuer）     | ID トークンを発行した認可サーバー（OpenID Provider）の識別子 |
-| sub（Subject）    | ユーザーの一意識別子                                         |
-| aud（Audience）   | このトークンの対象となるクライアントの client_id             |
-| exp（Expiration） | トークンの有効期限                                           |
-| iat（Issued At）  | トークンの発行時刻                                           |
-| nonce             | リプレイ攻撃を防ぐためのランダムな値                         |
-| auth_time         | ユーザーが認証を行った時刻                                   |
+| iss（Issuer） | ID トークンを発行した認可サーバー（OpenID Provider）の識別子 |
+| sub（Subject） | ユーザーの一意識別子 |
+| aud（Audience） | このトークンの対象となるクライアントの client_id |
+| exp（Expiration） | トークンの有効期限 |
+| iat（Issued At） | トークンの発行時刻 |
+| nonce | リプレイ攻撃を防ぐためのランダムな値 |
+| auth_time | ユーザーが認証を行った時刻 |
 
-### ID トークンの検証
+### [ID トークンの検証](#id-token-validation) {#id-token-validation}
 
 クライアントは ID トークンを受け取った後、以下の検証を行います
 
@@ -191,11 +196,11 @@ aud の検証は特に重要です
 
 ---
 
-## 認可コードフロー + OpenID Connect
+## [認可コードフロー + OpenID Connect](#authorization-code-flow-with-oidc) {#authorization-code-flow-with-oidc}
 
 04-authentication で学んだ認可コードフローに OpenID Connect を組み合わせると、認可と認証を同時に行えます
 
-### フローの概要
+### [フローの概要](#flow-overview) {#flow-overview}
 
 <strong>1. 認可リクエスト</strong>
 
@@ -223,11 +228,11 @@ OAuth 2.0 単体ではアクセストークンのみが返されますが、Open
 
 ---
 
-## Sigstore における OIDC
+## [Sigstore における OIDC](#sigstore-oidc) {#sigstore-oidc}
 
 07-supply-chain で学んだ Sigstore の <strong>Fulcio</strong> は、OpenID Connect を使ってソフトウェア署名者の身元を確認しています
 
-### Fulcio の仕組み
+### [Fulcio の仕組み](#fulcio-mechanism) {#fulcio-mechanism}
 
 Fulcio は<strong>短期署名証明書</strong>を発行する認証局です
 
@@ -241,58 +246,61 @@ Fulcio は OIDC を使うことで、鍵の管理を不要にしています
 4. Fulcio は ID トークンの署名を検証し、開発者の身元（メールアドレスなど）を確認する
 5. Fulcio は開発者の公開鍵に対して<strong>短期証明書</strong>（有効期間約 10 分）を発行する
 
-### OIDC が Sigstore にもたらすもの
+### [OIDC が Sigstore にもたらすもの](#oidc-for-sigstore) {#oidc-for-sigstore}
 
-| 従来のソフトウェア署名     | Sigstore + OIDC                                          |
+{: .labeled}
+| 従来のソフトウェア署名 | Sigstore + OIDC |
 | -------------------------- | -------------------------------------------------------- |
-| 長期的な秘密鍵の管理が必要 | 秘密鍵は使い捨て（短期証明書の有効期間中のみ）           |
+| 長期的な秘密鍵の管理が必要 | 秘密鍵は使い捨て（短期証明書の有効期間中のみ） |
 | 鍵の配布と信頼の確立が必要 | 既存の OIDC プロバイダー（GitHub、Google）の信頼を再利用 |
-| 鍵の漏洩が長期的なリスク   | 証明書の有効期間が短いため、漏洩のリスクが限定的         |
+| 鍵の漏洩が長期的なリスク | 証明書の有効期間が短いため、漏洩のリスクが限定的 |
 
-Sigstore が OIDC を採用したことで、[03-certificate](../03-certificate.md) で学んだ PKI の概念（証明書、認証局、信頼の連鎖）と、04-authentication で学んだ認証の概念が、ソフトウェアサプライチェーンの文脈で結びつきます
+Sigstore が OIDC を採用したことで、[03-certificate](../../03-certificate/) で学んだ PKI の概念（証明書、認証局、信頼の連鎖）と、04-authentication で学んだ認証の概念が、ソフトウェアサプライチェーンの文脈で結びつきます
 
 ---
 
-## まとめ
+## [まとめ](#summary) {#summary}
 
-| ポイント                                           | 説明                                                                         |
+{: .labeled}
+| ポイント | 説明 |
 | -------------------------------------------------- | ---------------------------------------------------------------------------- |
-| OAuth 2.0 には 4 つのグラントタイプがある          | 認可コードフローが最も安全で、インプリシットフローとパスワードフローは非推奨 |
-| OAuth 2.0 は認可のプロトコルであり認証ではない     | アクセストークンは「何をしてよいか」を示すが「誰か」は示さない               |
-| OpenID Connect は OAuth 2.0 に認証を追加する       | ID トークン（JWT）により「このユーザーは確かに認証された」を証明             |
-| ID トークンの aud 検証がトークン置き換え攻撃を防ぐ | トークンが特定のクライアント向けに発行されたことを保証                       |
-| Sigstore は OIDC で署名者の身元を確認する          | 既存の認証基盤を再利用し、長期的な鍵管理を不要にする                         |
+| OAuth 2.0 には 4 つのグラントタイプがある | 認可コードフローが最も安全で、インプリシットフローとパスワードフローは非推奨 |
+| OAuth 2.0 は認可のプロトコルであり認証ではない | アクセストークンは「何をしてよいか」を示すが「誰か」は示さない |
+| OpenID Connect は OAuth 2.0 に認証を追加する | ID トークン（JWT）により「このユーザーは確かに認証された」を証明 |
+| ID トークンの aud 検証がトークン置き換え攻撃を防ぐ | トークンが特定のクライアント向けに発行されたことを保証 |
+| Sigstore は OIDC で署名者の身元を確認する | 既存の認証基盤を再利用し、長期的な鍵管理を不要にする |
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                             | 説明                                                                 |
+{: .labeled}
+| 用語 | 説明 |
 | -------------------------------- | -------------------------------------------------------------------- |
-| グラントタイプ                   | OAuth 2.0 でアクセストークンを取得するためのフローの種類             |
-| インプリシットフロー             | 認可コードを経由せずにアクセストークンを直接返すフロー（非推奨）     |
-| クライアントクレデンシャルフロー | ユーザーが介在しないサーバー間通信で使われるフロー                   |
-| OpenID Connect                   | OAuth 2.0 を拡張して認証機能を追加したプロトコル                     |
-| ID トークン                      | ユーザーの認証情報を含む JWT                                         |
-| OpenID Provider                  | OpenID Connect における認証を行うサーバー（認可サーバー + 認証機能） |
-| クレーム                         | JWT に含まれる属性情報（iss、sub、aud、exp など）                    |
-| UserInfo エンドポイント          | ユーザーの属性情報を取得するための標準 API                           |
+| グラントタイプ | OAuth 2.0 でアクセストークンを取得するためのフローの種類 |
+| インプリシットフロー | 認可コードを経由せずにアクセストークンを直接返すフロー（非推奨） |
+| クライアントクレデンシャルフロー | ユーザーが介在しないサーバー間通信で使われるフロー |
+| OpenID Connect | OAuth 2.0 を拡張して認証機能を追加したプロトコル |
+| ID トークン | ユーザーの認証情報を含む JWT |
+| OpenID Provider | OpenID Connect における認証を行うサーバー（認可サーバー + 認証機能） |
+| クレーム | JWT に含まれる属性情報（iss、sub、aud、exp など） |
+| UserInfo エンドポイント | ユーザーの属性情報を取得するための標準 API |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 <strong>OAuth 2.0</strong>
 
-- [RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
+- [RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749){:target="\_blank"}
   - OAuth 2.0 の仕様
 
 <strong>OpenID Connect</strong>
 
-- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html){:target="\_blank"}
   - OpenID Connect の仕様
 
 <strong>Sigstore</strong>
 
-- [Fulcio - Free Code Signing](https://docs.sigstore.dev/certificate_authority/overview/)
+- [Fulcio - Free Code Signing](https://docs.sigstore.dev/certificate_authority/overview/){:target="\_blank"}
   - Sigstore の認証局 Fulcio の概要

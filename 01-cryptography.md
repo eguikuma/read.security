@@ -1,10 +1,11 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: 暗号化の基礎
+---
 
-# 01-cryptography：暗号化の基礎
+# [01-cryptography：暗号化の基礎](#cryptography) {#cryptography}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
 前のシリーズでは、TLS が通信を暗号化・認証・完全性の 3 つの方法で保護することを学びました
 
@@ -24,7 +25,7 @@ TLS ハンドシェイクで鍵を共有し、暗号スイートで通信を暗�
 
 ---
 
-## 日常の例え
+## [日常の例え](#everyday-analogy) {#everyday-analogy}
 
 暗号化の基本的な仕組みを、日常の例えで見てみましょう
 
@@ -76,7 +77,7 @@ TLS ハンドシェイクで鍵を共有し、暗号スイートで通信を暗�
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 このページでは、以下の概念を学びます
 
@@ -117,29 +118,29 @@ TLS ハンドシェイクで鍵を共有し、暗号スイートで通信を暗�
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [なぜ暗号化が必要か](#なぜ暗号化が必要か)
-2. [暗号化の全体像](#暗号化の全体像)
-3. [対称暗号](#対称暗号)
-4. [非対称暗号（公開鍵暗号）](#非対称暗号公開鍵暗号)
-5. [ハッシュ関数](#ハッシュ関数)
-6. [Diffie-Hellman 鍵交換](#diffie-hellman-鍵交換)
-7. [AEAD（暗号化と改ざん検出の同時実行）](#aead暗号化と改ざん検出の同時実行)
-8. [暗号化の組み合わせ](#暗号化の組み合わせ)
-9. [次のトピックへ](#次のトピックへ)
-10. [用語集](#用語集)
-11. [参考資料](#参考資料)
+1. [なぜ暗号化が必要か](#why-encryption)
+2. [暗号化の全体像](#cryptography-overview)
+3. [対称暗号](#symmetric-cryptography)
+4. [非対称暗号（公開鍵暗号）](#asymmetric-cryptography)
+5. [ハッシュ関数](#hash-function)
+6. [Diffie-Hellman 鍵交換](#diffie-hellman-key-exchange)
+7. [AEAD（暗号化と改ざん検出の同時実行）](#aead)
+8. [暗号化の組み合わせ](#cryptography-combination)
+9. [次のトピックへ](#next-topic)
+10. [用語集](#glossary)
+11. [参考資料](#references)
 
 ---
 
-## なぜ暗号化が必要か
+## [なぜ暗号化が必要か](#why-encryption) {#why-encryption}
 
 インターネット上の通信は、何も対策をしなければ<strong>平文</strong>（暗号化されていないデータ）で流れます
 
 平文の通信には、3 つの脅威があります
 
-### 盗聴（Eavesdropping）
+### [盗聴（Eavesdropping）](#eavesdropping) {#eavesdropping}
 
 通信経路上の第三者が、流れるデータを読み取ることです
 
@@ -147,7 +148,7 @@ TLS ハンドシェイクで鍵を共有し、暗号スイートで通信を暗�
 
 通信が暗号化されていなければ、同じネットワーク上の攻撃者がログイン情報を傍受できる可能性があります
 
-### 改ざん（Tampering）
+### [改ざん（Tampering）](#tampering) {#tampering}
 
 通信経路上の第三者が、流れるデータを書き換えることです
 
@@ -155,7 +156,7 @@ TLS ハンドシェイクで鍵を共有し、暗号スイートで通信を暗�
 
 受信者は、受け取ったデータが送信者の意図通りかどうか確認する手段がありません
 
-### なりすまし（Impersonation）
+### [なりすまし（Impersonation）](#impersonation) {#impersonation}
 
 第三者が、正規の通信相手のふりをすることです
 
@@ -163,7 +164,7 @@ TLS ハンドシェイクで鍵を共有し、暗号スイートで通信を暗�
 
 ユーザーは、通信相手が本物の銀行かどうか確認する手段がありません
 
-### 中間者攻撃（Man-in-the-Middle Attack）
+### [中間者攻撃（Man-in-the-Middle Attack）](#man-in-the-middle-attack) {#man-in-the-middle-attack}
 
 中間者攻撃は、上記の 3 つの脅威をすべて組み合わせた攻撃手法です
 
@@ -195,15 +196,16 @@ Bob も攻撃者を Alice だと思っています
 
 ---
 
-## 暗号化の全体像
+## [暗号化の全体像](#cryptography-overview) {#cryptography-overview}
 
 暗号化の技術は、3 つの脅威に対応する 3 つの柱で構成されています
 
-| 脅威       | 対策                                  | 使用する技術         |
+{: .labeled}
+| 脅威 | 対策 | 使用する技術 |
 | ---------- | ------------------------------------- | -------------------- |
-| 盗聴       | <strong>機密性</strong>（暗号化）     | 対称暗号、非対称暗号 |
-| 改ざん     | <strong>完全性</strong>（改ざん検出） | ハッシュ関数、AEAD   |
-| なりすまし | <strong>真正性</strong>（認証）       | デジタル署名、証明書 |
+| 盗聴 | <strong>機密性</strong>（暗号化） | 対称暗号、非対称暗号 |
+| 改ざん | <strong>完全性</strong>（改ざん検出） | ハッシュ関数、AEAD |
+| なりすまし | <strong>真正性</strong>（認証） | デジタル署名、証明書 |
 
 <strong>機密性</strong>（Confidentiality）とは、許可された人だけがデータを読めることです
 
@@ -223,9 +225,9 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 ---
 
-## 対称暗号
+## [対称暗号](#symmetric-cryptography) {#symmetric-cryptography}
 
-### 対称暗号とは
+### [対称暗号とは](#what-is-symmetric-cryptography) {#what-is-symmetric-cryptography}
 
 <strong>対称暗号</strong>（Symmetric Encryption）は、暗号化と復号に<strong>同じ鍵</strong>を使う方式です
 
@@ -245,12 +247,13 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 「対称」と呼ばれるのは、暗号化と復号で<strong>同じ鍵</strong>を使うためです
 
-### 代表的な対称暗号アルゴリズム
+### [代表的な対称暗号アルゴリズム](#symmetric-cryptography-algorithms) {#symmetric-cryptography-algorithms}
 
-| アルゴリズム | 種類           | 特徴                                                                |
+{: .labeled}
+| アルゴリズム | 種類 | 特徴 |
 | ------------ | -------------- | ------------------------------------------------------------------- |
-| AES          | ブロック暗号   | NIST が公開コンペで選定した標準。128 / 192 / 256 ビットの鍵長に対応 |
-| ChaCha20     | ストリーム暗号 | ハードウェアによる AES 高速化が使えない環境向けに設計               |
+| AES | ブロック暗号 | NIST が公開コンペで選定した標準。128 / 192 / 256 ビットの鍵長に対応 |
+| ChaCha20 | ストリーム暗号 | ハードウェアによる AES 高速化が使えない環境向けに設計 |
 
 <strong>AES</strong>（Advanced Encryption Standard）は、最も広く使われている対称暗号アルゴリズムです
 
@@ -258,7 +261,7 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 <strong>ChaCha20</strong> は、ハードウェアによる AES の高速化機能を持たない環境（一部のモバイル端末など）で使われるアルゴリズムです
 
-### ブロック暗号とストリーム暗号
+### [ブロック暗号とストリーム暗号](#block-and-stream-cipher) {#block-and-stream-cipher}
 
 対称暗号には 2 つの種類があります
 
@@ -268,7 +271,7 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 どちらの種類も、暗号化と復号で同じ鍵を使う点は共通しています
 
-### 対称暗号の特徴
+### [対称暗号の特徴](#symmetric-cryptography-characteristics) {#symmetric-cryptography-characteristics}
 
 対称暗号の最大の利点は<strong>処理速度</strong>です
 
@@ -276,7 +279,7 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 そのため、大量のデータを暗号化する用途（通信データの暗号化など）では対称暗号が使われます
 
-### 鍵配送問題
+### [鍵配送問題](#key-distribution-problem) {#key-distribution-problem}
 
 対称暗号には根本的な課題があります
 
@@ -292,9 +295,9 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 ---
 
-## 非対称暗号（公開鍵暗号）
+## [非対称暗号（公開鍵暗号）](#asymmetric-cryptography) {#asymmetric-cryptography}
 
-### 非対称暗号とは
+### [非対称暗号とは](#what-is-asymmetric-cryptography) {#what-is-asymmetric-cryptography}
 
 <strong>非対称暗号</strong>（Asymmetric Encryption）は、<strong>公開鍵</strong>と<strong>秘密鍵</strong>という 2 つの異なる鍵を使う方式です
 
@@ -320,20 +323,21 @@ TLS は、これらの技術をすべて組み合わせて通信を保護して�
 
 送信者は受信者の公開鍵（誰でも入手可能）で暗号化すれば、受信者だけが秘密鍵で復号できるためです
 
-### 公開鍵と秘密鍵
+### [公開鍵と秘密鍵](#public-and-private-key) {#public-and-private-key}
 
 公開鍵と秘密鍵は<strong>鍵ペア</strong>として生成されます
 
 この 2 つの鍵は数学的に関連していますが、一方からもう一方を求めることは非常に困難です
 
-| 鍵     | 配布         | 用途               |
+{: .labeled}
+| 鍵 | 配布 | 用途 |
 | ------ | ------------ | ------------------ |
-| 公開鍵 | 自由に配布   | 暗号化、署名の検証 |
-| 秘密鍵 | 本人のみ保持 | 復号、署名の作成   |
+| 公開鍵 | 自由に配布 | 暗号化、署名の検証 |
+| 秘密鍵 | 本人のみ保持 | 復号、署名の作成 |
 
 公開鍵を知っていても秘密鍵を求められないことが、非対称暗号の安全性の基盤です
 
-### RSA
+### [RSA](#rsa) {#rsa}
 
 <strong>RSA</strong> は、最も広く知られている非対称暗号アルゴリズムです
 
@@ -347,7 +351,7 @@ RSA の安全性は、<strong>大きな数の素因数分解が困難</strong>�
 
 この「掛け算は簡単だが、逆の分解は困難」という性質が、RSA の安全性を支えています
 
-### 楕円曲線暗号（ECC）
+### [楕円曲線暗号（ECC）](#ecc) {#ecc}
 
 <strong>楕円曲線暗号</strong>（Elliptic Curve Cryptography）は、楕円曲線上の数学的な性質に基づく非対称暗号です
 
@@ -357,12 +361,13 @@ RSA と比較した場合の最大の利点は、<strong>短い鍵長で同等�
 
 NIST SP 800-57 による鍵長の比較を示します
 
-| セキュリティ強度 | RSA 鍵長     | ECC 鍵長   |
+{: .labeled}
+| セキュリティ強度 | RSA 鍵長 | ECC 鍵長 |
 | ---------------- | ------------ | ---------- |
-| 112 ビット       | 2048 ビット  | 224 ビット |
-| 128 ビット       | 3072 ビット  | 256 ビット |
-| 192 ビット       | 7680 ビット  | 384 ビット |
-| 256 ビット       | 15360 ビット | 512 ビット |
+| 112 ビット | 2048 ビット | 224 ビット |
+| 128 ビット | 3072 ビット | 256 ビット |
+| 192 ビット | 7680 ビット | 384 ビット |
+| 256 ビット | 15360 ビット | 512 ビット |
 
 セキュリティ強度とは、その暗号を解読するために必要な計算量を表す指標です
 
@@ -372,18 +377,19 @@ NIST SP 800-57 による鍵長の比較を示します
 
 TLS 1.3 では、鍵交換に楕円曲線ベースの方式（ECDHE）が広く使われています
 
-### デジタル署名
+### [デジタル署名](#digital-signature) {#digital-signature}
 
 非対称暗号は暗号化だけでなく、<strong>デジタル署名</strong>にも使われます
 
 デジタル署名は、暗号化とは逆の方向で鍵を使います
 
-| 操作   | 使用する鍵 | 目的                                             |
+{: .labeled}
+| 操作 | 使用する鍵 | 目的 |
 | ------ | ---------- | ------------------------------------------------ |
-| 暗号化 | 公開鍵     | データの機密性を保護する                         |
-| 復号   | 秘密鍵     | 暗号化されたデータを元に戻す                     |
-| 署名   | 秘密鍵     | データの作成者と改ざんされていないことを証明する |
-| 検証   | 公開鍵     | 署名が正しいことを確認する                       |
+| 暗号化 | 公開鍵 | データの機密性を保護する |
+| 復号 | 秘密鍵 | 暗号化されたデータを元に戻す |
+| 署名 | 秘密鍵 | データの作成者と改ざんされていないことを証明する |
+| 検証 | 公開鍵 | 署名が正しいことを確認する |
 
 署名の流れは以下のとおりです
 
@@ -396,9 +402,9 @@ TLS 1.3 では、鍵交換に楕円曲線ベースの方式（ECDHE）が広く�
 - <strong>真正性</strong>：データは秘密鍵の所有者が作成した（秘密鍵を持つ人しか署名を作れないため）
 - <strong>完全性</strong>：データは改ざんされていない（データが変わればハッシュ値が変わり、署名の検証が失敗するため）
 
-デジタル署名の仕組みは、証明書（[03-certificate](./03-certificate.md)）の基盤となります
+デジタル署名の仕組みは、証明書（[03-certificate](../03-certificate/)）の基盤となります
 
-### 非対称暗号の特徴
+### [非対称暗号の特徴](#asymmetric-cryptography-characteristics) {#asymmetric-cryptography-characteristics}
 
 非対称暗号は鍵配送問題を解決しますが、<strong>処理速度が遅い</strong>という特徴があります
 
@@ -410,9 +416,9 @@ TLS 1.3 では、鍵交換に楕円曲線ベースの方式（ECDHE）が広く�
 
 ---
 
-## ハッシュ関数
+## [ハッシュ関数](#hash-function) {#hash-function}
 
-### ハッシュ関数とは
+### [ハッシュ関数とは](#what-is-hash-function) {#what-is-hash-function}
 
 <strong>ハッシュ関数</strong>（Hash Function）は、任意の長さのデータを入力として、固定長の値を出力する関数です
 
@@ -435,15 +441,16 @@ TLS 1.3 では、鍵交換に楕円曲線ベースの方式（ECDHE）が広く�
 
 暗号化はデータを元に戻せますが、ハッシュ関数は元に戻せません
 
-### ハッシュ関数の 3 つの性質
+### [ハッシュ関数の 3 つの性質](#hash-function-three-properties) {#hash-function-three-properties}
 
 暗号学的ハッシュ関数は、以下の 3 つの性質を満たします
 
-| 性質                                              | 意味                                                        |
+{: .labeled}
+| 性質 | 意味 |
 | ------------------------------------------------- | ----------------------------------------------------------- |
-| <strong>一方向性</strong>（Pre-image Resistance） | ハッシュ値から元のデータを求めることが困難                  |
+| <strong>一方向性</strong>（Pre-image Resistance） | ハッシュ値から元のデータを求めることが困難 |
 | <strong>衝突耐性</strong>（Collision Resistance） | 同じハッシュ値を持つ 2 つの異なるデータを見つけることが困難 |
-| <strong>雪崩効果</strong>（Avalanche Effect）     | 入力のわずかな変化で、出力が大きく変わる                    |
+| <strong>雪崩効果</strong>（Avalanche Effect） | 入力のわずかな変化で、出力が大きく変わる |
 
 <strong>一方向性</strong>があるため、ハッシュ値を知っていても元のデータを復元できません
 
@@ -451,15 +458,16 @@ TLS 1.3 では、鍵交換に楕円曲線ベースの方式（ECDHE）が広く�
 
 <strong>雪崩効果</strong>があるため、データのわずかな変更でもハッシュ値が大きく変わり、改ざんの検出に使えます
 
-### 代表的なハッシュ関数
+### [代表的なハッシュ関数](#major-hash-functions) {#major-hash-functions}
 
-| アルゴリズム | 出力長     | 状態                                             |
+{: .labeled}
+| アルゴリズム | 出力長 | 状態 |
 | ------------ | ---------- | ------------------------------------------------ |
-| SHA-256      | 256 ビット | NIST 標準（SHA-2 ファミリ）、広く使用されている  |
-| SHA-384      | 384 ビット | NIST 標準（SHA-2 ファミリ）、より高い安全性      |
-| SHA-3        | 可変       | NIST 標準、SHA-2 とは異なる設計の次世代ハッシュ  |
-| MD5          | 128 ビット | 衝突が発見されており、セキュリティ用途では非推奨 |
-| SHA-1        | 160 ビット | 衝突が発見されており、セキュリティ用途では非推奨 |
+| SHA-256 | 256 ビット | NIST 標準（SHA-2 ファミリ）、広く使用されている |
+| SHA-384 | 384 ビット | NIST 標準（SHA-2 ファミリ）、より高い安全性 |
+| SHA-3 | 可変 | NIST 標準、SHA-2 とは異なる設計の次世代ハッシュ |
+| MD5 | 128 ビット | 衝突が発見されており、セキュリティ用途では非推奨 |
+| SHA-1 | 160 ビット | 衝突が発見されており、セキュリティ用途では非推奨 |
 
 <strong>SHA-256</strong> と <strong>SHA-384</strong> は、SHA-2（Secure Hash Algorithm 2）ファミリに属するハッシュ関数で、NIST によって標準化されています
 
@@ -467,7 +475,7 @@ TLS 1.3 の暗号スイートでは、SHA-256 または SHA-384 が使われて�
 
 MD5 と SHA-1 は、衝突が発見された（同じハッシュ値を持つ異なるデータが見つかった）ため、セキュリティ用途では使うべきではありません
 
-### ハッシュ関数の用途
+### [ハッシュ関数の用途](#hash-function-use-cases) {#hash-function-use-cases}
 
 ハッシュ関数は、暗号化の多くの場面で使われています
 
@@ -493,7 +501,7 @@ MD5 と SHA-1 は、衝突が発見された（同じハッシュ値を持つ異
 
 ハッシュ関数の一方向性により、保存されたハッシュ値からパスワードを復元できません
 
-パスワード保存の詳細は [04-authentication](./04-authentication.md) で学びます
+パスワード保存の詳細は [04-authentication](../04-authentication/) で学びます
 
 <strong>HMAC（Hash-based Message Authentication Code）</strong>
 
@@ -503,9 +511,9 @@ MD5 と SHA-1 は、衝突が発見された（同じハッシュ値を持つ異
 
 ---
 
-## Diffie-Hellman 鍵交換
+## [Diffie-Hellman 鍵交換](#diffie-hellman-key-exchange) {#diffie-hellman-key-exchange}
 
-### 鍵配送問題の解決
+### [鍵配送問題の解決](#key-distribution-solution) {#key-distribution-solution}
 
 対称暗号のセクションで、鍵配送問題を学びました
 
@@ -515,7 +523,7 @@ MD5 と SHA-1 は、衝突が発見された（同じハッシュ値を持つ異
 
 安全でない通信路を通じて、双方が<strong>同じ共有秘密</strong>（共通鍵の元になる値）を作り出します
 
-### Diffie-Hellman 鍵交換の仕組み
+### [Diffie-Hellman 鍵交換の仕組み](#diffie-hellman-mechanism) {#diffie-hellman-mechanism}
 
 日常の例えで紹介した「色の混合」の仕組みを、もう少し具体的に見てみましょう
 
@@ -546,7 +554,7 @@ MD5 と SHA-1 は、衝突が発見された（同じハッシュ値を持つ異
 
 A から a を求めるには、<strong>離散対数問題</strong>を解く必要がありますが、p が十分に大きければこれは非常に困難です
 
-### なぜ安全か
+### [なぜ安全か](#why-secure) {#why-secure}
 
 Diffie-Hellman 鍵交換の安全性は、<strong>離散対数問題の困難さ</strong>に基づいています
 
@@ -558,7 +566,7 @@ Diffie-Hellman 鍵交換の安全性は、<strong>離散対数問題の困難さ
 
 ある方向の計算は簡単だが、逆方向の計算は困難、という<strong>一方向関数</strong>の性質が安全性を支えています
 
-### エフェメラル鍵と前方秘匿性
+### [エフェメラル鍵と前方秘匿性](#ephemeral-key-and-forward-secrecy) {#ephemeral-key-and-forward-secrecy}
 
 ここまでの説明では、Alice と Bob の秘密の値（a と b）は固定でした
 
@@ -574,9 +582,9 @@ Diffie-Hellman 鍵交換の安全性は、<strong>離散対数問題の困難さ
 
 前方秘匿性があれば、長期的な秘密鍵が将来漏洩しても、過去の通信記録は解読できません
 
-前方秘匿性がプロトコル上でどのように実現されているかは、[02-tls](./02-tls.md) で詳しく学びます
+前方秘匿性がプロトコル上でどのように実現されているかは、[02-tls](../02-tls/) で詳しく学びます
 
-### 楕円曲線 Diffie-Hellman（ECDHE）
+### [楕円曲線 Diffie-Hellman（ECDHE）](#ecdhe) {#ecdhe}
 
 <strong>ECDHE</strong>（Elliptic Curve Diffie-Hellman Ephemeral）は、楕円曲線上の離散対数問題を利用した Diffie-Hellman 鍵交換です
 
@@ -588,9 +596,9 @@ TLS 1.3 では、鍵交換方式として ECDHE が標準的に使われてい�
 
 ---
 
-## AEAD（暗号化と改ざん検出の同時実行）
+## [AEAD（暗号化と改ざん検出の同時実行）](#aead) {#aead}
 
-### なぜ暗号化だけでは不十分か
+### [なぜ暗号化だけでは不十分か](#why-encryption-alone-insufficient) {#why-encryption-alone-insufficient}
 
 対称暗号でデータを暗号化すれば、盗聴は防げます
 
@@ -602,7 +610,7 @@ TLS 1.3 では、鍵交換方式として ECDHE が標準的に使われてい�
 
 暗号化（機密性）に加えて、改ざん検出（完全性）も同時に必要です
 
-### AEAD とは
+### [AEAD とは](#what-is-aead) {#what-is-aead}
 
 <strong>AEAD</strong>（Authenticated Encryption with Associated Data）は、暗号化と改ざん検出を<strong>1 つの操作で同時に</strong>行う方式です
 
@@ -632,7 +640,7 @@ TLS 1.3 では、鍵交換方式として ECDHE が標準的に使われてい�
 
 認証タグの検証が失敗した場合、データは改ざんされたものとして<strong>破棄</strong>されます
 
-### Associated Data（関連データ）
+### [Associated Data（関連データ）](#associated-data) {#associated-data}
 
 AEAD の「AD」は Associated Data（関連データ）を指します
 
@@ -644,11 +652,12 @@ AAD は<strong>暗号化はされないが、改ざん検出の対象にはな�
 
 ヘッダには通信のメタ情報（プロトコルバージョンやデータ長など）が含まれており、これらは読める必要がありますが、改ざんは防ぐ必要があります
 
-### 代表的な AEAD アルゴリズム
+### [代表的な AEAD アルゴリズム](#major-aead-algorithms) {#major-aead-algorithms}
 
-| アルゴリズム      | 構成                                 | 特徴                                      |
+{: .labeled}
+| アルゴリズム | 構成 | 特徴 |
 | ----------------- | ------------------------------------ | ----------------------------------------- |
-| AES-GCM           | AES（暗号化）+ GHASH（認証）         | TLS 1.3 で最も広く使われている            |
+| AES-GCM | AES（暗号化）+ GHASH（認証） | TLS 1.3 で最も広く使われている |
 | ChaCha20-Poly1305 | ChaCha20（暗号化）+ Poly1305（認証） | ハードウェア AES 高速化が使えない環境向け |
 
 <strong>AES-GCM</strong>（AES in Galois/Counter Mode）は、AES による暗号化と GHASH による認証を組み合わせた方式です
@@ -661,7 +670,7 @@ TLS 1.3 では、すべての暗号スイートが AEAD を採用しています
 
 ---
 
-## 暗号化の組み合わせ
+## [暗号化の組み合わせ](#cryptography-combination) {#cryptography-combination}
 
 ここまで学んだ暗号化の要素が、実際にどう組み合わされるかを見てみましょう
 
@@ -669,11 +678,12 @@ TLS 1.3 の暗号スイートの 1 つに `TLS_AES_256_GCM_SHA384` がありま�
 
 この名前を分解すると、このトピックで学んだ要素が含まれています
 
-| 部分    | カテゴリ     | このトピックで学んだこと       |
+{: .labeled}
+| 部分 | カテゴリ | このトピックで学んだこと |
 | ------- | ------------ | ------------------------------ |
-| AES_256 | 対称暗号     | データの暗号化（256 ビット鍵） |
-| GCM     | AEAD モード  | 暗号化と改ざん検出の同時実行   |
-| SHA384  | ハッシュ関数 | ハンドシェイクの完全性確認     |
+| AES_256 | 対称暗号 | データの暗号化（256 ビット鍵） |
+| GCM | AEAD モード | 暗号化と改ざん検出の同時実行 |
+| SHA384 | ハッシュ関数 | ハンドシェイクの完全性確認 |
 
 この暗号スイートは、以下のように各要素を組み合わせて使います
 
@@ -703,7 +713,7 @@ TLS がこれらをどのように組み合わせているかの詳細は、次�
 
 ---
 
-## 次のトピックへ
+## [次のトピックへ](#next-topic) {#next-topic}
 
 このトピックでは、以下のことを学びました
 
@@ -724,79 +734,80 @@ TLS ハンドシェイクでは、なぜ 1 往復で安全な鍵を共有でき�
 
 0-RTT（最初の通信で即座にデータを送る仕組み）にはどのようなリスクがあるのでしょうか？
 
-次のトピック [02-tls](./02-tls.md) では、これらの暗号化技術を組み合わせた<strong>TLS の原理</strong>を学びます
+次のトピック [02-tls](../02-tls/) では、これらの暗号化技術を組み合わせた<strong>TLS の原理</strong>を学びます
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                                   | 説明                                                                                                 |
+{: .labeled}
+| 用語 | 説明 |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 暗号化（Encryption）                   | データを第三者に読めない形式に変換すること                                                           |
-| 復号（Decryption）                     | 暗号化されたデータを元の形式に戻すこと                                                               |
-| 平文（Plaintext）                      | 暗号化されていない、そのまま読めるデータ                                                             |
-| 暗号文（Ciphertext）                   | 暗号化されたデータ                                                                                   |
-| 対称暗号（Symmetric Encryption）       | 暗号化と復号に同じ鍵を使う暗号方式                                                                   |
-| 非対称暗号（Asymmetric Encryption）    | 暗号化と復号に異なる鍵（公開鍵と秘密鍵）を使う暗号方式。公開鍵暗号とも呼ばれる                       |
-| 公開鍵（Public Key）                   | 鍵ペアの一方で、自由に配布できる鍵。暗号化や署名の検証に使う                                         |
-| 秘密鍵（Private Key）                  | 鍵ペアの一方で、所有者のみが保持する鍵。復号や署名の作成に使う                                       |
-| 鍵ペア                                 | 公開鍵と秘密鍵の組み合わせ。数学的に関連しているが、一方から他方を求めることは困難                   |
-| RSA                                    | 大きな数の素因数分解の困難さに基づく非対称暗号アルゴリズム。1977 年に Rivest、Shamir、Adleman が発表 |
-| 楕円曲線暗号（ECC）                    | 楕円曲線上の離散対数問題の困難さに基づく非対称暗号。RSA より短い鍵長で同等の安全性を達成する         |
-| ハッシュ関数（Hash Function）          | 任意の長さのデータから固定長の値（ハッシュ値）を計算する一方向関数                                   |
-| ハッシュ値（ダイジェスト）             | ハッシュ関数の出力。データの「指紋」のようなもの                                                     |
-| SHA-256 / SHA-384                      | NIST が標準化した SHA-2 ファミリのハッシュ関数。それぞれ 256 ビット / 384 ビットの出力を持つ         |
-| 一方向性（Pre-image Resistance）       | ハッシュ値から元のデータを求めることが困難である性質                                                 |
-| 衝突耐性（Collision Resistance）       | 同じハッシュ値を持つ異なる 2 つのデータを見つけることが困難である性質                                |
-| 雪崩効果（Avalanche Effect）           | 入力のわずかな変化でハッシュ値が大きく変わる性質                                                     |
-| デジタル署名                           | 秘密鍵でデータに署名し、公開鍵で検証する仕組み。データの真正性と完全性を確認できる                   |
-| Diffie-Hellman 鍵交換                  | 安全でない通信路を通じて、2 者が同じ共有秘密を作り出す鍵交換プロトコル                               |
-| ECDHE                                  | Elliptic Curve Diffie-Hellman Ephemeral の略。楕円曲線を使った一時鍵による Diffie-Hellman 鍵交換     |
-| エフェメラル鍵（Ephemeral Key）        | 通信セッションごとに生成し、使い終わったら破棄する一時的な鍵                                         |
-| 前方秘匿性（Forward Secrecy）          | 長期的な鍵が漏洩しても、過去の通信が解読されない性質。エフェメラル鍵の使用で実現する                 |
-| 鍵配送問題（Key Distribution Problem） | 対称暗号で、通信相手と安全に鍵を共有する方法がないという問題                                         |
-| AEAD                                   | Authenticated Encryption with Associated Data の略。暗号化と改ざん検出を 1 つの操作で同時に行う方式  |
-| AES                                    | Advanced Encryption Standard の略。NIST が公開コンペで選定した対称暗号の標準アルゴリズム             |
-| AES-GCM                                | AES を Galois/Counter Mode で使用する AEAD 方式。TLS 1.3 で最も広く使われている                      |
-| ChaCha20-Poly1305                      | ChaCha20（ストリーム暗号）と Poly1305（認証）を組み合わせた AEAD 方式                                |
-| 認証タグ（Authentication Tag）         | AEAD が生成する値で、データの改ざんを検出するために使われる                                          |
-| AAD（Additional Authenticated Data）   | AEAD で暗号化はされないが、改ざん検出の対象となるデータ                                              |
-| ブロック暗号                           | データを固定長のブロックに分割し、ブロックごとに暗号化する方式。AES が代表例                         |
-| ストリーム暗号                         | 鍵から擬似乱数のストリームを生成し、データと組み合わせて暗号化する方式。ChaCha20 が代表例            |
-| 暗号スイート（Cipher Suite）           | TLS で使用する暗号アルゴリズムの組み合わせ。鍵交換、暗号化、ハッシュの各アルゴリズムを指定する       |
-| HMAC                                   | Hash-based Message Authentication Code の略。ハッシュ関数と秘密鍵を組み合わせた認証コード            |
-| 機密性（Confidentiality）              | 許可された人だけがデータを読める状態を保証する性質                                                   |
-| 完全性（Integrity）                    | データが改ざんされていないことを確認できる性質                                                       |
-| 真正性（Authenticity）                 | 通信相手が本人であること、データの作成者が本人であることを確認できる性質                             |
-| 盗聴（Eavesdropping）                  | 通信経路上の第三者が、流れるデータを不正に読み取ること                                               |
-| 中間者攻撃（Man-in-the-Middle Attack） | 攻撃者が通信の中間に位置し、双方に対して相手のふりをして通信を傍受・改ざんする攻撃                   |
-| 離散対数問題                           | `g^a mod p` の結果から a を求める計算問題。Diffie-Hellman 鍵交換と楕円曲線暗号の安全性の基盤         |
+| 暗号化（Encryption） | データを第三者に読めない形式に変換すること |
+| 復号（Decryption） | 暗号化されたデータを元の形式に戻すこと |
+| 平文（Plaintext） | 暗号化されていない、そのまま読めるデータ |
+| 暗号文（Ciphertext） | 暗号化されたデータ |
+| 対称暗号（Symmetric Encryption） | 暗号化と復号に同じ鍵を使う暗号方式 |
+| 非対称暗号（Asymmetric Encryption） | 暗号化と復号に異なる鍵（公開鍵と秘密鍵）を使う暗号方式。公開鍵暗号とも呼ばれる |
+| 公開鍵（Public Key） | 鍵ペアの一方で、自由に配布できる鍵。暗号化や署名の検証に使う |
+| 秘密鍵（Private Key） | 鍵ペアの一方で、所有者のみが保持する鍵。復号や署名の作成に使う |
+| 鍵ペア | 公開鍵と秘密鍵の組み合わせ。数学的に関連しているが、一方から他方を求めることは困難 |
+| RSA | 大きな数の素因数分解の困難さに基づく非対称暗号アルゴリズム。1977 年に Rivest、Shamir、Adleman が発表 |
+| 楕円曲線暗号（ECC） | 楕円曲線上の離散対数問題の困難さに基づく非対称暗号。RSA より短い鍵長で同等の安全性を達成する |
+| ハッシュ関数（Hash Function） | 任意の長さのデータから固定長の値（ハッシュ値）を計算する一方向関数 |
+| ハッシュ値（ダイジェスト） | ハッシュ関数の出力。データの「指紋」のようなもの |
+| SHA-256 / SHA-384 | NIST が標準化した SHA-2 ファミリのハッシュ関数。それぞれ 256 ビット / 384 ビットの出力を持つ |
+| 一方向性（Pre-image Resistance） | ハッシュ値から元のデータを求めることが困難である性質 |
+| 衝突耐性（Collision Resistance） | 同じハッシュ値を持つ異なる 2 つのデータを見つけることが困難である性質 |
+| 雪崩効果（Avalanche Effect） | 入力のわずかな変化でハッシュ値が大きく変わる性質 |
+| デジタル署名 | 秘密鍵でデータに署名し、公開鍵で検証する仕組み。データの真正性と完全性を確認できる |
+| Diffie-Hellman 鍵交換 | 安全でない通信路を通じて、2 者が同じ共有秘密を作り出す鍵交換プロトコル |
+| ECDHE | Elliptic Curve Diffie-Hellman Ephemeral の略。楕円曲線を使った一時鍵による Diffie-Hellman 鍵交換 |
+| エフェメラル鍵（Ephemeral Key） | 通信セッションごとに生成し、使い終わったら破棄する一時的な鍵 |
+| 前方秘匿性（Forward Secrecy） | 長期的な鍵が漏洩しても、過去の通信が解読されない性質。エフェメラル鍵の使用で実現する |
+| 鍵配送問題（Key Distribution Problem） | 対称暗号で、通信相手と安全に鍵を共有する方法がないという問題 |
+| AEAD | Authenticated Encryption with Associated Data の略。暗号化と改ざん検出を 1 つの操作で同時に行う方式 |
+| AES | Advanced Encryption Standard の略。NIST が公開コンペで選定した対称暗号の標準アルゴリズム |
+| AES-GCM | AES を Galois/Counter Mode で使用する AEAD 方式。TLS 1.3 で最も広く使われている |
+| ChaCha20-Poly1305 | ChaCha20（ストリーム暗号）と Poly1305（認証）を組み合わせた AEAD 方式 |
+| 認証タグ（Authentication Tag） | AEAD が生成する値で、データの改ざんを検出するために使われる |
+| AAD（Additional Authenticated Data） | AEAD で暗号化はされないが、改ざん検出の対象となるデータ |
+| ブロック暗号 | データを固定長のブロックに分割し、ブロックごとに暗号化する方式。AES が代表例 |
+| ストリーム暗号 | 鍵から擬似乱数のストリームを生成し、データと組み合わせて暗号化する方式。ChaCha20 が代表例 |
+| 暗号スイート（Cipher Suite） | TLS で使用する暗号アルゴリズムの組み合わせ。鍵交換、暗号化、ハッシュの各アルゴリズムを指定する |
+| HMAC | Hash-based Message Authentication Code の略。ハッシュ関数と秘密鍵を組み合わせた認証コード |
+| 機密性（Confidentiality） | 許可された人だけがデータを読める状態を保証する性質 |
+| 完全性（Integrity） | データが改ざんされていないことを確認できる性質 |
+| 真正性（Authenticity） | 通信相手が本人であること、データの作成者が本人であることを確認できる性質 |
+| 盗聴（Eavesdropping） | 通信経路上の第三者が、流れるデータを不正に読み取ること |
+| 中間者攻撃（Man-in-the-Middle Attack） | 攻撃者が通信の中間に位置し、双方に対して相手のふりをして通信を傍受・改ざんする攻撃 |
+| 離散対数問題 | `g^a mod p` の結果から a を求める計算問題。Diffie-Hellman 鍵交換と楕円曲線暗号の安全性の基盤 |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 このページの内容は、以下のソースに基づいています
 
 <strong>暗号化標準</strong>
 
-- [NIST SP 800-175B Rev. 1 - Guideline for Using Cryptographic Standards](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final)
+- [NIST SP 800-175B Rev. 1 - Guideline for Using Cryptographic Standards](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final){:target="\_blank"}
   - 暗号化標準の使用ガイドライン（対称暗号、非対称暗号、ハッシュ関数の分類と推奨）
 
-- [NIST SP 800-57 Part 1 Rev. 5 - Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final)
+- [NIST SP 800-57 Part 1 Rev. 5 - Recommendation for Key Management](https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final){:target="\_blank"}
   - 鍵管理の推奨事項（鍵長の比較、セキュリティ強度の定義）
 
 <strong>TLS プロトコル</strong>
 
-- [RFC 8446 - The Transport Layer Security (TLS) Protocol Version 1.3](https://datatracker.ietf.org/doc/html/rfc8446)
+- [RFC 8446 - The Transport Layer Security (TLS) Protocol Version 1.3](https://datatracker.ietf.org/doc/html/rfc8446){:target="\_blank"}
   - TLS 1.3 の仕様（暗号スイートの定義、AEAD の要件、鍵交換方式）
 
 <strong>ハッシュ関数</strong>
 
-- [NIST FIPS 180-4 - Secure Hash Standard (SHS)](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)
+- [NIST FIPS 180-4 - Secure Hash Standard (SHS)](https://csrc.nist.gov/pubs/fips/180-4/upd1/final){:target="\_blank"}
   - SHA-2 ファミリ（SHA-256、SHA-384 等）の仕様
 
 <strong>デジタル署名</strong>
 
-- [NIST FIPS 186-5 - Digital Signature Standard (DSS)](https://csrc.nist.gov/pubs/fips/186-5/final)
+- [NIST FIPS 186-5 - Digital Signature Standard (DSS)](https://csrc.nist.gov/pubs/fips/186-5/final){:target="\_blank"}
   - RSA、ECDSA 等のデジタル署名アルゴリズムの仕様

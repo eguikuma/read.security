@@ -1,0 +1,11 @@
+title: read.security
+description: 「システムはどう安全に保たれるか」を学びます
+baseurl: /read.security
+url: https://eguikuma.github.io
+markdown: kramdown
+permalink: pretty
+has_appendices: true
+
+include:
+  - manifest.webmanifest
+  - sw.js

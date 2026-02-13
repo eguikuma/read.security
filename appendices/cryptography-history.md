@@ -1,12 +1,13 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: 暗号技術の歴史
+---
 
-# appendix：暗号技術の歴史
+# [appendix：暗号技術の歴史](#cryptography-history) {#cryptography-history}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-[01-cryptography](../01-cryptography.md) では、AES が「2001 年に NIST が公開コンペで選定した」こと、RSA が「1977 年に発表された」ことなど、暗号アルゴリズムの歴史的事実に触れました
+[01-cryptography](../../01-cryptography/) では、AES が「2001 年に NIST が公開コンペで選定した」こと、RSA が「1977 年に発表された」ことなど、暗号アルゴリズムの歴史的事実に触れました
 
 しかし、暗号技術は突然登場したものではありません
 
@@ -18,7 +19,7 @@
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 - 暗号技術の歴史的な発展の流れ
 - 各時代の暗号が解決しようとした課題と、その限界
@@ -27,44 +28,45 @@
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [年表](#年表)
-2. [古典暗号の時代](#古典暗号の時代)
-3. [機械式暗号の時代](#機械式暗号の時代)
-4. [コンピュータ時代の幕開けと DES](#コンピュータ時代の幕開けと-des)
-5. [公開鍵暗号の革命](#公開鍵暗号の革命)
-6. [AES と公開コンペの意義](#aes-と公開コンペの意義)
-7. [暗号が「破られる」とはどういうことか](#暗号が破られるとはどういうことか)
-8. [用語集](#用語集)
-9. [参考資料](#参考資料)
+1. [年表](#timeline)
+2. [古典暗号の時代](#classical-cryptography)
+3. [機械式暗号の時代](#mechanical-cryptography)
+4. [コンピュータ時代の幕開けと DES](#computer-era-and-des)
+5. [公開鍵暗号の革命](#public-key-revolution)
+6. [AES と公開コンペの意義](#aes-and-competition)
+7. [暗号が「破られる」とはどういうことか](#what-means-cryptography-broken)
+8. [用語集](#glossary)
+9. [参考資料](#references)
 
 ---
 
-## 年表
+## [年表](#timeline) {#timeline}
 
-| 年代           | 出来事                                                             |
+{: .labeled}
+| 年代 | 出来事 |
 | -------------- | ------------------------------------------------------------------ |
-| 紀元前 50 年頃 | シーザー暗号（単純な文字のずらし）                                 |
-| 15 世紀        | ヴィジュネル暗号（多表式換字暗号）                                 |
-| 1918 年        | エニグマの特許取得（ドイツ）                                       |
-| 1939〜1945 年  | 第二次世界大戦でのエニグマ解読（Alan Turing ら）                   |
-| 1949 年        | Claude Shannon が "Communication Theory of Secrecy Systems" を発表 |
-| 1976 年        | DES が FIPS 46 として米国連邦標準に制定                            |
-| 1976 年        | Diffie と Hellman が "New Directions in Cryptography" を発表       |
-| 1977 年        | Rivest、Shamir、Adleman が RSA を発表                              |
-| 1985 年        | Koblitz と Miller が独立に楕円曲線暗号を提案                       |
-| 1997 年        | DES が総当たり攻撃で解読される                                     |
-| 1997 年        | NIST が AES の公開コンペを開始                                     |
-| 2001 年        | Rijndael が AES として選定（FIPS 197）                             |
-| 2005 年        | Wang らが SHA-1 への衝突攻撃を発表                                 |
-| 2017 年        | Google が SHA-1 の実用的な衝突を実証（SHAttered）                  |
+| 紀元前 50 年頃 | シーザー暗号（単純な文字のずらし） |
+| 15 世紀 | ヴィジュネル暗号（多表式換字暗号） |
+| 1918 年 | エニグマの特許取得（ドイツ） |
+| 1939〜1945 年 | 第二次世界大戦でのエニグマ解読（Alan Turing ら） |
+| 1949 年 | Claude Shannon が "Communication Theory of Secrecy Systems" を発表 |
+| 1976 年 | DES が FIPS 46 として米国連邦標準に制定 |
+| 1976 年 | Diffie と Hellman が "New Directions in Cryptography" を発表 |
+| 1977 年 | Rivest、Shamir、Adleman が RSA を発表 |
+| 1985 年 | Koblitz と Miller が独立に楕円曲線暗号を提案 |
+| 1997 年 | DES が総当たり攻撃で解読される |
+| 1997 年 | NIST が AES の公開コンペを開始 |
+| 2001 年 | Rijndael が AES として選定（FIPS 197） |
+| 2005 年 | Wang らが SHA-1 への衝突攻撃を発表 |
+| 2017 年 | Google が SHA-1 の実用的な衝突を実証（SHAttered） |
 
 ---
 
-## 古典暗号の時代
+## [古典暗号の時代](#classical-cryptography) {#classical-cryptography}
 
-### シーザー暗号
+### [シーザー暗号](#caesar-cipher) {#caesar-cipher}
 
 <strong>シーザー暗号</strong>は、ローマの将軍ユリウス・カエサル（Julius Caesar）が使ったとされる暗号で、文字を一定の数だけずらす方式です
 
@@ -83,7 +85,7 @@
 
 <strong>鍵を使って平文を暗号文に変換し、同じ鍵で暗号文を平文に戻す</strong>という仕組みは、01-cryptography で学んだ対称暗号の原型です
 
-### ヴィジュネル暗号
+### [ヴィジュネル暗号](#vigenere-cipher) {#vigenere-cipher}
 
 <strong>ヴィジュネル暗号</strong>は、15 世紀にイタリアの暗号学者 Leon Battista Alberti の着想を基に発展し、16 世紀にフランスの外交官 Blaise de Vigenère が体系化した暗号です
 
@@ -107,7 +109,7 @@ H を K の分（10）だけずらして R に、E を E の分（4）だけず�
 
 鍵の長さが判明すれば、問題はシーザー暗号と同じになります
 
-### 古典暗号の限界
+### [古典暗号の限界](#classical-cryptography-limitations) {#classical-cryptography-limitations}
 
 古典暗号に共通する弱点は、<strong>アルゴリズムの秘密に依存している</strong>ことです
 
@@ -123,9 +125,9 @@ H を K の分（10）だけずらして R に、E を E の分（4）だけず�
 
 ---
 
-## 機械式暗号の時代
+## [機械式暗号の時代](#mechanical-cryptography) {#mechanical-cryptography}
 
-### エニグマ
+### [エニグマ](#enigma) {#enigma}
 
 20 世紀に入ると、暗号は手作業から機械へと移行しました
 
@@ -139,7 +141,7 @@ H を K の分（10）だけずらして R に、E を E の分（4）だけず�
 
 この膨大な鍵空間により、第二次世界大戦でドイツ軍はエニグマを「解読不可能」と信じていました
 
-### エニグマの解読
+### [エニグマの解読](#enigma-decryption) {#enigma-decryption}
 
 エニグマの解読は、ポーランドの暗号学者 <strong>Marian Rejewski</strong> らの研究に始まり、イギリスの <strong>Alan Turing</strong> らがブレッチリー・パークで完成させました
 
@@ -157,9 +159,9 @@ Turing らは、エニグマの設計上の弱点を利用しました
 
 ---
 
-## コンピュータ時代の幕開けと DES
+## [コンピュータ時代の幕開けと DES](#computer-era-and-des) {#computer-era-and-des}
 
-### Shannon の情報理論
+### [Shannon の情報理論](#shannon-information-theory) {#shannon-information-theory}
 
 1949 年、<strong>Claude Shannon</strong> が "Communication Theory of Secrecy Systems" を発表しました
 
@@ -179,7 +181,7 @@ Shannon は、暗号文から平文についての情報が一切得られない
 
 01-cryptography で学んだ AES や RSA は、この計算量的安全性に基づいています
 
-### DES の誕生
+### [DES の誕生](#des-birth) {#des-birth}
 
 1970 年代、コンピュータの普及に伴い、デジタルデータの暗号化が必要になりました
 
@@ -201,7 +203,7 @@ IBM の Lucifer は元々 128 ビットの鍵長でしたが、DES では 56 ビ
 
 NSA がバックドアを仕込んだのではないかという疑念が広がりましたが、後に NSA の修正は差分解読法への耐性を強化するものだったことが判明しています
 
-### DES の終焉
+### [DES の終焉](#des-end) {#des-end}
 
 コンピュータの処理能力が向上するにつれ、56 ビットの鍵長は不十分になりました
 
@@ -215,9 +217,9 @@ DES の終焉は、<strong>鍵長は暗号の寿命を決定する</strong>と�
 
 ---
 
-## 公開鍵暗号の革命
+## [公開鍵暗号の革命](#public-key-revolution) {#public-key-revolution}
 
-### Diffie-Hellman 論文
+### [Diffie-Hellman 論文](#diffie-hellman-paper) {#diffie-hellman-paper}
 
 1976 年、<strong>Whitfield Diffie</strong> と <strong>Martin Hellman</strong> が "New Directions in Cryptography" を発表しました
 
@@ -235,7 +237,7 @@ Diffie と Hellman は、<strong>公開の通信路を使って安全に共有�
 
 暗号化の鍵を公開しても復号の鍵を知られなければ安全である、という<strong>公開鍵暗号</strong>のアイデアです
 
-### RSA の登場
+### [RSA の登場](#rsa-emergence) {#rsa-emergence}
 
 Diffie-Hellman 論文は公開鍵暗号の概念を提唱しましたが、具体的な暗号化アルゴリズムは示していませんでした
 
@@ -249,7 +251,7 @@ RSA の登場により、<strong>鍵配送問題</strong>が解決されまし�
 
 これがインターネット時代の暗号化通信の基盤となりました
 
-### 楕円曲線暗号
+### [楕円曲線暗号](#elliptic-curve-cryptography) {#elliptic-curve-cryptography}
 
 1985 年、<strong>Neal Koblitz</strong> と <strong>Victor Miller</strong> が独立に<strong>楕円曲線暗号（ECC）</strong>を提案しました
 
@@ -257,10 +259,11 @@ RSA の登場により、<strong>鍵配送問題</strong>が解決されまし�
 
 楕円曲線暗号の革新は、RSA と同等の安全性を<strong>はるかに短い鍵長</strong>で実現できることです
 
-| 安全性レベル | RSA の鍵長   | 楕円曲線暗号の鍵長 |
+{: .labeled}
+| 安全性レベル | RSA の鍵長 | 楕円曲線暗号の鍵長 |
 | ------------ | ------------ | ------------------ |
-| 128 ビット   | 3072 ビット  | 256 ビット         |
-| 256 ビット   | 15360 ビット | 512 ビット         |
+| 128 ビット | 3072 ビット | 256 ビット |
+| 256 ビット | 15360 ビット | 512 ビット |
 
 鍵が短いということは、計算量が少なく、通信データのサイズも小さくなります
 
@@ -268,21 +271,22 @@ RSA の登場により、<strong>鍵配送問題</strong>が解決されまし�
 
 ---
 
-## AES と公開コンペの意義
+## [AES と公開コンペの意義](#aes-and-competition) {#aes-and-competition}
 
-### DES の後継を求めて
+### [DES の後継を求めて](#des-successor) {#des-successor}
 
 DES が 56 ビットの鍵長で安全性を失ったことを受け、NIST は 1997 年に <strong>AES</strong>（Advanced Encryption Standard）の公開コンペを開始しました
 
 AES コンペは、DES の標準化で問題となった<strong>透明性</strong>を徹底しました
 
-| DES の標準化（1970 年代） | AES の公開コンペ（1997〜2001 年）  |
+{: .labeled}
+| DES の標準化（1970 年代） | AES の公開コンペ（1997〜2001 年） |
 | ------------------------- | ---------------------------------- |
-| IBM が提出し NSA が修正   | 世界中の研究者が応募               |
-| 修正理由が非公開          | 評価基準と評価過程が公開           |
-| NSA のバックドア疑惑      | 暗号学者コミュニティによる公開検証 |
+| IBM が提出し NSA が修正 | 世界中の研究者が応募 |
+| 修正理由が非公開 | 評価基準と評価過程が公開 |
+| NSA のバックドア疑惑 | 暗号学者コミュニティによる公開検証 |
 
-### コンペの過程
+### [コンペの過程](#competition-process) {#competition-process}
 
 AES コンペには世界中から 15 の候補が提出されました
 
@@ -294,7 +298,7 @@ AES コンペには世界中から 15 の候補が提出されました
 
 2000 年に 5 候補（Rijndael、Serpent、Twofish、RC6、MARS）に絞られ、2001 年にベルギーの暗号学者 <strong>Joan Daemen</strong> と <strong>Vincent Rijmen</strong> が設計した <strong>Rijndael</strong> が AES として選定されました
 
-### 公開コンペの意義
+### [公開コンペの意義](#public-competition-significance) {#public-competition-significance}
 
 AES コンペの最大の意義は、暗号の<strong>標準化プロセスの透明性</strong>を確立したことです
 
@@ -306,21 +310,22 @@ AES コンペの最大の意義は、暗号の<strong>標準化プロセスの�
 
 ---
 
-## 暗号が「破られる」とはどういうことか
+## [暗号が「破られる」とはどういうことか](#what-means-cryptography-broken) {#what-means-cryptography-broken}
 
 暗号の歴史を振り返ると、「暗号が破られた」という表現が繰り返し登場します
 
 しかし、「破られる」にはいくつかの段階があります
 
-### 破られ方の分類
+### [破られ方の分類](#breaking-classification) {#breaking-classification}
 
-| 段階               | 説明                                           | 影響                                             |
+{: .labeled}
+| 段階 | 説明 | 影響 |
 | ------------------ | ---------------------------------------------- | ------------------------------------------------ |
-| 理論的な弱点の発見 | 総当たりより効率的な攻撃方法が見つかる         | 即座に危険ではないが、安全性の余裕が減る         |
-| 実用的な攻撃の成功 | 現実的な計算資源で解読が可能になる             | 移行が急務になる                                 |
-| 鍵長の陳腐化       | コンピュータの性能向上で総当たりが現実的になる | 鍵長の拡大または新しいアルゴリズムへの移行が必要 |
+| 理論的な弱点の発見 | 総当たりより効率的な攻撃方法が見つかる | 即座に危険ではないが、安全性の余裕が減る |
+| 実用的な攻撃の成功 | 現実的な計算資源で解読が可能になる | 移行が急務になる |
+| 鍵長の陳腐化 | コンピュータの性能向上で総当たりが現実的になる | 鍵長の拡大または新しいアルゴリズムへの移行が必要 |
 
-### SHA-1 の事例
+### [SHA-1 の事例](#sha1-case) {#sha1-case}
 
 ハッシュ関数 SHA-1 の「破られ方」は、この段階的な過程をよく示しています
 
@@ -338,9 +343,9 @@ SHA-1 は 160 ビットのハッシュ値を出力するため、理論上は 2 
 
 これは実用的な攻撃の成功であり、SHA-1 は衝突耐性が必要な用途では安全ではなくなりました
 
-SHA-1 から SHA-256（SHA-2 ファミリー）への移行は段階的に進められ、[03-certificate](../03-certificate.md) で学んだ証明書の署名アルゴリズムも SHA-256 が標準となっています
+SHA-1 から SHA-256（SHA-2 ファミリー）への移行は段階的に進められ、[03-certificate](../../03-certificate/) で学んだ証明書の署名アルゴリズムも SHA-256 が標準となっています
 
-### 暗号の寿命
+### [暗号の寿命](#cryptography-lifetime) {#cryptography-lifetime}
 
 暗号の歴史は、「破られない暗号」が存在しないことを繰り返し示しています
 
@@ -356,43 +361,44 @@ DES から AES への移行、SHA-1 から SHA-256 への移行のように、�
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語              | 説明                                                                                       |
+{: .labeled}
+| 用語 | 説明 |
 | ----------------- | ------------------------------------------------------------------------------------------ |
-| シーザー暗号      | 文字を一定数ずらす古典的な暗号方式                                                         |
-| ヴィジュネル暗号  | 鍵文字列を使って文字ごとにずらす数を変える多表式換字暗号                                   |
-| Kerckhoffs の原則 | 暗号の安全性はアルゴリズムの秘密ではなく鍵の秘密だけに依存すべきという原則                 |
-| エニグマ          | 第二次世界大戦でドイツ軍が使用した電気機械式暗号装置                                       |
-| 完全秘匿          | 暗号文から平文についての情報が一切得られない状態（Shannon が定義）                         |
-| 計算量的安全性    | 現実的な計算資源では解読に膨大な時間がかかるという安全性の概念                             |
-| DES               | Data Encryption Standard の略で、1976 年に米国連邦標準に制定された鍵長 56 ビットの対称暗号 |
-| AES               | Advanced Encryption Standard の略で、2001 年に公開コンペで選定された対称暗号               |
-| 安全性の余裕      | 既知の最良の攻撃手法と暗号の設計強度との差                                                 |
+| シーザー暗号 | 文字を一定数ずらす古典的な暗号方式 |
+| ヴィジュネル暗号 | 鍵文字列を使って文字ごとにずらす数を変える多表式換字暗号 |
+| Kerckhoffs の原則 | 暗号の安全性はアルゴリズムの秘密ではなく鍵の秘密だけに依存すべきという原則 |
+| エニグマ | 第二次世界大戦でドイツ軍が使用した電気機械式暗号装置 |
+| 完全秘匿 | 暗号文から平文についての情報が一切得られない状態（Shannon が定義） |
+| 計算量的安全性 | 現実的な計算資源では解読に膨大な時間がかかるという安全性の概念 |
+| DES | Data Encryption Standard の略で、1976 年に米国連邦標準に制定された鍵長 56 ビットの対称暗号 |
+| AES | Advanced Encryption Standard の略で、2001 年に公開コンペで選定された対称暗号 |
+| 安全性の余裕 | 既知の最良の攻撃手法と暗号の設計強度との差 |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 <strong>Shannon の論文</strong>
 
-- [Communication Theory of Secrecy Systems](https://ieeexplore.ieee.org/document/6769090)
+- [Communication Theory of Secrecy Systems](https://ieeexplore.ieee.org/document/6769090){:target="\_blank"}
   - Claude Shannon による暗号の情報理論的分析（1949 年）
 
 <strong>Diffie-Hellman 論文</strong>
 
-- [New Directions in Cryptography](https://ieeexplore.ieee.org/document/1055638)
+- [New Directions in Cryptography](https://ieeexplore.ieee.org/document/1055638){:target="\_blank"}
   - Whitfield Diffie と Martin Hellman による公開鍵暗号の概念の提唱（1976 年）
 
 <strong>NIST 暗号標準</strong>
 
-- [FIPS 197 - Advanced Encryption Standard (AES)](https://csrc.nist.gov/pubs/fips/197/final)
+- [FIPS 197 - Advanced Encryption Standard (AES)](https://csrc.nist.gov/pubs/fips/197/final){:target="\_blank"}
   - AES の仕様
 
-- [FIPS 46-3 - Data Encryption Standard (DES)](https://csrc.nist.gov/pubs/fips/46-3/final)
+- [FIPS 46-3 - Data Encryption Standard (DES)](https://csrc.nist.gov/pubs/fips/46-3/final){:target="\_blank"}
   - DES の仕様（1999 年に廃止）
 
 <strong>SHA-1 衝突</strong>
 
-- [SHAttered](https://shattered.io/)
+- [SHAttered](https://shattered.io/){:target="\_blank"}
   - Google による SHA-1 の実用的な衝突実証（2017 年）

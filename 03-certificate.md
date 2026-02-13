@@ -1,12 +1,13 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: 証明書と PKI（信頼の連鎖）
+---
 
-# 03-certificate：証明書と PKI（信頼の連鎖）
+# [03-certificate：証明書と PKI（信頼の連鎖）](#certificate) {#certificate}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-前のトピック [02-tls](./02-tls.md) では、TLS の「なぜ安全か」という原理を学びました
+前のトピック [02-tls](../02-tls/) では、TLS の「なぜ安全か」という原理を学びました
 
 - TLS 1.3 は対称暗号、非対称暗号、ハッシュ関数、鍵交換、AEAD を組み合わせて安全な通信を実現している
 - ハンドシェイクの各ステップには明確なセキュリティ上の目的があり、1 往復で安全な鍵共有が可能である
@@ -31,7 +32,7 @@ TLS ハンドシェイクで提示される証明書が「なぜ信頼できる�
 
 ---
 
-## 日常の例え
+## [日常の例え](#everyday-analogy) {#everyday-analogy}
 
 証明書と PKI の仕組みを、日常の例えで見てみましょう
 
@@ -75,7 +76,7 @@ PKI の<strong>信頼の連鎖</strong>も同じで、OS やブラウザが信�
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 このページでは、以下の概念を学びます
 
@@ -109,26 +110,26 @@ PKI の<strong>信頼の連鎖</strong>も同じで、OS やブラウザが信�
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [なぜ証明書が必要か](#なぜ証明書が必要か)
-2. [X.509 証明書](#x509-証明書)
-3. [PKI（Public Key Infrastructure）](#pkipublic-key-infrastructure)
-4. [証明書の検証プロセス](#証明書の検証プロセス)
-5. [証明書の失効](#証明書の失効)
+1. [なぜ証明書が必要か](#why-certificate)
+2. [X.509 証明書](#x509-certificate)
+3. [PKI（Public Key Infrastructure）](#pki)
+4. [証明書の検証プロセス](#certificate-validation-process)
+5. [証明書の失効](#certificate-revocation)
 6. [Certificate Transparency](#certificate-transparency)
-7. [証明書の自動化と現代の課題](#証明書の自動化と現代の課題)
-8. [次のトピックへ](#次のトピックへ)
-9. [用語集](#用語集)
-10. [参考資料](#参考資料)
+7. [証明書の自動化と現代の課題](#certificate-automation)
+8. [次のトピックへ](#next-topic)
+9. [用語集](#glossary)
+10. [参考資料](#references)
 
 ---
 
-## なぜ証明書が必要か
+## [なぜ証明書が必要か](#why-certificate) {#why-certificate}
 
-### TLS ハンドシェイクの疑問
+### [TLS ハンドシェイクの疑問](#tls-handshake-question) {#tls-handshake-question}
 
-[02-tls](./02-tls.md) で学んだように、TLS ハンドシェイクではサーバーが公開鍵を含む証明書を提示します
+[02-tls](../02-tls/) で学んだように、TLS ハンドシェイクではサーバーが公開鍵を含む証明書を提示します
 
 クライアントはこの公開鍵を使って Diffie-Hellman 鍵交換を行い、安全な通信を確立します
 
@@ -138,9 +139,9 @@ PKI の<strong>信頼の連鎖</strong>も同じで、OS やブラウザが信�
 
 「この公開鍵に対応する秘密鍵を持っている」ことは証明できても、<strong>「この公開鍵が本当に example.com のものである」ことは証明できません</strong>
 
-### 公開鍵だけでは信頼できない
+### [公開鍵だけでは信頼できない](#public-key-trust-problem) {#public-key-trust-problem}
 
-[01-cryptography](./01-cryptography.md) で学んだように、公開鍵と秘密鍵のペアは誰でも自由に生成できます
+[01-cryptography](../01-cryptography/) で学んだように、公開鍵と秘密鍵のペアは誰でも自由に生成できます
 
 つまり、攻撃者も鍵ペアを生成して「この公開鍵は example.com のものです」と主張できてしまいます
 
@@ -157,7 +158,7 @@ PKI の<strong>信頼の連鎖</strong>も同じで、OS やブラウザが信�
 
 それが<strong>証明書</strong>です
 
-### 中間者攻撃と証明書の関係
+### [中間者攻撃と証明書の関係](#mitm-and-certificate-relationship) {#mitm-and-certificate-relationship}
 
 証明書がなければ、中間者攻撃（MITM）で公開鍵を差し替えることができてしまいます
 
@@ -185,13 +186,13 @@ PKI の<strong>信頼の連鎖</strong>も同じで、OS やブラウザが信�
 
 攻撃者が自分の公開鍵を差し替えても、認証局の署名がないため、クライアントは偽物だと判断できます
 
-これは [01-cryptography](./01-cryptography.md) で学んだ<strong>真正性</strong>（Authenticity）の具体的な実現手段です
+これは [01-cryptography](../01-cryptography/) で学んだ<strong>真正性</strong>（Authenticity）の具体的な実現手段です
 
 ---
 
-## X.509 証明書
+## [X.509 証明書](#x509-certificate) {#x509-certificate}
 
-### X.509 証明書とは
+### [X.509 証明書とは](#what-is-x509-certificate) {#what-is-x509-certificate}
 
 <strong>X.509</strong> は、デジタル証明書の標準形式です
 
@@ -203,20 +204,21 @@ ITU-T が定義し、RFC 5280 で HTTPS や TLS での使用方法が規定さ�
 
 どの国のパスポートも同じ項目（名前、顔写真、国籍、有効期限など）を含んでいるように、X.509 証明書も標準化された項目を含んでいます
 
-### 証明書に含まれる情報
+### [証明書に含まれる情報](#certificate-contents) {#certificate-contents}
 
 X.509 v3 証明書には、以下の情報が含まれています
 
-| フィールド           | 内容                                                      |
+{: .labeled}
+| フィールド | 内容 |
 | -------------------- | --------------------------------------------------------- |
-| Subject（主体者）    | 証明書の発行対象（ドメイン名や組織名）                    |
-| Issuer（発行者）     | 証明書を発行した認証局の名前                              |
-| Public Key（公開鍵） | 主体者の公開鍵とそのアルゴリズム                          |
-| Serial Number        | 認証局が発行した証明書を一意に識別する番号                |
+| Subject（主体者） | 証明書の発行対象（ドメイン名や組織名） |
+| Issuer（発行者） | 証明書を発行した認証局の名前 |
+| Public Key（公開鍵） | 主体者の公開鍵とそのアルゴリズム |
+| Serial Number | 認証局が発行した証明書を一意に識別する番号 |
 | Validity（有効期間） | 証明書の有効開始日（Not Before）と有効終了日（Not After） |
-| Signature Algorithm  | 認証局が証明書に署名するために使ったアルゴリズム          |
-| Digital Signature    | 認証局が上記のすべての情報に対して行ったデジタル署名      |
-| Extensions（拡張）   | SAN、Key Usage、Basic Constraints などの追加情報          |
+| Signature Algorithm | 認証局が証明書に署名するために使ったアルゴリズム |
+| Digital Signature | 認証局が上記のすべての情報に対して行ったデジタル署名 |
+| Extensions（拡張） | SAN、Key Usage、Basic Constraints などの追加情報 |
 
 特に重要な拡張フィールドが <strong>SAN</strong>（Subject Alternative Name）です
 
@@ -226,11 +228,11 @@ SAN は、1 つの証明書で複数のドメイン名を指定できる拡張�
 
 現在のブラウザは、証明書の Subject フィールドではなく SAN フィールドを参照してドメイン名を検証します
 
-### デジタル署名による保証
+### [デジタル署名による保証](#digital-signature-guarantee) {#digital-signature-guarantee}
 
 証明書の信頼性は、認証局の<strong>デジタル署名</strong>で保証されています
 
-[01-cryptography](./01-cryptography.md) で学んだデジタル署名の仕組みを思い出しましょう
+[01-cryptography](../01-cryptography/) で学んだデジタル署名の仕組みを思い出しましょう
 
 ```
   証明書の発行プロセス：
@@ -263,7 +265,7 @@ SAN は、1 つの証明書で複数のドメイン名を指定できる拡張�
 - 証明書の内容は<strong>改ざんされていない</strong>（完全性）
 - 証明書は確かに<strong>認証局が発行した</strong>（真正性）
 
-### 証明書の有効期間
+### [証明書の有効期間](#certificate-validity-period) {#certificate-validity-period}
 
 証明書には有効期間が設定されており、永久に使えるわけではありません
 
@@ -279,9 +281,9 @@ SAN は、1 つの証明書で複数のドメイン名を指定できる拡張�
 
 ---
 
-## PKI（Public Key Infrastructure）
+## [PKI（Public Key Infrastructure）](#pki) {#pki}
 
-### PKI とは
+### [PKI とは](#what-is-pki) {#what-is-pki}
 
 <strong>PKI</strong>（Public Key Infrastructure、公開鍵基盤）は、デジタル証明書の発行、管理、検証、失効を行うための<strong>基盤全体</strong>を指します
 
@@ -296,7 +298,7 @@ PKI は単一の技術ではなく、以下の要素で構成されるシステ�
 
 パスポートの書式だけでなく、発行する政府機関、パスポートの真偽を確認する仕組み、紛失時の無効化手続きまでを含む、信頼のインフラ全体です
 
-### 認証局（CA）の役割
+### [認証局（CA）の役割](#ca-role) {#ca-role}
 
 <strong>認証局</strong>（Certificate Authority）は、証明書を発行する信頼された機関です
 
@@ -304,11 +306,12 @@ PKI は単一の技術ではなく、以下の要素で構成されるシステ�
 
 確認の厳密さに応じて、3 つの検証レベルがあります
 
-| 検証レベル                    | 確認内容                          | 信頼度 |
+{: .labeled}
+| 検証レベル | 確認内容 | 信頼度 |
 | ----------------------------- | --------------------------------- | ------ |
-| DV（Domain Validation）       | ドメインの管理権限のみ            | 基本   |
-| OV（Organization Validation） | ドメイン + 組織の実在性           | 中     |
-| EV（Extended Validation）     | ドメイン + 組織の詳細な実在性確認 | 高     |
+| DV（Domain Validation） | ドメインの管理権限のみ | 基本 |
+| OV（Organization Validation） | ドメイン + 組織の実在性 | 中 |
+| EV（Extended Validation） | ドメイン + 組織の詳細な実在性確認 | 高 |
 
 <strong>DV 証明書</strong>は最も一般的で、ドメインの管理権限を持っていることだけを確認します
 
@@ -324,7 +327,7 @@ Let's Encrypt が発行するのは DV 証明書です
 
 違いは「身元確認の厳密さ」です
 
-### 信頼の連鎖（Certificate Chain）
+### [信頼の連鎖（Certificate Chain）](#certificate-chain) {#certificate-chain}
 
 PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain）です
 
@@ -358,7 +361,7 @@ PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain
 
 最終的に「なぜ信頼できるか」の答えは、<strong>OS やブラウザがルート CA を信頼しているから</strong>です
 
-### ルート CA と中間 CA
+### [ルート CA と中間 CA](#root-and-intermediate-ca) {#root-and-intermediate-ca}
 
 <strong>ルート CA</strong> は信頼の連鎖の頂点に位置する認証局です
 
@@ -370,12 +373,13 @@ PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain
 
 中間 CA が存在する最大の理由は、<strong>ルート CA の秘密鍵を保護する</strong>ためです
 
-| 特性           | ルート CA                | 中間 CA                                |
+{: .labeled}
+| 特性 | ルート CA | 中間 CA |
 | -------------- | ------------------------ | -------------------------------------- |
-| 署名           | 自己署名                 | ルート CA の署名を受ける               |
-| 秘密鍵の保管   | オフラインの厳重な保管   | オンラインで運用                       |
-| 証明書の発行   | 中間 CA 証明書のみを発行 | エンドエンティティ証明書を発行         |
-| 侵害された場合 | 信頼モデル全体に影響     | 中間 CA 証明書の失効で影響を限定できる |
+| 署名 | 自己署名 | ルート CA の署名を受ける |
+| 秘密鍵の保管 | オフラインの厳重な保管 | オンラインで運用 |
+| 証明書の発行 | 中間 CA 証明書のみを発行 | エンドエンティティ証明書を発行 |
+| 侵害された場合 | 信頼モデル全体に影響 | 中間 CA 証明書の失効で影響を限定できる |
 
 ルート CA の秘密鍵が漏洩すると、そのルート CA が保証するすべての証明書が信頼できなくなります
 
@@ -383,7 +387,7 @@ PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain
 
 日常的なサーバー証明書の発行は、中間 CA が担当します
 
-### なぜ階層構造なのか
+### [なぜ階層構造なのか](#why-hierarchical-structure) {#why-hierarchical-structure}
 
 階層構造には 3 つのメリットがあります
 
@@ -395,9 +399,9 @@ PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain
 
 ---
 
-## 証明書の検証プロセス
+## [証明書の検証プロセス](#certificate-validation-process) {#certificate-validation-process}
 
-### ブラウザはどう証明書を検証するか
+### [ブラウザはどう証明書を検証するか](#browser-certificate-validation) {#browser-certificate-validation}
 
 ブラウザが HTTPS サイトにアクセスすると、TLS ハンドシェイクの中でサーバーから証明書を受け取ります
 
@@ -409,7 +413,7 @@ PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain
 4. ルート CA 証明書がトラストストアに含まれているか確認する
 5. すべての検証に成功したら、接続を確立する
 
-### チェーンの検証
+### [チェーンの検証](#chain-validation) {#chain-validation}
 
 チェーン内の各証明書に対して、以下の検証を行います
 
@@ -446,18 +450,19 @@ PKI の中核にあるのが<strong>信頼の連鎖</strong>（Certificate Chain
 
 これにより、通常のサーバー証明書が不正に他の証明書を発行することを防ぎます
 
-### トラストストア
+### [トラストストア](#trust-store) {#trust-store}
 
 <strong>トラストストア</strong>は、信頼されたルート CA 証明書の一覧です
 
 OS やブラウザはそれぞれ独自のトラストストアを管理しており、信頼の起点として機能します
 
-| 管理者    | トラストストア         | 含まれるルート CA 数 |
+{: .labeled}
+| 管理者 | トラストストア | 含まれるルート CA 数 |
 | --------- | ---------------------- | -------------------- |
-| Apple     | Apple Root Certificate | 約 150               |
-| Microsoft | Microsoft Root Program | 約 400               |
-| Mozilla   | Mozilla Root Store     | 約 150               |
-| Google    | Chrome Root Store      | 約 150               |
+| Apple | Apple Root Certificate | 約 150 |
+| Microsoft | Microsoft Root Program | 約 400 |
+| Mozilla | Mozilla Root Store | 約 150 |
+| Google | Chrome Root Store | 約 150 |
 
 ルート CA がトラストストアに含まれるには、厳格な審査基準を満たす必要があります
 
@@ -467,26 +472,27 @@ OS やブラウザはそれぞれ独自のトラストストアを管理して�
 
 この仕組みにより、信頼は「技術的な正しさ」だけでなく「運営の適切さ」にも依存しています
 
-### 検証が失敗するケース
+### [検証が失敗するケース](#validation-failure-cases) {#validation-failure-cases}
 
 証明書の検証が失敗する主なケースは以下のとおりです
 
-| 失敗の原因         | 状況                                                       |
+{: .labeled}
+| 失敗の原因 | 状況 |
 | ------------------ | ---------------------------------------------------------- |
-| 有効期限切れ       | 証明書の有効期間を過ぎている                               |
-| 不明な認証局       | 発行元の CA がトラストストアに含まれていない               |
-| ドメイン名の不一致 | 証明書の SAN がアクセス先のドメインと一致しない            |
-| 証明書の失効       | 証明書が CRL や OCSP で失効と報告されている                |
-| 自己署名証明書     | 信頼されたルート CA への連鎖がない                         |
-| チェーンの不完全   | サーバーが中間 CA 証明書を送信せず、チェーンを構築できない |
+| 有効期限切れ | 証明書の有効期間を過ぎている |
+| 不明な認証局 | 発行元の CA がトラストストアに含まれていない |
+| ドメイン名の不一致 | 証明書の SAN がアクセス先のドメインと一致しない |
+| 証明書の失効 | 証明書が CRL や OCSP で失効と報告されている |
+| 自己署名証明書 | 信頼されたルート CA への連鎖がない |
+| チェーンの不完全 | サーバーが中間 CA 証明書を送信せず、チェーンを構築できない |
 
 検証に失敗すると、ブラウザはセキュリティ警告を表示し、ユーザーに接続のリスクを通知します
 
 ---
 
-## 証明書の失効
+## [証明書の失効](#certificate-revocation) {#certificate-revocation}
 
-### なぜ失効が必要か
+### [なぜ失効が必要か](#why-revocation) {#why-revocation}
 
 証明書には有効期間がありますが、有効期間内であっても証明書を無効にしなければならない場合があります
 
@@ -496,7 +502,7 @@ OS やブラウザはそれぞれ独自のトラストストアを管理して�
 
 失効の仕組みがなければ、漏洩した秘密鍵に対応する証明書が有効期限まで使われ続け、攻撃者がなりすましを続けることができてしまいます
 
-### CRL（Certificate Revocation List）
+### [CRL（Certificate Revocation List）](#crl) {#crl}
 
 <strong>CRL</strong>（Certificate Revocation List、証明書失効リスト）は、認証局が公開する「失効した証明書の一覧」です
 
@@ -514,7 +520,7 @@ CRL にはいくつかの課題があります
 
 <strong>更新頻度の問題</strong>：CRL は定期的にしか更新されないため、失効直後の証明書がまだ CRL に反映されていない場合があります
 
-### OCSP（Online Certificate Status Protocol）
+### [OCSP（Online Certificate Status Protocol）](#ocsp) {#ocsp}
 
 <strong>OCSP</strong>（Online Certificate Status Protocol）は、証明書の失効状態を<strong>リアルタイム</strong>で問い合わせるプロトコルです
 
@@ -535,11 +541,12 @@ RFC 6960 で定義されています
 
 クライアントは証明書のシリアル番号を OCSP レスポンダに送信し、レスポンダは 3 つの状態のいずれかを返します
 
-| 応答状態 | 意味                                       |
+{: .labeled}
+| 応答状態 | 意味 |
 | -------- | ------------------------------------------ |
-| good     | 証明書は有効（失効していない）             |
-| revoked  | 証明書は失効済み                           |
-| unknown  | レスポンダがその証明書の情報を持っていない |
+| good | 証明書は有効（失効していない） |
+| revoked | 証明書は失効済み |
+| unknown | レスポンダがその証明書の情報を持っていない |
 
 OCSP は CRL の課題を解決しますが、新たな課題を生みます
 
@@ -547,7 +554,7 @@ OCSP は CRL の課題を解決しますが、新たな課題を生みます
 
 <strong>可用性の問題</strong>：OCSP レスポンダがダウンしていると、証明書の有効性を確認できません
 
-### OCSP Stapling
+### [OCSP Stapling](#ocsp-stapling) {#ocsp-stapling}
 
 <strong>OCSP Stapling</strong> は、OCSP のプライバシーと可用性の問題を解決する仕組みです
 
@@ -580,7 +587,7 @@ OCSP 応答には OCSP レスポンダのデジタル署名が含まれている
 - クライアントが直接 OCSP レスポンダに問い合わせないため、<strong>プライバシーが保護</strong>される
 - OCSP レスポンダの可用性に依存しないため、<strong>信頼性が向上</strong>する
 
-### 失効確認の課題
+### [失効確認の課題](#revocation-challenges) {#revocation-challenges}
 
 証明書の失効確認には、根本的な課題があります
 
@@ -596,9 +603,9 @@ OCSP 応答には OCSP レスポンダのデジタル署名が含まれている
 
 ---
 
-## Certificate Transparency
+## [Certificate Transparency](#certificate-transparency) {#certificate-transparency}
 
-### 認証局を誰が監視するか
+### [認証局を誰が監視するか](#who-monitors-ca) {#who-monitors-ca}
 
 PKI の信頼モデルは、認証局が正しく運営されていることを前提としています
 
@@ -610,7 +617,7 @@ PKI の信頼モデルは、認証局が正しく運営されていることを�
 
 <strong>Certificate Transparency</strong>（CT）は、この問題に対する解決策です
 
-### Certificate Transparency とは
+### [Certificate Transparency とは](#what-is-certificate-transparency) {#what-is-certificate-transparency}
 
 <strong>Certificate Transparency</strong> は、発行されたすべての証明書を<strong>公開ログ</strong>に記録し、不正な発行を誰でも検出できるようにする仕組みです
 
@@ -626,15 +633,16 @@ CT ログは追記専用（append-only）の公開データベースで、一度
 
 ドメインの管理者は CT ログを監視することで、自分のドメインに対して不正な証明書が発行されていないかを確認できます
 
-### CT ログの仕組み
+### [CT ログの仕組み](#ct-log-mechanism) {#ct-log-mechanism}
 
 CT は 3 つの役割で構成されます
 
-| 役割           | 担当者                | 責務                                                |
+{: .labeled}
+| 役割 | 担当者 | 責務 |
 | -------------- | --------------------- | --------------------------------------------------- |
-| 提出者         | 認証局                | 証明書を CT ログに登録する                          |
+| 提出者 | 認証局 | 証明書を CT ログに登録する |
 | ログオペレータ | Google、Cloudflare 等 | CT ログを運用し、記録された証明書の完全性を保証する |
-| モニター       | ドメイン管理者、企業  | CT ログを監視し、不正な証明書の発行を検出する       |
+| モニター | ドメイン管理者、企業 | CT ログを監視し、不正な証明書の発行を検出する |
 
 証明書が CT ログに登録されると、ログは <strong>SCT</strong>（Signed Certificate Timestamp）を返します
 
@@ -646,9 +654,9 @@ SCT のない証明書は、正規の認証局が発行したものであって�
 
 CT ログの内部では、<strong>マークル木</strong>（Merkle Tree）と呼ばれるデータ構造が使われています
 
-マークル木は [01-cryptography](./01-cryptography.md) で学んだハッシュ関数の応用で、大量の証明書を効率的に管理し、特定の証明書がログに含まれていることを少ないデータ量で証明できます
+マークル木は [01-cryptography](../01-cryptography/) で学んだハッシュ関数の応用で、大量の証明書を効率的に管理し、特定の証明書がログに含まれていることを少ないデータ量で証明できます
 
-### DigiNotar 事件と CT の必要性
+### [DigiNotar 事件と CT の必要性](#diginotar-incident) {#diginotar-incident}
 
 Certificate Transparency が必要になった背景には、実際のセキュリティ事故があります
 
@@ -676,13 +684,13 @@ Certificate Transparency は、すべての証明書の発行を公開ログに�
 
 2024 年の xz-utils バックドア事件では、信頼されたメンテナの地位が悪用されました
 
-この問題は [07-supply-chain](./07-supply-chain.md) で詳しく学びます
+この問題は [07-supply-chain](../07-supply-chain/) で詳しく学びます
 
 ---
 
-## 証明書の自動化と現代の課題
+## [証明書の自動化と現代の課題](#certificate-automation) {#certificate-automation}
 
-### Let's Encrypt と ACME プロトコル
+### [Let's Encrypt と ACME プロトコル](#lets-encrypt-and-acme) {#lets-encrypt-and-acme}
 
 2015 年以前、TLS 証明書の取得には費用がかかり、手動での設定が必要でした
 
@@ -694,26 +702,28 @@ Let's Encrypt は無料の DV 証明書を提供し、<strong>ACME</strong>（Au
 
 ACME プロトコルは、ドメインの管理権限を自動的に確認します
 
-| チャレンジ方式 | 確認方法                                                |
+{: .labeled}
+| チャレンジ方式 | 確認方法 |
 | -------------- | ------------------------------------------------------- |
-| HTTP-01        | 指定されたファイルを Web サーバーに配置できることを確認 |
-| DNS-01         | 指定された DNS レコードを設定できることを確認           |
+| HTTP-01 | 指定されたファイルを Web サーバーに配置できることを確認 |
+| DNS-01 | 指定された DNS レコードを設定できることを確認 |
 
 たとえば HTTP-01 チャレンジでは、Let's Encrypt が指定したトークンを `http://example.com/.well-known/acme-challenge/` に配置できることで、ドメインの管理権限を確認します
 
 Let's Encrypt の影響は大きく、HTTPS の普及率は Let's Encrypt の開始前から大幅に上昇し、現在は 80% 以上のウェブサイトがデフォルトで HTTPS を使用しています
 
-### 証明書の有効期間の短縮
+### [証明書の有効期間の短縮](#certificate-validity-shortening) {#certificate-validity-shortening}
 
 証明書の有効期間は、歴史的に短縮されてきました
 
-| 時期          | 最長有効期間         |
+{: .labeled}
+| 時期 | 最長有効期間 |
 | ------------- | -------------------- |
-| 2012 年以前   | 5 年（60 か月）      |
-| 2015 年       | 3 年（39 か月）      |
-| 2018 年       | 2 年（825 日）       |
-| 2020 年       | 約 13 か月（398 日） |
-| Let's Encrypt | 90 日                |
+| 2012 年以前 | 5 年（60 か月） |
+| 2015 年 | 3 年（39 か月） |
+| 2018 年 | 2 年（825 日） |
+| 2020 年 | 約 13 か月（398 日） |
+| Let's Encrypt | 90 日 |
 
 有効期間を短くするメリットは明確です
 
@@ -723,7 +733,7 @@ Let's Encrypt の影響は大きく、HTTPS の普及率は Let's Encrypt の開
 
 一方で、有効期間が短いほど証明書の更新頻度が増えるため、<strong>自動化が必須</strong>になります
 
-### 証明書ピンニングとその廃止
+### [証明書ピンニングとその廃止](#certificate-pinning) {#certificate-pinning}
 
 <strong>証明書ピンニング</strong>（Certificate Pinning）は、特定のサイトに対して使用される証明書や公開鍵を事前に記憶する仕組みです
 
@@ -742,7 +752,7 @@ Chrome は 2018 年に HPKP のサポートを廃止しました
 
 Certificate Transparency は、ピンニングのような厳密な制限なしに不正発行を検出できるため、より実用的な代替手段となりました
 
-### 信頼モデルの限界
+### [信頼モデルの限界](#trust-model-limitations) {#trust-model-limitations}
 
 PKI の信頼モデルは技術的な仕組みだけでは完結せず、認証局の<strong>ガバナンス</strong>（統治）が不可欠です
 
@@ -762,7 +772,7 @@ Symantec は世界最大級の認証局でしたが、ブラウザベンダー�
 
 ---
 
-## 次のトピックへ
+## [次のトピックへ](#next-topic) {#next-topic}
 
 このトピックでは、以下のことを学びました
 
@@ -785,65 +795,66 @@ Symantec は世界最大級の認証局でしたが、ブラウザベンダー�
 
 Web サービスで広く使われる OAuth や JWT は、どのような原理で動いているのでしょうか？
 
-次のトピック [04-authentication](./04-authentication.md) では、<strong>認証と認可</strong>の仕組みを学びます
+次のトピック [04-authentication](../04-authentication/) では、<strong>認証と認可</strong>の仕組みを学びます
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                                                 | 説明                                                                                                         |
+{: .labeled}
+| 用語 | 説明 |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 証明書（Certificate）                                | 公開鍵と身元情報を結びつけ、認証局のデジタル署名で保証された電子的な文書                                     |
-| X.509                                                | ITU-T が定義し RFC 5280 で規定された、インターネットで最も広く使われる証明書の標準形式                       |
-| 認証局（CA：Certificate Authority）                  | 証明書を発行する信頼された機関。申請者の身元を確認し、デジタル署名で証明書を保証する                         |
-| ルート CA（Root CA）                                 | 信頼の連鎖の頂点に位置する認証局。自己署名証明書を持ち、OS やブラウザのトラストストアに格納される            |
-| 中間 CA（Intermediate CA）                           | ルート CA から証明書を発行された認証局。ルート CA の代わりにエンドエンティティ証明書を発行する               |
-| エンドエンティティ証明書                             | 証明書チェーンの末端にある証明書。サーバー証明書やクライアント証明書がこれに該当する                         |
-| 証明書チェーン（Certificate Chain）                  | エンドエンティティ証明書からルート CA 証明書までの連鎖。信頼の連鎖とも呼ばれる                               |
-| 自己署名証明書（Self-signed Certificate）            | 発行者と主体者が同一の証明書。ルート CA 証明書は自己署名である                                               |
-| PKI（Public Key Infrastructure）                     | デジタル証明書の発行、管理、検証、失効を行うための基盤全体                                                   |
-| トラストストア（Trust Store）                        | OS やブラウザが保持する信頼されたルート CA 証明書の一覧                                                      |
-| トラストアンカー（Trust Anchor）                     | 信頼の起点となるルート CA 証明書。トラストストアに格納されている                                             |
-| DV（Domain Validation）                              | ドメインの管理権限のみを確認して発行される証明書。最も基本的な検証レベル                                     |
-| OV（Organization Validation）                        | 組織の実在性を確認して発行される証明書                                                                       |
-| EV（Extended Validation）                            | 最も厳格な検証プロセスを経て発行される証明書                                                                 |
-| SAN（Subject Alternative Name）                      | 1 つの証明書で複数のドメイン名を指定できる拡張フィールド                                                     |
-| Basic Constraints                                    | 証明書が CA として機能できるかどうかを示す拡張フィールド。中間 CA 証明書で必須                               |
-| CRL（Certificate Revocation List）                   | 認証局が公開する失効した証明書の一覧。RFC 5280 で定義                                                        |
-| OCSP（Online Certificate Status Protocol）           | 証明書の失効状態をリアルタイムに問い合わせるプロトコル。RFC 6960 で定義                                      |
-| OCSP Stapling                                        | サーバーが OCSP レスポンスを取得し、TLS ハンドシェイクに添付する仕組み                                       |
-| Soft-fail                                            | 失効確認に失敗した場合にエラーにせず通信を続行するブラウザの動作。可用性を優先するがセキュリティリスクを伴う |
-| Certificate Transparency（CT）                       | 発行されたすべての証明書を公開ログに記録し、不正発行を検出する仕組み。RFC 6962 で定義                        |
-| SCT（Signed Certificate Timestamp）                  | CT ログが証明書の登録を証明するために発行する署名付きタイムスタンプ                                          |
-| マークル木（Merkle Tree）                            | ハッシュ関数を使ったツリー構造。データの完全性と包含証明を効率的に行える                                     |
-| Let's Encrypt                                        | 無料の DV 証明書を自動発行する非営利認証局                                                                   |
-| ACME（Automatic Certificate Management Environment） | 証明書の発行・更新を自動化するプロトコル。RFC 8555 で定義                                                    |
-| 証明書ピンニング（Certificate Pinning）              | 特定のサイトに対して使用される証明書や公開鍵を事前に記憶する仕組み                                           |
-| HPKP（HTTP Public Key Pinning）                      | HTTP ヘッダで公開鍵のピンを指定する仕組み。運用リスクのため廃止された                                        |
-| DigiNotar                                            | 2011 年に不正証明書の発行が発覚し、全ブラウザから信頼を削除された認証局                                      |
+| 証明書（Certificate） | 公開鍵と身元情報を結びつけ、認証局のデジタル署名で保証された電子的な文書 |
+| X.509 | ITU-T が定義し RFC 5280 で規定された、インターネットで最も広く使われる証明書の標準形式 |
+| 認証局（CA：Certificate Authority） | 証明書を発行する信頼された機関。申請者の身元を確認し、デジタル署名で証明書を保証する |
+| ルート CA（Root CA） | 信頼の連鎖の頂点に位置する認証局。自己署名証明書を持ち、OS やブラウザのトラストストアに格納される |
+| 中間 CA（Intermediate CA） | ルート CA から証明書を発行された認証局。ルート CA の代わりにエンドエンティティ証明書を発行する |
+| エンドエンティティ証明書 | 証明書チェーンの末端にある証明書。サーバー証明書やクライアント証明書がこれに該当する |
+| 証明書チェーン（Certificate Chain） | エンドエンティティ証明書からルート CA 証明書までの連鎖。信頼の連鎖とも呼ばれる |
+| 自己署名証明書（Self-signed Certificate） | 発行者と主体者が同一の証明書。ルート CA 証明書は自己署名である |
+| PKI（Public Key Infrastructure） | デジタル証明書の発行、管理、検証、失効を行うための基盤全体 |
+| トラストストア（Trust Store） | OS やブラウザが保持する信頼されたルート CA 証明書の一覧 |
+| トラストアンカー（Trust Anchor） | 信頼の起点となるルート CA 証明書。トラストストアに格納されている |
+| DV（Domain Validation） | ドメインの管理権限のみを確認して発行される証明書。最も基本的な検証レベル |
+| OV（Organization Validation） | 組織の実在性を確認して発行される証明書 |
+| EV（Extended Validation） | 最も厳格な検証プロセスを経て発行される証明書 |
+| SAN（Subject Alternative Name） | 1 つの証明書で複数のドメイン名を指定できる拡張フィールド |
+| Basic Constraints | 証明書が CA として機能できるかどうかを示す拡張フィールド。中間 CA 証明書で必須 |
+| CRL（Certificate Revocation List） | 認証局が公開する失効した証明書の一覧。RFC 5280 で定義 |
+| OCSP（Online Certificate Status Protocol） | 証明書の失効状態をリアルタイムに問い合わせるプロトコル。RFC 6960 で定義 |
+| OCSP Stapling | サーバーが OCSP レスポンスを取得し、TLS ハンドシェイクに添付する仕組み |
+| Soft-fail | 失効確認に失敗した場合にエラーにせず通信を続行するブラウザの動作。可用性を優先するがセキュリティリスクを伴う |
+| Certificate Transparency（CT） | 発行されたすべての証明書を公開ログに記録し、不正発行を検出する仕組み。RFC 6962 で定義 |
+| SCT（Signed Certificate Timestamp） | CT ログが証明書の登録を証明するために発行する署名付きタイムスタンプ |
+| マークル木（Merkle Tree） | ハッシュ関数を使ったツリー構造。データの完全性と包含証明を効率的に行える |
+| Let's Encrypt | 無料の DV 証明書を自動発行する非営利認証局 |
+| ACME（Automatic Certificate Management Environment） | 証明書の発行・更新を自動化するプロトコル。RFC 8555 で定義 |
+| 証明書ピンニング（Certificate Pinning） | 特定のサイトに対して使用される証明書や公開鍵を事前に記憶する仕組み |
+| HPKP（HTTP Public Key Pinning） | HTTP ヘッダで公開鍵のピンを指定する仕組み。運用リスクのため廃止された |
+| DigiNotar | 2011 年に不正証明書の発行が発覚し、全ブラウザから信頼を削除された認証局 |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 このページの内容は、以下のソースに基づいています
 
 <strong>証明書・PKI</strong>
 
-- [RFC 5280 - Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile](https://datatracker.ietf.org/doc/html/rfc5280)
+- [RFC 5280 - Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile](https://datatracker.ietf.org/doc/html/rfc5280){:target="\_blank"}
   - X.509 証明書と CRL の形式、証明書チェーンの検証手順
 
 <strong>証明書の失効</strong>
 
-- [RFC 6960 - X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP](https://datatracker.ietf.org/doc/html/rfc6960)
+- [RFC 6960 - X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP](https://datatracker.ietf.org/doc/html/rfc6960){:target="\_blank"}
   - OCSP の仕様（リアルタイムの証明書失効確認）
 
 <strong>Certificate Transparency</strong>
 
-- [RFC 6962 - Certificate Transparency](https://datatracker.ietf.org/doc/html/rfc6962)
+- [RFC 6962 - Certificate Transparency](https://datatracker.ietf.org/doc/html/rfc6962){:target="\_blank"}
   - Certificate Transparency の仕様（公開ログ、SCT、マークル木）
 
 <strong>証明書の自動化</strong>
 
-- [RFC 8555 - Automatic Certificate Management Environment (ACME)](https://datatracker.ietf.org/doc/html/rfc8555)
+- [RFC 8555 - Automatic Certificate Management Environment (ACME)](https://datatracker.ietf.org/doc/html/rfc8555){:target="\_blank"}
   - ACME プロトコルの仕様（Let's Encrypt が使用する証明書自動発行プロトコル）

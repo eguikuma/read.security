@@ -1,0 +1,152 @@
+---
+layout: default
+title: read.security
+---
+
+# [read.security](#read-security) {#read-security}
+
+<strong>「システムはどう安全に保たれるか」</strong>を学びます
+
+---
+
+## [このリポジトリは何のためにあるのか](#repository-purpose) {#repository-purpose}
+
+前のシリーズでは、ネットワーク通信の仕組みを学び、TLS が通信を暗号化で保護することを知りました
+
+コンテナの学習では、namespace や capability による隔離の仕組みを学びました
+
+データベースの学習では、GRANT / REVOKE による権限管理を学びました
+
+しかし、これらの「安全」の仕組みは、なぜ安全なのでしょうか？
+
+TLS の暗号化が盗聴を防ぐと言われますが、なぜ第三者に解読できないのでしょうか？
+
+パスワードはどうやって安全に管理されているのでしょうか？
+
+「入力を信頼しない」とはどういう原則で、なぜ必要なのでしょうか？
+
+このリポジトリでは、その<strong>「セキュリティの原理」</strong>を学びます
+
+---
+
+## [このリポジトリの特徴](#repository-characteristics) {#repository-characteristics}
+
+### [<strong>「なぜ安全か」の原理を理解する</strong>](#why-secure-principle) {#why-secure-principle}
+
+特定のツール（OpenSSL コマンドや Vault 等）の操作方法ではなく、暗号化や認証が<strong>なぜ安全なのか</strong>の原理を学びます
+
+数式や数学的証明は使わず、図解・比喩・具体例で直感的に理解できる構成にしています
+
+### [<strong>仕組みを理解してから応用を学ぶ</strong>](#understand-mechanism-then-apply) {#understand-mechanism-then-apply}
+
+暗号化の基礎から始め、TLS、証明書、認証、アクセス制御と段階的に進み、最終的にアプリケーションセキュリティとサプライチェーンセキュリティまでを扱います
+
+各レイヤの原理を理解することで、新しい脅威に対しても原理から考えられるようになります
+
+### [<strong>各トピック独立で読める構成</strong>](#independent-topics) {#independent-topics}
+
+7つのトピックはそれぞれ独立して読めるように書かれています
+
+興味のあるトピックから読み始めても、必要な知識はそのトピック内で説明されています
+
+---
+
+## [なぜこれを学ぶのか](#why-learn-this) {#why-learn-this}
+
+### [<strong>1. セキュリティの原理を理解する</strong>](#understand-security-principles) {#understand-security-principles}
+
+「暗号化がなぜ安全か」「認証がなぜ必要か」「アクセス制御がどう機能するか」を、仕組みから説明できるようになります
+
+HTTPS を使うだけでなく、その裏側にある信頼の連鎖を理解することで、セキュリティの判断ができるようになります
+
+### [<strong>2. 脅威の本質を理解する</strong>](#understand-threat-essence) {#understand-threat-essence}
+
+盗聴、中間者攻撃、インジェクション、サプライチェーン攻撃などの脅威を、「どの原則に違反しているか」という視点で理解します
+
+個別の脆弱性を暗記するのではなく、原理から脅威を理解することで、未知の脅威にも対応できる考え方を身につけます
+
+### [<strong>3. オーケストレーションへの橋渡し</strong>](#bridge-to-orchestration) {#bridge-to-orchestration}
+
+セキュリティの知識は横断的です
+
+コンテナ群を協調させるオーケストレーションでは、シークレット管理、ネットワークポリシー、RBAC（ロールベースアクセス制御）など、セキュリティの原理が直接必要になります
+
+このリポジトリで原理を学ぶことで、オーケストレーションの学習に進む準備ができます
+
+---
+
+## [このリポジトリで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
+
+{: .labeled}
+| 順番 | トピック | 学ぶこと |
+| ---- | ---------------------------------------------------- | ------------------------------------------------ |
+| 01 | [cryptography](./01-cryptography/) | 対称暗号、非対称暗号、ハッシュ関数、鍵交換 |
+| 02 | [tls](./02-tls/) | TLS の原理、前方秘匿性、なぜ安全か |
+| 03 | [certificate](./03-certificate/) | 証明書と PKI、信頼の連鎖 |
+| 04 | [authentication](./04-authentication/) | セッション、トークン、OAuth、認証と認可の違い |
+| 05 | [access-control](./05-access-control/) | アクセス制御モデル、capability、RBAC |
+| 06 | [application-security](./06-application-security/) | インジェクション、入力検証、多層防御 |
+| 07 | [supply-chain](./07-supply-chain/) | 依存関係の信頼、ソフトウェア署名、ビルドの完全性 |
+
+---
+
+## [前提知識](#prerequisites) {#prerequisites}
+
+このリポジトリを始める前に、以下の学習を推奨します（必須ではありません）
+
+- <strong>ネットワークの学習</strong>
+  - TLS プロトコルの動作を知っていると、02-tls の理解がスムーズになります
+  - ただし、このリポジトリでもセキュリティの文脈で改めて説明するため、未読でも学習できます
+- <strong>コンテナの学習</strong>
+  - capability や seccomp の知識が 05-access-control の理解に役立ちます
+  - ただし、アクセス制御の文脈で改めて説明するため、未読でも学習できます
+
+---
+
+## [既存リポジトリとの関係](#existing-repository-relationship) {#existing-repository-relationship}
+
+このリポジトリは、ネットワーク、コンテナ、データベースの学習で触れたセキュリティの概念を、原理として再構成します
+
+{: .labeled}
+| 概念 | 前のシリーズでの扱い | このリポジトリでの扱い |
+| -------------------- | ---------------------------- | -------------------------- |
+| TLS | プロトコルとしての動作 | 暗号化がなぜ安全かの原理 |
+| capability / seccomp | コンテナの隔離とセキュリティ | アクセス制御モデルの具体例 |
+| GRANT / REVOKE | データベースの権限管理 | アクセス制御の原理 |
+
+また、このリポジトリで学ぶ知識は、後続の学習につながります
+
+{: .labeled}
+| 概念 | このリポジトリでの扱い | 後続の学習での扱い |
+| ---------------- | ---------------------- | ---------------------------------------------------- |
+| 暗号化と認証 | セキュリティの原理 | オーケストレーションの学習でシークレット管理 |
+| アクセス制御 | モデルと原則 | オーケストレーションの学習で RBAC による権限管理 |
+| サプライチェーン | 依存関係とビルドの信頼 | オーケストレーションの学習でコンテナイメージの信頼性 |
+
+---
+
+## [参考資料](#references) {#references}
+
+このリポジトリの内容は、以下のソースに基づいています
+
+各トピックで使用する個別の RFC やドキュメントは、各トピックのドキュメントに記載しています
+
+<strong>暗号化標準</strong>
+
+- [NIST SP 800-175B - Guideline for Using Cryptographic Standards](https://csrc.nist.gov/pubs/sp/800/175/b/r1/final){:target="\_blank"}
+  - 暗号化標準の使用ガイドライン
+
+<strong>TLS プロトコル</strong>
+
+- [RFC 8446 - The Transport Layer Security (TLS) Protocol Version 1.3](https://datatracker.ietf.org/doc/html/rfc8446){:target="\_blank"}
+  - TLS 1.3 の仕様
+
+<strong>アプリケーションセキュリティ</strong>
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/){:target="\_blank"}
+  - Web アプリケーションセキュリティリスク
+
+<strong>サプライチェーン</strong>
+
+- [SLSA - Supply-chain Levels for Software Artifacts](https://slsa.dev/){:target="\_blank"}
+  - ソフトウェアサプライチェーンのセキュリティフレームワーク
