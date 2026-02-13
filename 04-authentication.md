@@ -1,12 +1,13 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: 認証と認可（セッション、トークン、OAuth）
+---
 
-# 04-authentication：認証と認可（セッション、トークン、OAuth）
+# [04-authentication：認証と認可（セッション、トークン、OAuth）](#authentication) {#authentication}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-前のトピック [03-certificate](./03-certificate.md) では、証明書と PKI（Public Key Infrastructure）の仕組みを学びました
+前のトピック [03-certificate](../03-certificate/) では、証明書と PKI（Public Key Infrastructure）の仕組みを学びました
 
 - 証明書は公開鍵と身元情報を結びつけ、認証局のデジタル署名で保証される
 - X.509 は証明書の標準形式であり、Subject、Issuer、Public Key、Validity、SAN などのフィールドを含む
@@ -30,7 +31,7 @@ Web サービスで広く使われる OAuth や JWT は、どのような原理�
 
 ---
 
-## 日常の例え
+## [日常の例え](#everyday-analogy) {#everyday-analogy}
 
 認証と認可の仕組みを、日常の例えで見てみましょう
 
@@ -80,7 +81,7 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 このページでは、以下の概念を学びます
 
@@ -114,28 +115,28 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [認証と認可の違い](#認証と認可の違い)
-2. [パスワードの安全な管理](#パスワードの安全な管理)
-3. [セッションベース認証](#セッションベース認証)
-4. [トークンベース認証](#トークンベース認証)
-5. [OAuth 2.0](#oauth-20)
-6. [多要素認証（MFA）](#多要素認証mfa)
-7. [認証の現代的な課題](#認証の現代的な課題)
-8. [次のトピックへ](#次のトピックへ)
-9. [用語集](#用語集)
-10. [参考資料](#参考資料)
+1. [認証と認可の違い](#authentication-and-authorization-difference)
+2. [パスワードの安全な管理](#secure-password-management)
+3. [セッションベース認証](#session-based-authentication)
+4. [トークンベース認証](#token-based-authentication)
+5. [OAuth 2.0](#oauth)
+6. [多要素認証（MFA）](#mfa)
+7. [認証の現代的な課題](#modern-authentication-challenges)
+8. [次のトピックへ](#next-topic)
+9. [用語集](#glossary)
+10. [参考資料](#references)
 
 ---
 
-## 認証と認可の違い
+## [認証と認可の違い](#authentication-and-authorization-difference) {#authentication-and-authorization-difference}
 
-### 認証（Authentication）とは
+### [認証（Authentication）とは](#what-is-authentication) {#what-is-authentication}
 
 <strong>認証</strong>（Authentication）は、「あなたは誰か」を確認するプロセスです
 
-[03-certificate](./03-certificate.md) で学んだ証明書の仕組みは、TLS ハンドシェイクにおける<strong>サーバーの認証</strong>でした
+[03-certificate](../03-certificate/) で学んだ証明書の仕組みは、TLS ハンドシェイクにおける<strong>サーバーの認証</strong>でした
 
 証明書によってサーバーが「確かに example.com である」と確認できるのと同様に、ユーザーの認証は「確かにこのアカウントの持ち主である」と確認するプロセスです
 
@@ -145,7 +146,7 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 
 この問いに答えることが認証の役割です
 
-### 認可（Authorization）とは
+### [認可（Authorization）とは](#what-is-authorization) {#what-is-authorization}
 
 <strong>認可</strong>（Authorization）は、「あなたは何ができるか」を決定するプロセスです
 
@@ -153,13 +154,14 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 
 認証と認可は密接に関連していますが、別のプロセスです
 
-| 観点     | 認証（Authentication）           | 認可（Authorization）            |
+{: .labeled}
+| 観点 | 認証（Authentication） | 認可（Authorization） |
 | -------- | -------------------------------- | -------------------------------- |
-| 問い     | あなたは誰か？                   | あなたは何ができるか？           |
-| 目的     | 身元の確認                       | 権限の決定                       |
-| 順序     | 先に行われる                     | 認証の後に行われる               |
-| 判定基準 | パスワード、生体情報、証明書など | 役割、スコープ、ポリシーなど     |
-| 例       | ログイン画面でのパスワード入力   | 管理者だけがユーザーを削除できる |
+| 問い | あなたは誰か？ | あなたは何ができるか？ |
+| 目的 | 身元の確認 | 権限の決定 |
+| 順序 | 先に行われる | 認証の後に行われる |
+| 判定基準 | パスワード、生体情報、証明書など | 役割、スコープ、ポリシーなど |
+| 例 | ログイン画面でのパスワード入力 | 管理者だけがユーザーを削除できる |
 
 この順序は重要です
 
@@ -171,9 +173,9 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 
 ---
 
-## パスワードの安全な管理
+## [パスワードの安全な管理](#secure-password-management) {#secure-password-management}
 
-### なぜパスワードをそのまま保存してはいけないか
+### [なぜパスワードをそのまま保存してはいけないか](#why-not-store-password-plaintext) {#why-not-store-password-plaintext}
 
 ユーザー認証の最も基本的な方法はパスワードです
 
@@ -183,13 +185,13 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 
 多くのユーザーは複数のサービスで同じパスワードを使い回しているため、1 つのサービスからの漏洩が他のサービスへの不正アクセスにつながります
 
-パスワードの安全な管理には、[01-cryptography](./01-cryptography.md) で学んだ<strong>ハッシュ関数</strong>が使われます
+パスワードの安全な管理には、[01-cryptography](../01-cryptography/) で学んだ<strong>ハッシュ関数</strong>が使われます
 
 ハッシュ関数は任意のデータを固定長の値に変換する一方向性の関数です
 
 パスワードをハッシュ化して保存すれば、データベースが漏洩してもハッシュ値から元のパスワードを復元することはできません
 
-### ソルトとハッシュ
+### [ソルトとハッシュ](#salt-and-hash) {#salt-and-hash}
 
 パスワードを単にハッシュ化するだけでは十分ではありません
 
@@ -238,7 +240,7 @@ OAuth も同じで、ユーザーはパスワード（マスターキー）を�
 4. 計算したハッシュ値とデータベースに保存されたハッシュ値を比較する
 5. 一致すれば認証成功、不一致なら認証失敗
 
-### 鍵導出関数
+### [鍵導出関数](#key-derivation-function) {#key-derivation-function}
 
 ソルト付きのハッシュ化でレインボーテーブル攻撃は防げますが、もう 1 つの攻撃手法があります
 
@@ -254,9 +256,10 @@ SHA-256 のような汎用ハッシュ関数は高速に設計されているた
 
 この「意図的に遅くする」処理を<strong>ストレッチング</strong>と呼びます
 
-| 関数   | 特徴                               |
+{: .labeled}
+| 関数 | 特徴 |
 | ------ | ---------------------------------- |
-| bcrypt | 計算コストを調整可能な鍵導出関数   |
+| bcrypt | 計算コストを調整可能な鍵導出関数 |
 | Argon2 | メモリ使用量も調整可能な鍵導出関数 |
 
 <strong>bcrypt</strong> は、内部でハッシュ計算を何千回も繰り返すことで、1 回のパスワード検証に数百ミリ秒かかるように設計されています
@@ -269,9 +272,9 @@ GPU や専用ハードウェアを使った並列攻撃に対して、大量の�
 
 ---
 
-## セッションベース認証
+## [セッションベース認証](#session-based-authentication) {#session-based-authentication}
 
-### HTTP はステートレス
+### [HTTP はステートレス](#http-stateless) {#http-stateless}
 
 Web で使われる HTTP プロトコルは<strong>ステートレス</strong>（状態を持たない）です
 
@@ -285,7 +288,7 @@ HTTP の各リクエストは独立しており、サーバーは前のリクエ
 
 それが<strong>セッション</strong>です
 
-### Cookie とセッション ID
+### [Cookie とセッション ID](#cookie-and-session-id) {#cookie-and-session-id}
 
 セッションベース認証は、<strong>Cookie</strong> と<strong>セッション ID</strong> の組み合わせで実現されます
 
@@ -330,17 +333,18 @@ Cookie は RFC 6265 で定義された、ブラウザとサーバーの間で小
 
 Cookie にはセキュリティに関する重要な属性があります
 
-| 属性     | 役割                                                                                  |
+{: .labeled}
+| 属性 | 役割 |
 | -------- | ------------------------------------------------------------------------------------- |
-| Secure   | HTTPS 接続でのみ Cookie を送信する（TLS で保護された通信でのみ使われる）              |
-| HttpOnly | JavaScript からのアクセスを禁止する（XSS 攻撃によるセッション ID の窃取を防ぐ）       |
+| Secure | HTTPS 接続でのみ Cookie を送信する（TLS で保護された通信でのみ使われる） |
+| HttpOnly | JavaScript からのアクセスを禁止する（XSS 攻撃によるセッション ID の窃取を防ぐ） |
 | SameSite | 異なるサイトからのリクエストに Cookie を含めるかを制御する（CSRF 攻撃の防御に関わる） |
 
-Secure 属性は [02-tls](./02-tls.md) で学んだ TLS と直接関係しています
+Secure 属性は [02-tls](../02-tls/) で学んだ TLS と直接関係しています
 
 TLS で暗号化された通信でのみ Cookie を送信することで、通信経路上でのセッション ID の盗聴を防ぎます
 
-### セッションの課題
+### [セッションの課題](#session-challenges) {#session-challenges}
 
 セッションベース認証には、いくつかの課題があります
 
@@ -360,9 +364,9 @@ Cookie の Secure 属性と HttpOnly 属性は、この攻撃のリスクを低�
 
 ---
 
-## トークンベース認証
+## [トークンベース認証](#token-based-authentication) {#token-based-authentication}
 
-### なぜトークンか
+### [なぜトークンか](#why-token) {#why-token}
 
 セッションベース認証では、サーバーがセッション情報を保持する必要がありました
 
@@ -376,7 +380,7 @@ Cookie の Secure 属性と HttpOnly 属性は、この攻撃のリスクを低�
 
 この「サーバー側に状態を持たない」性質を<strong>ステートレス</strong>と呼びます
 
-### JWT の構造
+### [JWT の構造](#jwt-structure) {#jwt-structure}
 
 <strong>JWT</strong>（JSON Web Token、RFC 7519）は、トークンベース認証で広く使われるトークン形式です
 
@@ -400,13 +404,14 @@ JWT は 3 つの部分をドット（.）で連結した文字列です
 
 RFC 7519 では、以下の標準クレームが定義されています
 
-| クレーム | 名前            | 意味                                |
+{: .labeled}
+| クレーム | 名前 | 意味 |
 | -------- | --------------- | ----------------------------------- |
-| iss      | Issuer          | トークンを発行した主体              |
-| sub      | Subject         | トークンの対象（通常はユーザー ID） |
-| aud      | Audience        | トークンの受信者（対象のサービス）  |
-| exp      | Expiration Time | トークンの有効期限                  |
-| iat      | Issued At       | トークンの発行日時                  |
+| iss | Issuer | トークンを発行した主体 |
+| sub | Subject | トークンの対象（通常はユーザー ID） |
+| aud | Audience | トークンの受信者（対象のサービス） |
+| exp | Expiration Time | トークンの有効期限 |
+| iat | Issued At | トークンの発行日時 |
 
 <strong>署名</strong>は、ヘッダーとペイロードを結合したデータに対して生成されます
 
@@ -435,7 +440,7 @@ RFC 7519 では、以下の標準クレームが定義されています
         不一致 → 改ざんあり（拒否する）
 ```
 
-署名の仕組みは [01-cryptography](./01-cryptography.md) で学んだデジタル署名と同じ原理です
+署名の仕組みは [01-cryptography](../01-cryptography/) で学んだデジタル署名と同じ原理です
 
 サーバーはトークンの署名を検証することで、トークンの内容が改ざんされていないことを確認できます
 
@@ -445,7 +450,7 @@ RFC 7519 では、以下の標準クレームが定義されています
 
 JWT が保証するのは<strong>完全性</strong>（改ざんされていないこと）と<strong>真正性</strong>（発行者が正しいこと）であり、<strong>機密性</strong>（内容を隠すこと）ではありません
 
-### トークンのライフサイクル
+### [トークンのライフサイクル](#token-lifecycle) {#token-lifecycle}
 
 トークンベース認証では、通常 2 種類のトークンが使われます
 
@@ -502,9 +507,9 @@ JWT が保証するのは<strong>完全性</strong>（改ざんされていな�
 
 ---
 
-## OAuth 2.0
+## [OAuth 2.0](#oauth) {#oauth}
 
-### なぜ OAuth が必要か
+### [なぜ OAuth が必要か](#why-oauth) {#why-oauth}
 
 あるサービスのデータに別のアプリケーションからアクセスしたい場合を考えます
 
@@ -523,16 +528,17 @@ OAuth がなければ、ユーザーはクラウドストレージのパスワ�
 
 OAuth 2.0 の核心は、<strong>パスワードを共有せずに、限定された権限を安全に委譲する</strong>ことです
 
-### OAuth 2.0 の登場人物
+### [OAuth 2.0 の登場人物](#oauth-actors) {#oauth-actors}
 
 RFC 6749 では、OAuth 2.0 に 4 つの役割が定義されています
 
-| 役割                                 | 説明                                     | 写真編集の例                 |
+{: .labeled}
+| 役割 | 説明 | 写真編集の例 |
 | ------------------------------------ | ---------------------------------------- | ---------------------------- |
-| リソースオーナー（Resource Owner）   | データの所有者（通常はユーザー）         | ユーザー自身                 |
-| クライアント（Client）               | リソースにアクセスしたいアプリケーション | 写真編集アプリ               |
-| 認可サーバー（Authorization Server） | アクセストークンを発行するサーバー       | クラウドストレージの認可機能 |
-| リソースサーバー（Resource Server）  | 保護されたリソースをホストするサーバー   | クラウドストレージの API     |
+| リソースオーナー（Resource Owner） | データの所有者（通常はユーザー） | ユーザー自身 |
+| クライアント（Client） | リソースにアクセスしたいアプリケーション | 写真編集アプリ |
+| 認可サーバー（Authorization Server） | アクセストークンを発行するサーバー | クラウドストレージの認可機能 |
+| リソースサーバー（Resource Server） | 保護されたリソースをホストするサーバー | クラウドストレージの API |
 
 > The authorization server issues access tokens to the client after successfully authenticating the resource owner and obtaining authorization.
 
@@ -540,7 +546,7 @@ RFC 6749 では、OAuth 2.0 に 4 つの役割が定義されています
 
 RFC 6749 が述べるように、認可サーバーはリソースオーナー（ユーザー）の意思を確認した上で、クライアント（アプリケーション）にアクセストークンを発行します
 
-### 認可コードフロー
+### [認可コードフロー](#authorization-code-flow) {#authorization-code-flow}
 
 OAuth 2.0 には複数のフロー（認可の流れ）が定義されていますが、最も広く使われているのが<strong>認可コードフロー</strong>（Authorization Code Flow）です
 
@@ -607,7 +613,7 @@ PKCE は、認可リクエスト時にランダムな値（コードベリファ
 
 トークン交換時にコードベリファイアを提示し、認可サーバーがハッシュ値を検証することで、認可コードを横取りした攻撃者がトークンを取得することを防ぎます
 
-### スコープとアクセス制御
+### [スコープとアクセス制御](#scope-and-access-control) {#scope-and-access-control}
 
 OAuth 2.0 では、<strong>スコープ</strong>（Scope）によってアクセストークンの権限を制限します
 
@@ -630,9 +636,9 @@ OAuth 2.0 では、<strong>スコープ</strong>（Scope）によってアクセ
 
 ---
 
-## 多要素認証（MFA）
+## [多要素認証（MFA）](#mfa) {#mfa}
 
-### 認証の 3 要素
+### [認証の 3 要素](#three-authentication-factors) {#three-authentication-factors}
 
 パスワードだけに頼る認証には限界があります
 
@@ -642,11 +648,12 @@ OAuth 2.0 では、<strong>スコープ</strong>（Scope）によってアクセ
 
 認証要素は 3 つの種類に分類されます
 
-| 要素     | 説明                                      | 例                               |
+{: .labeled}
+| 要素 | 説明 | 例 |
 | -------- | ----------------------------------------- | -------------------------------- |
-| 知識要素 | 本人だけが<strong>知っている</strong>もの | パスワード、PIN、秘密の質問      |
+| 知識要素 | 本人だけが<strong>知っている</strong>もの | パスワード、PIN、秘密の質問 |
 | 所持要素 | 本人だけが<strong>持っている</strong>もの | スマートフォン、セキュリティキー |
-| 生体要素 | 本人の<strong>身体的特徴</strong>         | 指紋、顔、虹彩                   |
+| 生体要素 | 本人の<strong>身体的特徴</strong> | 指紋、顔、虹彩 |
 
 MFA の考え方は「<strong>異なる種類</strong>の要素を組み合わせる」ことです
 
@@ -656,13 +663,13 @@ MFA の考え方は「<strong>異なる種類</strong>の要素を組み合わ�
 
 パスワード（知識要素）とスマートフォンの認証コード（所持要素）を組み合わせることで、たとえパスワードが漏洩しても、スマートフォンを持っていなければログインできなくなります
 
-### ワンタイムパスワード（TOTP）
+### [ワンタイムパスワード（TOTP）](#totp) {#totp}
 
 <strong>TOTP</strong>（Time-based One-Time Password）は、MFA で広く使われるワンタイムパスワードの仕組みです
 
 認証アプリ（Google Authenticator など）が 30 秒ごとに変わる 6 桁のコードを生成し、そのコードをログイン時に入力します
 
-TOTP の仕組みは、[01-cryptography](./01-cryptography.md) で学んだ<strong>HMAC</strong>（Hash-based Message Authentication Code）を応用しています
+TOTP の仕組みは、[01-cryptography](../01-cryptography/) で学んだ<strong>HMAC</strong>（Hash-based Message Authentication Code）を応用しています
 
 ```
   TOTP の仕組み：
@@ -699,11 +706,11 @@ TOTP はインターネット接続がなくても動作する点が大きなメ
 
 サーバーと認証アプリはあらかじめ共有秘密を登録しておくため、コード生成時に通信は不要です
 
-### FIDO2 とパスキー
+### [FIDO2 とパスキー](#fido2-and-passkey) {#fido2-and-passkey}
 
 <strong>FIDO2</strong> は、パスワードに依存しない認証の標準です
 
-FIDO2 は [01-cryptography](./01-cryptography.md) で学んだ<strong>公開鍵暗号</strong>の仕組みを認証に応用しています
+FIDO2 は [01-cryptography](../01-cryptography/) で学んだ<strong>公開鍵暗号</strong>の仕組みを認証に応用しています
 
 ```
   FIDO2 の認証フロー：
@@ -750,9 +757,9 @@ FIDO2 では、秘密鍵がデバイスから外に出ることはなく、認�
 
 ---
 
-## 認証の現代的な課題
+## [認証の現代的な課題](#modern-authentication-challenges) {#modern-authentication-challenges}
 
-### パスワードの限界
+### [パスワードの限界](#password-limitations) {#password-limitations}
 
 パスワードは最も広く使われている認証手段ですが、いくつかの根本的な問題を抱えています
 
@@ -774,7 +781,7 @@ FIDO2 では、秘密鍵がデバイスから外に出ることはなく、認�
 
 パスワードレス認証は、パスワードの漏洩という問題自体を排除することで、フィッシングやクレデンシャルスタッフィングに対する根本的な対策となります
 
-### ゼロトラストの考え方
+### [ゼロトラストの考え方](#zero-trust-concept) {#zero-trust-concept}
 
 従来のセキュリティモデルでは、「社内ネットワークは信頼できる」「一度認証すれば信頼できる」という前提がありました
 
@@ -782,10 +789,11 @@ FIDO2 では、秘密鍵がデバイスから外に出ることはなく、認�
 
 ゼロトラストの原則は「<strong>何も信頼せず、常に検証する</strong>」（Never trust, always verify）です
 
-| 従来のモデル                                     | ゼロトラスト                               |
+{: .labeled}
+| 従来のモデル | ゼロトラスト |
 | ------------------------------------------------ | ------------------------------------------ |
-| 社内ネットワークからのアクセスは信頼する         | ネットワークの場所に関係なく検証する       |
-| 一度認証すればセッション中は信頼する             | アクセスのたびにリスクを評価する           |
+| 社内ネットワークからのアクセスは信頼する | ネットワークの場所に関係なく検証する |
+| 一度認証すればセッション中は信頼する | アクセスのたびにリスクを評価する |
 | VPN で社内に接続すれば全リソースにアクセスできる | リソースごとに最小限のアクセス権を付与する |
 
 ゼロトラストにおいて、認証は<strong>一度きりのイベントではなく、継続的なプロセス</strong>です
@@ -796,11 +804,11 @@ FIDO2 では、秘密鍵がデバイスから外に出ることはなく、認�
 
 「誰がアクセスしているか」（認証）と「何にアクセスできるか」（認可）を、あらゆるアクセスに対して常に検証する、という考え方です
 
-次のトピック [05-access-control](./05-access-control.md) では、「何にアクセスできるか」を管理する<strong>アクセス制御モデル</strong>を詳しく学びます
+次のトピック [05-access-control](../05-access-control/) では、「何にアクセスできるか」を管理する<strong>アクセス制御モデル</strong>を詳しく学びます
 
 ---
 
-## 次のトピックへ
+## [次のトピックへ](#next-topic) {#next-topic}
 
 このトピックでは、以下のことを学びました
 
@@ -823,85 +831,86 @@ RBAC（役割ベースアクセス制御）や ABAC（属性ベースアクセ�
 
 OS レベルでは、プロセスのアクセス権限はどのように制御されているのでしょうか？
 
-次のトピック [05-access-control](./05-access-control.md) では、<strong>アクセス制御モデル</strong>の仕組みを学びます
+次のトピック [05-access-control](../05-access-control/) では、<strong>アクセス制御モデル</strong>の仕組みを学びます
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                                                | 説明                                                                                                               |
+{: .labeled}
+| 用語 | 説明 |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| 認証（Authentication）                              | 「あなたは誰か」を確認するプロセス。パスワード、生体情報、証明書などの手段で身元を検証する                         |
-| 認可（Authorization）                               | 「あなたは何ができるか」を決定するプロセス。認証の後に行われ、アクセス権限を付与する                               |
-| 平文（Plaintext）                                   | 暗号化やハッシュ化されていないそのままのデータ。パスワードを平文で保存することはセキュリティ上の重大なリスクとなる |
-| パスワードハッシュ                                  | パスワードをハッシュ関数で一方向に変換した値。データベースにはハッシュ値のみを保存し、元のパスワードは保持しない   |
-| ソルト（Salt）                                      | パスワードをハッシュ化する前に付加するランダムな文字列。同じパスワードでも異なるハッシュ値を生成する               |
-| レインボーテーブル（Rainbow Table）                 | よく使われるパスワードとそのハッシュ値をあらかじめ計算した一覧。ソルトの使用で対策される                           |
-| 鍵導出関数（Key Derivation Function）               | 計算コストを意図的に高くすることでブルートフォース攻撃を困難にするハッシュ関数。bcrypt や Argon2 が代表的          |
-| bcrypt                                              | 計算コストを調整可能な鍵導出関数。内部でハッシュ計算を繰り返すことで意図的に遅くする                               |
-| Argon2                                              | 計算コストに加えてメモリ使用量も調整可能な鍵導出関数。GPU を使った並列攻撃にも対抗できる                           |
-| ストレッチング（Stretching）                        | ハッシュ計算を意図的に繰り返すことで計算コストを高める手法                                                         |
-| ブルートフォース攻撃（Brute Force Attack）          | パスワードの候補を片端から試行する総当たり攻撃                                                                     |
-| ステートレス（Stateless）                           | サーバーがクライアントの状態を保持しない設計。HTTP プロトコルの基本的な性質                                        |
-| セッション（Session）                               | ユーザーのログイン状態をサーバー側で管理する仕組み。セッション ID で識別する                                       |
-| セッション ID                                       | セッションを一意に識別するランダムな文字列。Cookie に格納されてブラウザとサーバー間でやり取りされる                |
-| Cookie                                              | RFC 6265 で定義された、ブラウザとサーバーの間で小さなデータをやり取りする仕組み                                    |
-| Set-Cookie ヘッダ                                   | サーバーがブラウザに Cookie を送信するために使用する HTTP レスポンスヘッダ                                         |
-| Secure 属性                                         | HTTPS 接続でのみ Cookie を送信する Cookie の属性                                                                   |
-| HttpOnly 属性                                       | JavaScript からのアクセスを禁止する Cookie の属性。XSS によるセッション ID の窃取を防ぐ                            |
-| SameSite 属性                                       | 異なるサイトからのリクエストに Cookie を含めるかを制御する属性。CSRF 攻撃の防御に関わる                            |
-| セッション固定攻撃（Session Fixation）              | 攻撃者が事前に知っているセッション ID をユーザーに使わせてセッションを乗っ取る攻撃                                 |
-| セッションハイジャック（Session Hijacking）         | セッション ID を盗み取り、そのユーザーになりすます攻撃                                                             |
-| トークン（Token）                                   | 認証や認可の情報を表す文字列。セッション ID とは異なり、トークン自体に情報を含むことができる                       |
-| JWT（JSON Web Token）                               | RFC 7519 で定義された、認証情報をJSON 形式で表現するトークン。ヘッダー、ペイロード、署名の 3 部で構成される        |
-| クレーム（Claim）                                   | JWT のペイロードに含まれる情報の単位。iss（発行者）、sub（主体）、exp（有効期限）などの標準クレームがある          |
-| アクセストークン（Access Token）                    | リソースへのアクセスに使われる短命なトークン                                                                       |
-| リフレッシュトークン（Refresh Token）               | 新しいアクセストークンを取得するための長命なトークン                                                               |
-| Bearer トークン                                     | トークンを持っているだけでアクセスが許可されるトークン。Authorization ヘッダで送信される                           |
-| OAuth 2.0                                           | RFC 6749 で定義された認可フレームワーク。パスワードを共有せずに限定された権限を安全に委譲する                      |
-| リソースオーナー（Resource Owner）                  | 保護されたリソースの所有者。通常はユーザー自身                                                                     |
-| クライアント（Client）                              | リソースオーナーの代わりにリソースにアクセスするアプリケーション                                                   |
-| 認可サーバー（Authorization Server）                | リソースオーナーの認証と認可を行い、アクセストークンを発行するサーバー                                             |
-| リソースサーバー（Resource Server）                 | 保護されたリソースをホストし、アクセストークンを検証してリソースを提供するサーバー                                 |
-| 認可コード（Authorization Code）                    | 認可コードフローで使われる短命で 1 回限りのコード。アクセストークンと交換される                                    |
-| 認可コードフロー（Authorization Code Flow）         | OAuth 2.0 の最も一般的なフロー。認可コードを介してアクセストークンを安全に取得する                                 |
-| PKCE（Proof Key for Code Exchange）                 | 認可コードの横取り攻撃を防ぐ拡張。コードベリファイアとコードチャレンジのペアで保護する                             |
-| スコープ（Scope）                                   | アクセストークンの権限範囲を制限する仕組み。最小権限の原則を実現する                                               |
-| リダイレクト URI                                    | 認可コードフローで、認可サーバーがユーザーをクライアントに戻す際の URI                                             |
-| 最小権限の原則（Principle of Least Privilege）      | 必要最小限の権限だけを付与するセキュリティの原則                                                                   |
-| 多要素認証（MFA：Multi-Factor Authentication）      | 知識・所持・生体の異なる種類の認証要素を 2 つ以上組み合わせる認証方式                                              |
-| 知識要素（Knowledge Factor）                        | 本人だけが知っている情報による認証要素。パスワード、PIN、秘密の質問など                                            |
-| 所持要素（Possession Factor）                       | 本人だけが持っている物理的なものによる認証要素。スマートフォン、セキュリティキーなど                               |
-| 生体要素（Inherence Factor）                        | 本人の身体的特徴による認証要素。指紋、顔認証、虹彩認証など                                                         |
-| ワンタイムパスワード（OTP：One-Time Password）      | 1 回限り有効なパスワード。使用後または一定時間後に無効になる                                                       |
-| TOTP（Time-based One-Time Password）                | 共有秘密と現在時刻から HMAC を使って生成される時間ベースのワンタイムパスワード                                     |
-| FIDO2                                               | パスワードに依存しない認証の標準。公開鍵暗号を使用し、秘密鍵はデバイスに保持される                                 |
-| パスキー（Passkey）                                 | FIDO2 の仕組みを使いやすくした実装。パスワードレスでフィッシング耐性のある認証を実現する                           |
-| WebAuthn（Web Authentication）                      | FIDO2 の Web ブラウザ向け API。ブラウザを通じて FIDO2 認証を行うための標準                                         |
-| フィッシング（Phishing）                            | 正規のサイトに見せかけた偽サイトにユーザーを誘導し、認証情報を盗む攻撃                                             |
-| クレデンシャルスタッフィング（Credential Stuffing） | 漏洩したユーザー名とパスワードの組み合わせを別のサービスに大量試行する攻撃                                         |
-| パスワードレス認証（Passwordless Authentication）   | パスワードを使わずに認証を行うアプローチ。FIDO2 やパスキーが代表的                                                 |
-| ゼロトラスト（Zero Trust）                          | 「何も信頼せず、常に検証する」というセキュリティモデル。ネットワークの場所に関係なくアクセスを検証する             |
-| OpenID Connect                                      | OAuth 2.0 を拡張して認証機能を追加したプロトコル。ID トークンによるユーザーの身元確認を行う                        |
-| ID トークン                                         | OpenID Connect で発行される JWT 形式のトークン。ユーザーの身元情報を含む                                           |
+| 認証（Authentication） | 「あなたは誰か」を確認するプロセス。パスワード、生体情報、証明書などの手段で身元を検証する |
+| 認可（Authorization） | 「あなたは何ができるか」を決定するプロセス。認証の後に行われ、アクセス権限を付与する |
+| 平文（Plaintext） | 暗号化やハッシュ化されていないそのままのデータ。パスワードを平文で保存することはセキュリティ上の重大なリスクとなる |
+| パスワードハッシュ | パスワードをハッシュ関数で一方向に変換した値。データベースにはハッシュ値のみを保存し、元のパスワードは保持しない |
+| ソルト（Salt） | パスワードをハッシュ化する前に付加するランダムな文字列。同じパスワードでも異なるハッシュ値を生成する |
+| レインボーテーブル（Rainbow Table） | よく使われるパスワードとそのハッシュ値をあらかじめ計算した一覧。ソルトの使用で対策される |
+| 鍵導出関数（Key Derivation Function） | 計算コストを意図的に高くすることでブルートフォース攻撃を困難にするハッシュ関数。bcrypt や Argon2 が代表的 |
+| bcrypt | 計算コストを調整可能な鍵導出関数。内部でハッシュ計算を繰り返すことで意図的に遅くする |
+| Argon2 | 計算コストに加えてメモリ使用量も調整可能な鍵導出関数。GPU を使った並列攻撃にも対抗できる |
+| ストレッチング（Stretching） | ハッシュ計算を意図的に繰り返すことで計算コストを高める手法 |
+| ブルートフォース攻撃（Brute Force Attack） | パスワードの候補を片端から試行する総当たり攻撃 |
+| ステートレス（Stateless） | サーバーがクライアントの状態を保持しない設計。HTTP プロトコルの基本的な性質 |
+| セッション（Session） | ユーザーのログイン状態をサーバー側で管理する仕組み。セッション ID で識別する |
+| セッション ID | セッションを一意に識別するランダムな文字列。Cookie に格納されてブラウザとサーバー間でやり取りされる |
+| Cookie | RFC 6265 で定義された、ブラウザとサーバーの間で小さなデータをやり取りする仕組み |
+| Set-Cookie ヘッダ | サーバーがブラウザに Cookie を送信するために使用する HTTP レスポンスヘッダ |
+| Secure 属性 | HTTPS 接続でのみ Cookie を送信する Cookie の属性 |
+| HttpOnly 属性 | JavaScript からのアクセスを禁止する Cookie の属性。XSS によるセッション ID の窃取を防ぐ |
+| SameSite 属性 | 異なるサイトからのリクエストに Cookie を含めるかを制御する属性。CSRF 攻撃の防御に関わる |
+| セッション固定攻撃（Session Fixation） | 攻撃者が事前に知っているセッション ID をユーザーに使わせてセッションを乗っ取る攻撃 |
+| セッションハイジャック（Session Hijacking） | セッション ID を盗み取り、そのユーザーになりすます攻撃 |
+| トークン（Token） | 認証や認可の情報を表す文字列。セッション ID とは異なり、トークン自体に情報を含むことができる |
+| JWT（JSON Web Token） | RFC 7519 で定義された、認証情報をJSON 形式で表現するトークン。ヘッダー、ペイロード、署名の 3 部で構成される |
+| クレーム（Claim） | JWT のペイロードに含まれる情報の単位。iss（発行者）、sub（主体）、exp（有効期限）などの標準クレームがある |
+| アクセストークン（Access Token） | リソースへのアクセスに使われる短命なトークン |
+| リフレッシュトークン（Refresh Token） | 新しいアクセストークンを取得するための長命なトークン |
+| Bearer トークン | トークンを持っているだけでアクセスが許可されるトークン。Authorization ヘッダで送信される |
+| OAuth 2.0 | RFC 6749 で定義された認可フレームワーク。パスワードを共有せずに限定された権限を安全に委譲する |
+| リソースオーナー（Resource Owner） | 保護されたリソースの所有者。通常はユーザー自身 |
+| クライアント（Client） | リソースオーナーの代わりにリソースにアクセスするアプリケーション |
+| 認可サーバー（Authorization Server） | リソースオーナーの認証と認可を行い、アクセストークンを発行するサーバー |
+| リソースサーバー（Resource Server） | 保護されたリソースをホストし、アクセストークンを検証してリソースを提供するサーバー |
+| 認可コード（Authorization Code） | 認可コードフローで使われる短命で 1 回限りのコード。アクセストークンと交換される |
+| 認可コードフロー（Authorization Code Flow） | OAuth 2.0 の最も一般的なフロー。認可コードを介してアクセストークンを安全に取得する |
+| PKCE（Proof Key for Code Exchange） | 認可コードの横取り攻撃を防ぐ拡張。コードベリファイアとコードチャレンジのペアで保護する |
+| スコープ（Scope） | アクセストークンの権限範囲を制限する仕組み。最小権限の原則を実現する |
+| リダイレクト URI | 認可コードフローで、認可サーバーがユーザーをクライアントに戻す際の URI |
+| 最小権限の原則（Principle of Least Privilege） | 必要最小限の権限だけを付与するセキュリティの原則 |
+| 多要素認証（MFA：Multi-Factor Authentication） | 知識・所持・生体の異なる種類の認証要素を 2 つ以上組み合わせる認証方式 |
+| 知識要素（Knowledge Factor） | 本人だけが知っている情報による認証要素。パスワード、PIN、秘密の質問など |
+| 所持要素（Possession Factor） | 本人だけが持っている物理的なものによる認証要素。スマートフォン、セキュリティキーなど |
+| 生体要素（Inherence Factor） | 本人の身体的特徴による認証要素。指紋、顔認証、虹彩認証など |
+| ワンタイムパスワード（OTP：One-Time Password） | 1 回限り有効なパスワード。使用後または一定時間後に無効になる |
+| TOTP（Time-based One-Time Password） | 共有秘密と現在時刻から HMAC を使って生成される時間ベースのワンタイムパスワード |
+| FIDO2 | パスワードに依存しない認証の標準。公開鍵暗号を使用し、秘密鍵はデバイスに保持される |
+| パスキー（Passkey） | FIDO2 の仕組みを使いやすくした実装。パスワードレスでフィッシング耐性のある認証を実現する |
+| WebAuthn（Web Authentication） | FIDO2 の Web ブラウザ向け API。ブラウザを通じて FIDO2 認証を行うための標準 |
+| フィッシング（Phishing） | 正規のサイトに見せかけた偽サイトにユーザーを誘導し、認証情報を盗む攻撃 |
+| クレデンシャルスタッフィング（Credential Stuffing） | 漏洩したユーザー名とパスワードの組み合わせを別のサービスに大量試行する攻撃 |
+| パスワードレス認証（Passwordless Authentication） | パスワードを使わずに認証を行うアプローチ。FIDO2 やパスキーが代表的 |
+| ゼロトラスト（Zero Trust） | 「何も信頼せず、常に検証する」というセキュリティモデル。ネットワークの場所に関係なくアクセスを検証する |
+| OpenID Connect | OAuth 2.0 を拡張して認証機能を追加したプロトコル。ID トークンによるユーザーの身元確認を行う |
+| ID トークン | OpenID Connect で発行される JWT 形式のトークン。ユーザーの身元情報を含む |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 このページの内容は、以下のソースに基づいています
 
 <strong>認証・セッション管理</strong>
 
-- [RFC 6265 - HTTP State Management Mechanism](https://datatracker.ietf.org/doc/html/rfc6265)
+- [RFC 6265 - HTTP State Management Mechanism](https://datatracker.ietf.org/doc/html/rfc6265){:target="\_blank"}
   - HTTP Cookie の仕様（Set-Cookie ヘッダ、Cookie 属性、セキュリティ考慮事項）
 
 <strong>トークン</strong>
 
-- [RFC 7519 - JSON Web Token (JWT)](https://datatracker.ietf.org/doc/html/rfc7519)
+- [RFC 7519 - JSON Web Token (JWT)](https://datatracker.ietf.org/doc/html/rfc7519){:target="\_blank"}
   - JWT の仕様（トークン構造、標準クレーム、署名アルゴリズム）
 
 <strong>OAuth</strong>
 
-- [RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
+- [RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749){:target="\_blank"}
   - OAuth 2.0 の仕様（認可フロー、アクセストークン、スコープ、クライアント認証）

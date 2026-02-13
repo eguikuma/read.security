@@ -1,12 +1,13 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: サプライチェーンセキュリティ（依存の信頼）
+---
 
-# 07-supply-chain：サプライチェーンセキュリティ（依存の信頼）
+# [07-supply-chain：サプライチェーンセキュリティ（依存の信頼）](#supply-chain) {#supply-chain}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-前のトピック [06-application-security](./06-application-security.md) では、アプリケーションセキュリティの仕組みを学びました
+前のトピック [06-application-security](../06-application-security/) では、アプリケーションセキュリティの仕組みを学びました
 
 - アプリケーションセキュリティの基本原則は「入力を信頼しない」であり、すべての外部入力は潜在的に悪意があるという前提で処理する
 - インジェクション攻撃の根本原因は「コードとデータの境界の混同」であり、SQL インジェクション、XSS、コマンドインジェクション、プロンプトインジェクションに共通する
@@ -30,7 +31,7 @@
 
 ---
 
-## 日常の例え
+## [日常の例え](#everyday-analogy) {#everyday-analogy}
 
 サプライチェーンセキュリティの仕組みを、日常の例えで見てみましょう
 
@@ -86,7 +87,7 @@ xz-utils バックドア事件はまさにこの構造です
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 <strong>ソフトウェアサプライチェーンの構造</strong>
 
@@ -115,28 +116,28 @@ xz-utils バックドア事件はまさにこの構造です
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [なぜサプライチェーンセキュリティが必要か](#なぜサプライチェーンセキュリティが必要か)
-2. [ソフトウェアサプライチェーンとは](#ソフトウェアサプライチェーンとは)
-3. [依存関係の信頼と推移的依存関係](#依存関係の信頼と推移的依存関係)
-4. [メンテナの信頼とソースコードの改ざん](#メンテナの信頼とソースコードの改ざん)
-5. [パッケージレジストリへの攻撃](#パッケージレジストリへの攻撃)
-6. [ビルドの完全性](#ビルドの完全性)
-7. [ソフトウェア署名と検証](#ソフトウェア署名と検証)
-8. [SLSA フレームワーク](#slsa-フレームワーク)
-9. [コンテナイメージの信頼](#コンテナイメージの信頼)
-10. [OWASP Top 10 との対応](#owasp-top-10-との対応)
-11. [防御レイヤの全体像：01 から 07 まで](#防御レイヤの全体像01-から-07-まで)
-12. [まとめ：このリポジトリで学んだこと](#まとめこのリポジトリで学んだこと)
-13. [用語集](#用語集)
-14. [参考資料](#参考資料)
+1. [なぜサプライチェーンセキュリティが必要か](#why-supply-chain-security)
+2. [ソフトウェアサプライチェーンとは](#what-is-software-supply-chain)
+3. [依存関係の信頼と推移的依存関係](#dependency-trust)
+4. [メンテナの信頼とソースコードの改ざん](#maintainer-trust-and-tampering)
+5. [パッケージレジストリへの攻撃](#package-registry-attacks)
+6. [ビルドの完全性](#build-integrity)
+7. [ソフトウェア署名と検証](#software-signing)
+8. [SLSA フレームワーク](#slsa)
+9. [コンテナイメージの信頼](#container-image-trust)
+10. [OWASP Top 10 との対応](#owasp-top-10-correspondence)
+11. [防御レイヤの全体像：01 から 07 まで](#defense-layer-overview)
+12. [まとめ：このリポジトリで学んだこと](#repository-learning-summary)
+13. [用語集](#glossary)
+14. [参考資料](#references)
 
 ---
 
-## なぜサプライチェーンセキュリティが必要か
+## [なぜサプライチェーンセキュリティが必要か](#why-supply-chain-security) {#why-supply-chain-security}
 
-### これまでの防御レイヤ
+### [これまでの防御レイヤ](#defense-layers-so-far) {#defense-layers-so-far}
 
 このリポジトリでは、セキュリティの防御レイヤを 1 つずつ積み重ねてきました
 
@@ -160,9 +161,9 @@ xz-utils バックドア事件はまさにこの構造です
   └────────────────────────────────────────────┘
 ```
 
-[01-cryptography](./01-cryptography.md) でデータを暗号化し、[02-tls](./02-tls.md) で通信路を保護し、[03-certificate](./03-certificate.md) でサーバーの身元を確認し、[04-authentication](./04-authentication.md) でユーザーの身元を確認し、[05-access-control](./05-access-control.md) でアクセス権限を管理し、[06-application-security](./06-application-security.md) で悪意ある入力から防御しました
+[01-cryptography](../01-cryptography/) でデータを暗号化し、[02-tls](../02-tls/) で通信路を保護し、[03-certificate](../03-certificate/) でサーバーの身元を確認し、[04-authentication](../04-authentication/) でユーザーの身元を確認し、[05-access-control](../05-access-control/) でアクセス権限を管理し、[06-application-security](../06-application-security/) で悪意ある入力から防御しました
 
-### 信頼の前提
+### [信頼の前提](#trust-assumption) {#trust-assumption}
 
 しかし、これらの防御レイヤには共通する前提があります
 
@@ -178,11 +179,11 @@ xz-utils バックドア事件はまさにこの構造です
 
 攻撃は信頼境界の外側からではなく、<strong>信頼境界の内側</strong>から来ます
 
-### 拡大するサプライチェーン攻撃
+### [拡大するサプライチェーン攻撃](#expanding-supply-chain-attacks) {#expanding-supply-chain-attacks}
 
 サプライチェーン攻撃の対象は、ソースコード、依存関係、ビルドシステム、配布チャネルのすべてです
 
-[03-certificate](./03-certificate.md) で学んだ PKI の信頼モデルを思い出してください
+[03-certificate](../03-certificate/) で学んだ PKI の信頼モデルを思い出してください
 
 認証局（CA）が侵害されると、その CA が発行したすべての証明書の信頼が崩壊しました
 
@@ -192,9 +193,9 @@ xz-utils バックドア事件はまさにこの構造です
 
 ---
 
-## ソフトウェアサプライチェーンとは
+## [ソフトウェアサプライチェーンとは](#what-is-software-supply-chain) {#what-is-software-supply-chain}
 
-### サプライチェーンの構成要素
+### [サプライチェーンの構成要素](#supply-chain-components) {#supply-chain-components}
 
 ソフトウェアサプライチェーンとは、ソースコードの作成からユーザーへの配布までの一連の流れです
 
@@ -210,17 +211,18 @@ xz-utils バックドア事件はまさにこの構造です
 
 各段階は独立した関係者やシステムによって運営されており、それぞれが潜在的な攻撃対象です
 
-### 各段階の脅威
+### [各段階の脅威](#stage-threats) {#stage-threats}
 
-| 段階           | 内容                       | 脅威の例                                       |
+{: .labeled}
+| 段階 | 内容 | 脅威の例 |
 | -------------- | -------------------------- | ---------------------------------------------- |
-| ソースコード   | 開発者が書くコード         | メンテナのアカウント侵害、悪意あるコミット     |
-| 依存関係の解決 | 使用する外部ライブラリ     | 改ざんされたパッケージ、タイポスクワッティング |
-| ビルド         | コンパイルとパッケージング | ビルドシステムの改ざん、再現性のないビルド     |
-| 配布           | レジストリや CDN           | レジストリの侵害、パッケージのすり替え         |
-| デプロイ       | 実行環境への展開           | 改ざんされたイメージ、検証なしのデプロイ       |
+| ソースコード | 開発者が書くコード | メンテナのアカウント侵害、悪意あるコミット |
+| 依存関係の解決 | 使用する外部ライブラリ | 改ざんされたパッケージ、タイポスクワッティング |
+| ビルド | コンパイルとパッケージング | ビルドシステムの改ざん、再現性のないビルド |
+| 配布 | レジストリや CDN | レジストリの侵害、パッケージのすり替え |
+| デプロイ | 実行環境への展開 | 改ざんされたイメージ、検証なしのデプロイ |
 
-### 依存関係の爆発
+### [依存関係の爆発](#dependency-explosion) {#dependency-explosion}
 
 現代のソフトウェアは、膨大な数の外部ライブラリに依存しています
 
@@ -232,9 +234,9 @@ xz-utils バックドア事件はまさにこの構造です
 
 ---
 
-## 依存関係の信頼と推移的依存関係
+## [依存関係の信頼と推移的依存関係](#dependency-trust) {#dependency-trust}
 
-### 直接依存と推移的依存
+### [直接依存と推移的依存](#direct-and-transitive-dependency) {#direct-and-transitive-dependency}
 
 アプリケーションが明示的に宣言する依存関係を<strong>直接依存</strong>（Direct Dependency）といいます
 
@@ -259,7 +261,7 @@ xz-utils バックドア事件はまさにこの構造です
 
 依存の連鎖が深くなるほど、開発者の可視性と制御は低下します
 
-### Log4Shell：推移的依存関係の事例
+### [Log4Shell：推移的依存関係の事例](#log4shell-case) {#log4shell-case}
 
 2021 年に発見された Log4Shell（CVE-2021-44228）は、推移的依存関係の危険性を示す代表的な事例です
 
@@ -290,9 +292,9 @@ Log4j は直接依存ではなく、フレームワークやライブラリが�
 
 直接宣言したライブラリだけでなく、その先の推移的依存関係まで含めた管理が求められます
 
-### サプライチェーンの障害（OWASP A03）
+### [サプライチェーンの障害（OWASP A03）](#supply-chain-failure-owasp) {#supply-chain-failure-owasp}
 
-[06-application-security](./06-application-security.md) で学んだ OWASP Top 10 の A03「Software Supply Chain Failures」は、この問題を含むサプライチェーン全体の障害を扱っています
+[06-application-security](../06-application-security/) で学んだ OWASP Top 10 の A03「Software Supply Chain Failures」は、この問題を含むサプライチェーン全体の障害を扱っています
 
 > Software supply chain failures are breakdowns or other compromises in the process of building, distributing, or updating software.
 
@@ -306,15 +308,15 @@ Log4j は直接依存ではなく、フレームワークやライブラリが�
 
 ---
 
-## メンテナの信頼とソースコードの改ざん
+## [メンテナの信頼とソースコードの改ざん](#maintainer-trust-and-tampering) {#maintainer-trust-and-tampering}
 
-### メンテナという信頼モデル
+### [メンテナという信頼モデル](#maintainer-trust-model) {#maintainer-trust-model}
 
 オープンソースソフトウェアは、メンテナへの信頼に依存しています
 
 メンテナはリポジトリへの書き込み権限を持ち、新しいバージョンを公開できます
 
-この信頼モデルは、[03-certificate](./03-certificate.md) で学んだ PKI における認証局（CA）への信頼と構造的に似ています
+この信頼モデルは、[03-certificate](../03-certificate/) で学んだ PKI における認証局（CA）への信頼と構造的に似ています
 
 CA は証明書を発行する権限を持ち、その CA が信頼できることを前提に証明書の検証が成り立ちます
 
@@ -324,11 +326,11 @@ CA は証明書を発行する権限を持ち、その CA が信頼できるこ�
 
 一方、オープンソースのメンテナへの信頼は、多くの場合、非公式で検証の仕組みが限られています
 
-### xz-utils バックドア：メンテナの信頼が悪用された事例
+### [xz-utils バックドア：メンテナの信頼が悪用された事例](#xz-utils-backdoor-case) {#xz-utils-backdoor-case}
 
 2024 年に発見された xz-utils バックドア（CVE-2024-3094）は、メンテナの信頼が悪用された事例です
 
-[03-certificate](./03-certificate.md) では、信頼されていた存在が悪用されるという構造がソフトウェアのサプライチェーンにも共通すると述べました
+[03-certificate](../03-certificate/) では、信頼されていた存在が悪用されるという構造がソフトウェアのサプライチェーンにも共通すると述べました
 
 xz-utils バックドアはまさにその具体例です
 
@@ -364,13 +366,13 @@ xz-utils バックドアはまさにその具体例です
 
 ある開発者が SSH 接続の異常なパフォーマンス低下に気づき、調査した結果、バックドアが発覚しました
 
-最後に、この事件は [03-certificate](./03-certificate.md) で学んだ DigiNotar 事件と同じ構造を持っています
+最後に、この事件は [03-certificate](../03-certificate/) で学んだ DigiNotar 事件と同じ構造を持っています
 
 DigiNotar では信頼された CA が侵害され、xz-utils では信頼されたメンテナが悪用されました
 
 どちらも「信頼された存在の悪用」という共通のパターンです
 
-### ソーシャルエンジニアリングとメンテナの疲弊
+### [ソーシャルエンジニアリングとメンテナの疲弊](#social-engineering-and-maintainer-burnout) {#social-engineering-and-maintainer-burnout}
 
 xz-utils バックドアは、技術的な攻撃であると同時に、ソーシャルエンジニアリングの攻撃でもありました
 
@@ -386,9 +388,9 @@ xz-utils バックドアは、技術的な攻撃であると同時に、ソー�
 
 ---
 
-## パッケージレジストリへの攻撃
+## [パッケージレジストリへの攻撃](#package-registry-attacks) {#package-registry-attacks}
 
-### npm サプライチェーン攻撃
+### [npm サプライチェーン攻撃](#npm-supply-chain-attack) {#npm-supply-chain-attack}
 
 npm（Node.js のパッケージレジストリ）のエコシステムでは、複数のサプライチェーン攻撃が発生しています
 
@@ -419,7 +421,7 @@ event-stream は人気のある npm パッケージでしたが、メンテナ�
 
 どちらも「信頼されたメンテナの地位が悪用される」というパターンですが、event-stream では既存メンテナからの引き渡しで地位を得たのに対し、xz-utils では約 2 年かけて信頼を自ら構築した点が異なります
 
-### タイポスクワッティング
+### [タイポスクワッティング](#typosquatting) {#typosquatting}
 
 <strong>タイポスクワッティング</strong>（Typosquatting）は、人気パッケージに似た名前の悪意あるパッケージを登録する攻撃手法です
 
@@ -431,7 +433,7 @@ event-stream は人気のある npm パッケージでしたが、メンテナ�
 
 技術的な脆弱性ではなく、人間のタイプミスを狙った攻撃です
 
-### 依存関係の混同（Dependency Confusion）
+### [依存関係の混同（Dependency Confusion）](#dependency-confusion) {#dependency-confusion}
 
 <strong>依存関係の混同</strong>（Dependency Confusion）は、パッケージマネージャが内部パッケージと外部パッケージを解決する仕組みを悪用する攻撃です
 
@@ -451,7 +453,7 @@ event-stream は人気のある npm パッケージでしたが、メンテナ�
            バージョンが高い公開パッケージを優先
 ```
 
-### レジストリ自体の脆弱性
+### [レジストリ自体の脆弱性](#registry-vulnerability) {#registry-vulnerability}
 
 パッケージレジストリのインフラストラクチャ自体も攻撃対象です
 
@@ -461,9 +463,9 @@ event-stream は人気のある npm パッケージでしたが、メンテナ�
 
 ---
 
-## ビルドの完全性
+## [ビルドの完全性](#build-integrity) {#build-integrity}
 
-### ソースコードとビルド成果物のギャップ
+### [ソースコードとビルド成果物のギャップ](#source-code-build-artifact-gap) {#source-code-build-artifact-gap}
 
 ソースコードリポジトリで公開されているコードと、実際に配布されるパッケージ（ビルド成果物）は、同一であるとは限りません
 
@@ -475,7 +477,7 @@ xz-utils バックドアはまさにこのギャップを悪用しました
 
 悪意あるコードはソースコードではなく<strong>ビルドスクリプト</strong>に挿入されたため、ソースコードのレビューだけでは検出できませんでした
 
-### ビルドシステムへの攻撃
+### [ビルドシステムへの攻撃](#build-system-attacks) {#build-system-attacks}
 
 CI/CD（継続的インテグレーション / 継続的デリバリー）のビルドシステムは、高い価値を持つ攻撃対象です
 
@@ -493,7 +495,7 @@ CI/CD（継続的インテグレーション / 継続的デリバリー）のビ
 
 ビルド環境からの秘密情報（署名鍵、認証トークン）の漏洩も、ビルドシステムへの攻撃の一形態です
 
-### 再現可能なビルド
+### [再現可能なビルド](#reproducible-builds) {#reproducible-builds}
 
 <strong>再現可能なビルド</strong>（Reproducible Build）とは、同じソースコードと同じビルド環境から、ビット単位で同一の成果物を生成できるビルド手法です
 
@@ -501,7 +503,7 @@ CI/CD（継続的インテグレーション / 継続的デリバリー）のビ
 
 もし結果が異なれば、ビルドの過程で何らかの改ざんが行われたことを意味します
 
-この検証は、[01-cryptography](./01-cryptography.md) で学んだハッシュ関数の応用です
+この検証は、[01-cryptography](../01-cryptography/) で学んだハッシュ関数の応用です
 
 ビルド成果物のハッシュ値を比較することで、改ざんの有無を確認できます
 
@@ -509,11 +511,11 @@ CI/CD（継続的インテグレーション / 継続的デリバリー）のビ
 
 ---
 
-## ソフトウェア署名と検証
+## [ソフトウェア署名と検証](#software-signing) {#software-signing}
 
-### なぜ署名が必要か
+### [なぜ署名が必要か](#why-signing) {#why-signing}
 
-[01-cryptography](./01-cryptography.md) で学んだデジタル署名と、[03-certificate](./03-certificate.md) で学んだ PKI の知識を振り返りましょう
+[01-cryptography](../01-cryptography/) で学んだデジタル署名と、[03-certificate](../03-certificate/) で学んだ PKI の知識を振り返りましょう
 
 デジタル署名は「誰が作成したか」と「改ざんされていないか」を暗号的に検証する仕組みでした
 
@@ -523,7 +525,7 @@ CI/CD（継続的インテグレーション / 継続的デリバリー）のビ
 
 署名があれば、これらの信頼を暗号的に<strong>検証</strong>できます
 
-### 従来のソフトウェア署名の課題
+### [従来のソフトウェア署名の課題](#traditional-signing-challenges) {#traditional-signing-challenges}
 
 従来のソフトウェア署名には、いくつかの課題がありました
 
@@ -539,7 +541,7 @@ CI/CD（継続的インテグレーション / 継続的デリバリー）のビ
 
 鍵の安全な管理は専門知識を要し、ボランティアのメンテナに過度な責任を求めることになります
 
-### Sigstore：ソフトウェア署名のオープンスタンダード
+### [Sigstore：ソフトウェア署名のオープンスタンダード](#sigstore) {#sigstore}
 
 Sigstore は、ソフトウェア署名の課題を解決するために設計されたオープンスタンダードです
 
@@ -553,7 +555,7 @@ Sigstore は 3 つのコンポーネントで構成されています
 
 Fulcio は短期署名証明書を発行する認証局です
 
-[03-certificate](./03-certificate.md) で学んだ CA と同じ役割ですが、発行する証明書は短期間（数分）のみ有効です
+[03-certificate](../03-certificate/) で学んだ CA と同じ役割ですが、発行する証明書は短期間（数分）のみ有効です
 
 開発者は OIDC（OpenID Connect）トークンで身元を証明し、Fulcio がその身元に紐づく短期証明書を発行します
 
@@ -561,7 +563,7 @@ Fulcio は短期署名証明書を発行する認証局です
 
 Rekor は署名の記録を不変のログに保存する透明性ログです
 
-[03-certificate](./03-certificate.md) で学んだ Certificate Transparency と同じ原理です
+[03-certificate](../03-certificate/) で学んだ Certificate Transparency と同じ原理です
 
 Certificate Transparency がすべての証明書の発行を公開ログに記録するように、Rekor はすべてのソフトウェア署名を公開ログに記録します
 
@@ -589,7 +591,7 @@ Cosign はコンテナイメージやソフトウェア成果物に署名・検�
   検証者が署名と透明性ログを検証
 ```
 
-Sigstore の設計は、[03-certificate](./03-certificate.md) で学んだ概念の直接的な応用です
+Sigstore の設計は、[03-certificate](../03-certificate/) で学んだ概念の直接的な応用です
 
 Fulcio は CA、Rekor は Certificate Transparency、そして全体の仕組みは PKI の原理に基づいています
 
@@ -599,9 +601,9 @@ Fulcio は CA、Rekor は Certificate Transparency、そして全体の仕組み
 
 ---
 
-## SLSA フレームワーク
+## [SLSA フレームワーク](#slsa) {#slsa}
 
-### SLSA とは
+### [SLSA とは](#what-is-slsa) {#what-is-slsa}
 
 <strong>SLSA</strong>（Supply-chain Levels for Software Artifacts、「サルサ」と読む）は、ソフトウェアサプライチェーンのセキュリティを段階的に高めるためのフレームワークです
 
@@ -613,16 +615,17 @@ SLSA は特定のツールではなく、サプライチェーンの信頼性を
 
 段階的に導入できるため、すべてを一度に実現する必要はありません
 
-### SLSA のレベル
+### [SLSA のレベル](#slsa-levels) {#slsa-levels}
 
 SLSA はビルドトラック（Build Track）として、L0 から L3 のレベルを定義しています
 
-| レベル                     | 要件                                                                     | 保証される信頼性                   |
+{: .labeled}
+| レベル | 要件 | 保証される信頼性 |
 | -------------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
-| Build L0（基準なし）       | 要件なし                                                                 | セキュリティの保証なし             |
-| Build L1（来歴あり）       | ビルドプロセスが文書化されている、来歴情報が生成される                   | ソフトウェアの出所が記録されている |
-| Build L2（ビルドサービス） | ホストされたビルドサービスを使用、来歴情報が署名されている               | ビルド後の改ざんが検出できる       |
-| Build L3（隔離あり）       | 隔離されたビルド環境、ビルド間の相互影響がない、秘密情報へのアクセス制限 | ビルド中の改ざんが困難             |
+| Build L0（基準なし） | 要件なし | セキュリティの保証なし |
+| Build L1（来歴あり） | ビルドプロセスが文書化されている、来歴情報が生成される | ソフトウェアの出所が記録されている |
+| Build L2（ビルドサービス） | ホストされたビルドサービスを使用、来歴情報が署名されている | ビルド後の改ざんが検出できる |
+| Build L3（隔離あり） | 隔離されたビルド環境、ビルド間の相互影響がない、秘密情報へのアクセス制限 | ビルド中の改ざんが困難 |
 
 レベルが上がるほど、より強力な保護が提供されますが、実装の労力も大きくなります
 
@@ -641,7 +644,7 @@ SLSA はビルドトラック（Build Track）として、L0 から L3 のレベ
                 ビルド中の改ざん（内部犯、認証情報の侵害）が困難
 ```
 
-### 来歴情報（Provenance）
+### [来歴情報（Provenance）](#provenance) {#provenance}
 
 <strong>来歴情報</strong>（Provenance）とは、ソフトウェア成果物がどのように生成されたかを記述するメタデータです
 
@@ -657,7 +660,7 @@ SLSA はビルドトラック（Build Track）として、L0 から L3 のレベ
 
 来歴情報がソフトウェア署名で保護されていれば、その記録自体の改ざんも検出できます
 
-### SLSA と OWASP A08
+### [SLSA と OWASP A08](#slsa-and-owasp) {#slsa-and-owasp}
 
 SLSA フレームワークは、OWASP Top 10 の A08「Software or Data Integrity Failures」に直接対応しています
 
@@ -675,9 +678,9 @@ SLSA はこれらのリスクに対して、ビルドの完全性と来歴情報
 
 ---
 
-## コンテナイメージの信頼
+## [コンテナイメージの信頼](#container-image-trust) {#container-image-trust}
 
-### コンテナイメージのサプライチェーン
+### [コンテナイメージのサプライチェーン](#container-image-supply-chain) {#container-image-supply-chain}
 
 コンテナイメージは、サプライチェーンの具体的な例です
 
@@ -691,7 +694,7 @@ SLSA はこれらのリスクに対して、ビルドの完全性と来歴情報
 
 各レイヤが信頼できるソースから取得され、改ざんされていないことを確認する必要があります
 
-### イメージの署名と検証
+### [イメージの署名と検証](#image-signing-and-verification) {#image-signing-and-verification}
 
 コンテナイメージは Sigstore の Cosign を使って署名できます
 
@@ -699,7 +702,7 @@ SLSA はこれらのリスクに対して、ビルドの完全性と来歴情報
 
 イメージの識別には<strong>イメージダイジェスト</strong>が使用されます
 
-イメージダイジェストは、[01-cryptography](./01-cryptography.md) で学んだハッシュ関数で計算される値であり、イメージの内容を一意に識別します
+イメージダイジェストは、[01-cryptography](../01-cryptography/) で学んだハッシュ関数で計算される値であり、イメージの内容を一意に識別します
 
 タグ（たとえば `nginx:latest`）は可変であり、同じタグが異なるイメージを指すことがあります
 
@@ -707,7 +710,7 @@ SLSA はこれらのリスクに対して、ビルドの完全性と来歴情報
 
 イメージの検証にはタグではなく、ダイジェストを使用するのが原則です
 
-### オーケストレーションへの橋渡し
+### [オーケストレーションへの橋渡し](#container-image-bridge-to-orchestration) {#container-image-bridge-to-orchestration}
 
 コンテナイメージの信頼は、オーケストレーション環境でさらに重要になります
 
@@ -719,16 +722,17 @@ SLSA はこれらのリスクに対して、ビルドの完全性と来歴情報
 
 ---
 
-## OWASP Top 10 との対応
+## [OWASP Top 10 との対応](#owasp-top-10-correspondence) {#owasp-top-10-correspondence}
 
-[06-application-security](./06-application-security.md) で学んだ OWASP Top 10 のうち、A03 と A08 がサプライチェーンセキュリティに対応しています
+[06-application-security](../06-application-security/) で学んだ OWASP Top 10 のうち、A03 と A08 がサプライチェーンセキュリティに対応しています
 
 OWASP Top 10:2025 では、サプライチェーンセキュリティが独立カテゴリ（A03）として設けられ、2021 版の A06「Vulnerable and Outdated Components」から範囲が拡大されました
 
-| OWASP カテゴリ                          | 対応する脅威                                                           | このトピックでの対応セクション         |
+{: .labeled}
+| OWASP カテゴリ | 対応する脅威 | このトピックでの対応セクション |
 | --------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------- |
-| A03 Software Supply Chain Failures      | 既知の脆弱性を持つ依存関係、ビルドパイプラインの侵害、悪意ある依存関係 | 依存関係の信頼と推移的依存関係         |
-| A08 Software or Data Integrity Failures | CI/CD パイプラインの改ざん、署名なしの更新                             | ビルドの完全性、ソフトウェア署名、SLSA |
+| A03 Software Supply Chain Failures | 既知の脆弱性を持つ依存関係、ビルドパイプラインの侵害、悪意ある依存関係 | 依存関係の信頼と推移的依存関係 |
+| A08 Software or Data Integrity Failures | CI/CD パイプラインの改ざん、署名なしの更新 | ビルドの完全性、ソフトウェア署名、SLSA |
 
 A03 は「何に依存しているか」の問題です
 
@@ -740,9 +744,9 @@ A08 は「依存先が改ざんされていないか」の問題です
 
 ---
 
-## 防御レイヤの全体像：01 から 07 まで
+## [防御レイヤの全体像：01 から 07 まで](#defense-layer-overview) {#defense-layer-overview}
 
-### 01 から 07 までの統合
+### [01 から 07 までの統合](#all-chapters-integration) {#all-chapters-integration}
 
 このリポジトリで学んだ防御レイヤの全体像を整理します
 
@@ -776,14 +780,15 @@ A08 は「依存先が改ざんされていないか」の問題です
 
 各レイヤが異なる脅威を防御し、1 つのレイヤが突破されても他のレイヤが防御を継続します
 
-| レイヤ                 | 防御対象                         | このレイヤが破られた場合     |
+{: .labeled}
+| レイヤ | 防御対象 | このレイヤが破られた場合 |
 | ---------------------- | -------------------------------- | ---------------------------- |
-| 暗号化（01）           | データの機密性と完全性           | 他のレイヤで検知・防御       |
-| TLS（02）              | 通信路の盗聴と中間者攻撃         | 認証とアクセス制御が防御     |
-| 証明書（03）           | サーバーの偽装                   | ブラウザの警告で検知         |
-| 認証（04）             | なりすまし                       | アクセス制御が防御           |
-| アクセス制御（05）     | 権限外の操作                     | 入力検証が防御               |
-| アプリケーション（06） | 悪意ある入力                     | 多層防御で被害を限定         |
+| 暗号化（01） | データの機密性と完全性 | 他のレイヤで検知・防御 |
+| TLS（02） | 通信路の盗聴と中間者攻撃 | 認証とアクセス制御が防御 |
+| 証明書（03） | サーバーの偽装 | ブラウザの警告で検知 |
+| 認証（04） | なりすまし | アクセス制御が防御 |
+| アクセス制御（05） | 権限外の操作 | 入力検証が防御 |
+| アプリケーション（06） | 悪意ある入力 | 多層防御で被害を限定 |
 | サプライチェーン（07） | 信頼されたコンポーネントの改ざん | 署名検証、来歴情報、多層防御 |
 
 これが 01 から 07 までの<strong>多層防御</strong>の全体像です
@@ -792,23 +797,24 @@ A08 は「依存先が改ざんされていないか」の問題です
 
 ---
 
-## まとめ：このリポジトリで学んだこと
+## [まとめ：このリポジトリで学んだこと](#repository-learning-summary) {#repository-learning-summary}
 
 このリポジトリでは、「システムはどう安全に保たれるか」を学びました
 
-### 学んだトピック
+### [学んだトピック](#learned-topics) {#learned-topics}
 
-| トピック                | 内容                                                                                             |
+{: .labeled}
+| トピック | 内容 |
 | ----------------------- | ------------------------------------------------------------------------------------------------ |
-| 01-cryptography         | 対称暗号、非対称暗号、ハッシュ関数が情報の機密性・完全性・真正性を保護する                       |
-| 02-tls                  | TLS が暗号化、認証、完全性の 3 つの方法で通信路を保護し、前方秘匿性で過去の通信も守る            |
-| 03-certificate          | 証明書と PKI が信頼の連鎖でサーバーの身元を保証し、Certificate Transparency で不正発行を検出する |
-| 04-authentication       | 認証がユーザーの身元を確認し、セッション・JWT・OAuth でログイン状態と権限委譲を管理する          |
-| 05-access-control       | アクセス制御モデル（DAC、MAC、RBAC、ABAC）が「誰が何をできるか」を体系的に管理する               |
-| 06-application-security | 「入力を信頼しない」の原則でインジェクション攻撃を防ぎ、多層防御で複数の防御層を重ねる           |
-| 07-supply-chain         | 依存関係の検証、ソフトウェア署名、ビルドの完全性でサプライチェーン全体の信頼を確保する           |
+| 01-cryptography | 対称暗号、非対称暗号、ハッシュ関数が情報の機密性・完全性・真正性を保護する |
+| 02-tls | TLS が暗号化、認証、完全性の 3 つの方法で通信路を保護し、前方秘匿性で過去の通信も守る |
+| 03-certificate | 証明書と PKI が信頼の連鎖でサーバーの身元を保証し、Certificate Transparency で不正発行を検出する |
+| 04-authentication | 認証がユーザーの身元を確認し、セッション・JWT・OAuth でログイン状態と権限委譲を管理する |
+| 05-access-control | アクセス制御モデル（DAC、MAC、RBAC、ABAC）が「誰が何をできるか」を体系的に管理する |
+| 06-application-security | 「入力を信頼しない」の原則でインジェクション攻撃を防ぎ、多層防御で複数の防御層を重ねる |
+| 07-supply-chain | 依存関係の検証、ソフトウェア署名、ビルドの完全性でサプライチェーン全体の信頼を確保する |
 
-### すべてがつながる：1 つの HTTP リクエストの旅
+### [すべてがつながる：1 つの HTTP リクエストの旅](#http-request-journey) {#http-request-journey}
 
 ここで、1 つの HTTP リクエストが処理される過程を通じて、7 つのトピックがどうつながるかを見てみましょう
 
@@ -856,7 +862,7 @@ TLS ハンドシェイクが一時的な鍵で安全な通信路を確立しま�
 
 このように、1 つの HTTP リクエストが安全に処理されるために、7 つのトピックで学んだすべての仕組みが連携して動いています
 
-### オーケストレーションへの橋渡し
+### [オーケストレーションへの橋渡し](#summary-bridge-to-orchestration) {#summary-bridge-to-orchestration}
 
 このリポジトリでは、セキュリティの各要素がなぜ必要で、どう機能するかを学びました
 
@@ -868,64 +874,65 @@ TLS ハンドシェイクが一時的な鍵で安全な通信路を確立しま�
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                                                  | 説明                                                                                                                               |
+{: .labeled}
+| 用語 | 説明 |
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| サプライチェーンセキュリティ（Supply Chain Security） | ソフトウェアの開発、ビルド、配布の全過程における信頼性を確保するためのセキュリティ対策の総称                                       |
-| ソフトウェアサプライチェーン                          | ソースコードから依存関係の解決、ビルド、配布、デプロイまでの一連の流れ                                                             |
-| 直接依存（Direct Dependency）                         | アプリケーションが明示的に宣言する外部ライブラリ                                                                                   |
-| 推移的依存（Transitive Dependency）                   | 直接依存が内部で使用する依存関係。依存の連鎖を形成する                                                                             |
-| Log4Shell（CVE-2021-44228）                           | Apache Log4j ライブラリの脆弱性。推移的依存関係により広範囲に影響した事例                                                          |
-| xz-utils バックドア（CVE-2024-3094）                  | 信頼されたメンテナの地位を悪用して挿入されたバックドア。メンテナの信頼の問題を顕在化させた事例                                     |
-| タイポスクワッティング（Typosquatting）               | 人気パッケージに似た名前の悪意あるパッケージを登録する攻撃手法                                                                     |
-| 依存関係の混同（Dependency Confusion）                | パッケージマネージャが内部パッケージと同名の外部パッケージを優先する仕組みを悪用する攻撃手法                                       |
-| 再現可能なビルド（Reproducible Build）                | 同じソースコードとビルド環境から、ビット単位で同一の成果物を生成できるビルド手法。ビルド成果物の検証を可能にする                   |
-| 来歴情報（Provenance）                                | ソフトウェア成果物がどのように生成されたかを記述するメタデータ。ソースコード、ビルドシステム、パラメータなどの情報を含む           |
-| ソフトウェア署名（Software Signing）                  | 暗号的な署名により、成果物の出所と改ざんの有無を検証可能にする仕組み                                                               |
-| キーレス署名（Keyless Signing）                       | 長期的な署名鍵を使わず、身元認証に基づく短期証明書で署名する方式。Sigstore が採用している                                          |
-| Sigstore                                              | ソフトウェア署名のオープンスタンダード。キーレス署名により、鍵管理の負担なしにソフトウェア成果物の署名と検証を実現する             |
-| Cosign                                                | Sigstore のコンポーネント。コンテナイメージやソフトウェア成果物に署名・検証を行う                                                  |
-| Fulcio                                                | Sigstore の認証局。OIDC 認証に基づく短期署名証明書を発行する                                                                       |
-| Rekor                                                 | Sigstore の透明性ログ。署名の記録を不変のログに保存し、不正な署名の検出を可能にする                                                |
-| SLSA（Supply-chain Levels for Software Artifacts）    | ソフトウェアサプライチェーンのセキュリティを段階的に高めるためのフレームワーク                                                     |
-| SLSA Build Level                                      | SLSA が定義するビルドプロセスの信頼性のレベル。L0（基準なし）から L3（隔離されたビルド）まで                                       |
-| ビルドの完全性（Build Integrity）                     | ソースコードからビルド成果物が改ざんなく生成されたことの保証                                                                       |
-| パッケージレジストリ（Package Registry）              | ソフトウェアパッケージを保存・配布するサービス。npm、PyPI、Maven Central など                                                      |
-| イメージダイジェスト（Image Digest）                  | コンテナイメージの内容からハッシュ関数で計算される値。イメージの一意な識別に使用される                                             |
-| CI/CD（継続的インテグレーション / 継続的デリバリー）  | コードの統合、テスト、ビルド、デプロイを自動化するプラクティス。ビルドパイプラインの信頼性がサプライチェーンセキュリティに直結する |
-| OWASP A03（Software Supply Chain Failures）           | OWASP Top 10 のカテゴリ。ソフトウェアサプライチェーンの障害によるリスク                                                            |
-| OWASP A08（Software or Data Integrity Failures）      | OWASP Top 10 のカテゴリ。ソフトウェアまたはデータの完全性の障害によるリスク                                                        |
-| ソーシャルエンジニアリング（Social Engineering）      | 技術的な攻撃ではなく、人間の心理や信頼関係を悪用する攻撃手法                                                                       |
+| サプライチェーンセキュリティ（Supply Chain Security） | ソフトウェアの開発、ビルド、配布の全過程における信頼性を確保するためのセキュリティ対策の総称 |
+| ソフトウェアサプライチェーン | ソースコードから依存関係の解決、ビルド、配布、デプロイまでの一連の流れ |
+| 直接依存（Direct Dependency） | アプリケーションが明示的に宣言する外部ライブラリ |
+| 推移的依存（Transitive Dependency） | 直接依存が内部で使用する依存関係。依存の連鎖を形成する |
+| Log4Shell（CVE-2021-44228） | Apache Log4j ライブラリの脆弱性。推移的依存関係により広範囲に影響した事例 |
+| xz-utils バックドア（CVE-2024-3094） | 信頼されたメンテナの地位を悪用して挿入されたバックドア。メンテナの信頼の問題を顕在化させた事例 |
+| タイポスクワッティング（Typosquatting） | 人気パッケージに似た名前の悪意あるパッケージを登録する攻撃手法 |
+| 依存関係の混同（Dependency Confusion） | パッケージマネージャが内部パッケージと同名の外部パッケージを優先する仕組みを悪用する攻撃手法 |
+| 再現可能なビルド（Reproducible Build） | 同じソースコードとビルド環境から、ビット単位で同一の成果物を生成できるビルド手法。ビルド成果物の検証を可能にする |
+| 来歴情報（Provenance） | ソフトウェア成果物がどのように生成されたかを記述するメタデータ。ソースコード、ビルドシステム、パラメータなどの情報を含む |
+| ソフトウェア署名（Software Signing） | 暗号的な署名により、成果物の出所と改ざんの有無を検証可能にする仕組み |
+| キーレス署名（Keyless Signing） | 長期的な署名鍵を使わず、身元認証に基づく短期証明書で署名する方式。Sigstore が採用している |
+| Sigstore | ソフトウェア署名のオープンスタンダード。キーレス署名により、鍵管理の負担なしにソフトウェア成果物の署名と検証を実現する |
+| Cosign | Sigstore のコンポーネント。コンテナイメージやソフトウェア成果物に署名・検証を行う |
+| Fulcio | Sigstore の認証局。OIDC 認証に基づく短期署名証明書を発行する |
+| Rekor | Sigstore の透明性ログ。署名の記録を不変のログに保存し、不正な署名の検出を可能にする |
+| SLSA（Supply-chain Levels for Software Artifacts） | ソフトウェアサプライチェーンのセキュリティを段階的に高めるためのフレームワーク |
+| SLSA Build Level | SLSA が定義するビルドプロセスの信頼性のレベル。L0（基準なし）から L3（隔離されたビルド）まで |
+| ビルドの完全性（Build Integrity） | ソースコードからビルド成果物が改ざんなく生成されたことの保証 |
+| パッケージレジストリ（Package Registry） | ソフトウェアパッケージを保存・配布するサービス。npm、PyPI、Maven Central など |
+| イメージダイジェスト（Image Digest） | コンテナイメージの内容からハッシュ関数で計算される値。イメージの一意な識別に使用される |
+| CI/CD（継続的インテグレーション / 継続的デリバリー） | コードの統合、テスト、ビルド、デプロイを自動化するプラクティス。ビルドパイプラインの信頼性がサプライチェーンセキュリティに直結する |
+| OWASP A03（Software Supply Chain Failures） | OWASP Top 10 のカテゴリ。ソフトウェアサプライチェーンの障害によるリスク |
+| OWASP A08（Software or Data Integrity Failures） | OWASP Top 10 のカテゴリ。ソフトウェアまたはデータの完全性の障害によるリスク |
+| ソーシャルエンジニアリング（Social Engineering） | 技術的な攻撃ではなく、人間の心理や信頼関係を悪用する攻撃手法 |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 このページの内容は、以下のソースに基づいています
 
 <strong>サプライチェーンフレームワーク</strong>
 
-- [SLSA - Supply-chain Levels for Software Artifacts](https://slsa.dev/)
+- [SLSA - Supply-chain Levels for Software Artifacts](https://slsa.dev/){:target="\_blank"}
   - ソフトウェアサプライチェーンのセキュリティフレームワーク
-- [Sigstore](https://sigstore.dev/)
+- [Sigstore](https://sigstore.dev/){:target="\_blank"}
   - ソフトウェア署名のオープンスタンダード
 
 <strong>OWASP</strong>
 
-- [OWASP Top 10 (2025) - A03 Software Supply Chain Failures](https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/)
+- [OWASP Top 10 (2025) - A03 Software Supply Chain Failures](https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/){:target="\_blank"}
   - ソフトウェアサプライチェーンの障害の分類とガイドライン
-- [OWASP Top 10 (2025) - A08 Software or Data Integrity Failures](https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/)
+- [OWASP Top 10 (2025) - A08 Software or Data Integrity Failures](https://owasp.org/Top10/2025/A08_2025-Software_or_Data_Integrity_Failures/){:target="\_blank"}
   - ソフトウェアまたはデータの完全性の障害の分類とガイドライン
 
 <strong>事例</strong>
 
-- [CVE-2021-44228 - Apache Log4j](https://www.cve.org/CVERecord?id=CVE-2021-44228)
+- [CVE-2021-44228 - Apache Log4j](https://www.cve.org/CVERecord?id=CVE-2021-44228){:target="\_blank"}
   - Log4Shell 脆弱性の CVE レコード
-- [CVE-2024-3094 - xz-utils](https://www.cve.org/CVERecord?id=CVE-2024-3094)
+- [CVE-2024-3094 - xz-utils](https://www.cve.org/CVERecord?id=CVE-2024-3094){:target="\_blank"}
   - xz-utils バックドアの CVE レコード
 
 <strong>再現可能なビルド</strong>
 
-- [Reproducible Builds](https://reproducible-builds.org/)
+- [Reproducible Builds](https://reproducible-builds.org/){:target="\_blank"}
   - 再現可能なビルドの取り組みとドキュメント

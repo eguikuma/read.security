@@ -1,16 +1,17 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: なぜセキュリティに「良い乱数」が必要なのか
+---
 
-# なぜセキュリティに「良い乱数」が必要なのか
+# [なぜセキュリティに「良い乱数」が必要なのか](#why-good-random-numbers) {#why-good-random-numbers}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-[01-cryptography](../01-cryptography.md) では、対称暗号の鍵、Diffie-Hellman 鍵交換のエフェメラル鍵、ハッシュ関数に入力するソルトなど、暗号化の各所で「ランダムな値」が登場しました
+[01-cryptography](../../01-cryptography/) では、対称暗号の鍵、Diffie-Hellman 鍵交換のエフェメラル鍵、ハッシュ関数に入力するソルトなど、暗号化の各所で「ランダムな値」が登場しました
 
-[02-tls](../02-tls.md) では、TLS ハンドシェイクでクライアントとサーバーがそれぞれランダムな値を生成することを学びました
+[02-tls](../../02-tls/) では、TLS ハンドシェイクでクライアントとサーバーがそれぞれランダムな値を生成することを学びました
 
-[04-authentication](../04-authentication.md) では、セッション ID やトークンに「予測不可能なランダムな文字列」が必要であることを学びました
+[04-authentication](../../04-authentication/) では、セッション ID やトークンに「予測不可能なランダムな文字列」が必要であることを学びました
 
 これらの場面で繰り返し登場する「ランダム」という言葉ですが、乱数そのものの仕組みについてはまだ触れていません
 
@@ -24,7 +25,7 @@
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 - 暗号のどこで乱数が使われているか
 - 擬似乱数生成器（PRNG）と暗号論的擬似乱数生成器（CSPRNG）の違い
@@ -34,35 +35,36 @@
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [暗号と乱数の関係](#暗号と乱数の関係)
-2. [擬似乱数生成器（PRNG）](#擬似乱数生成器prng)
-3. [暗号論的擬似乱数生成器（CSPRNG）](#暗号論的擬似乱数生成器csprng)
-4. [エントロピー](#エントロピー)
-5. [OS が提供する乱数源](#os-が提供する乱数源)
-6. [乱数の品質が低いとき何が起きるか](#乱数の品質が低いとき何が起きるか)
-7. [まとめ](#まとめ)
-8. [用語集](#用語集)
-9. [参考資料](#参考資料)
+1. [暗号と乱数の関係](#cryptography-and-random-number-relationship)
+2. [擬似乱数生成器（PRNG）](#prng)
+3. [暗号論的擬似乱数生成器（CSPRNG）](#csprng)
+4. [エントロピー](#entropy)
+5. [OS が提供する乱数源](#os-random-sources)
+6. [乱数の品質が低いとき何が起きるか](#low-quality-random-consequences)
+7. [まとめ](#summary)
+8. [用語集](#glossary)
+9. [参考資料](#references)
 
 ---
 
-## 暗号と乱数の関係
+## [暗号と乱数の関係](#cryptography-and-random-number-relationship) {#cryptography-and-random-number-relationship}
 
 暗号の安全性は、鍵やパラメータが攻撃者に<strong>予測できない</strong>ことに依存しています
 
 以下は、このリポジトリのメイントピックで登場した「乱数が使われる場面」のまとめです
 
-| 場面                                             | 使われ方                                                   | 関連トピック            |
+{: .labeled}
+| 場面 | 使われ方 | 関連トピック |
 | ------------------------------------------------ | ---------------------------------------------------------- | ----------------------- |
-| 対称暗号の鍵生成                                 | ランダムなビット列を鍵として使用                           | 01-cryptography         |
-| ナンス / IV（初期化ベクトル）                    | 同じ鍵でも異なる暗号文を生成するためのランダムな値         | 01-cryptography         |
-| Diffie-Hellman のエフェメラル秘密鍵              | 鍵交換のためのランダムな秘密値                             | 01-cryptography、02-tls |
-| TLS ハンドシェイクの Client Hello / Server Hello | ランダムな 32 バイトの値                                   | 02-tls                  |
-| ソルト（パスワードハッシュ）                     | 同じパスワードでも異なるハッシュ値にするためのランダムな値 | 04-authentication       |
-| セッション ID                                    | 予測不可能なセッション識別子                               | 04-authentication       |
-| CSRF トークン                                    | リクエストの正当性を検証するためのランダムなトークン       | 06-application-security |
+| 対称暗号の鍵生成 | ランダムなビット列を鍵として使用 | 01-cryptography |
+| ナンス / IV（初期化ベクトル） | 同じ鍵でも異なる暗号文を生成するためのランダムな値 | 01-cryptography |
+| Diffie-Hellman のエフェメラル秘密鍵 | 鍵交換のためのランダムな秘密値 | 01-cryptography、02-tls |
+| TLS ハンドシェイクの Client Hello / Server Hello | ランダムな 32 バイトの値 | 02-tls |
+| ソルト（パスワードハッシュ） | 同じパスワードでも異なるハッシュ値にするためのランダムな値 | 04-authentication |
+| セッション ID | 予測不可能なセッション識別子 | 04-authentication |
+| CSRF トークン | リクエストの正当性を検証するためのランダムなトークン | 06-application-security |
 
 これらの全てに共通するのは、<strong>攻撃者に予測されたら安全性が崩壊する</strong>ということです
 
@@ -74,9 +76,9 @@
 
 ---
 
-## 擬似乱数生成器（PRNG）
+## [擬似乱数生成器（PRNG）](#prng) {#prng}
 
-### コンピュータは「真のランダム」を作れない
+### [コンピュータは「真のランダム」を作れない](#computers-cannot-be-truly-random) {#computers-cannot-be-truly-random}
 
 コンピュータは<strong>決定的（deterministic）</strong>な機械です
 
@@ -86,7 +88,7 @@
 
 ソフトウェアが生成するのは<strong>擬似乱数（pseudo-random numbers）</strong>、つまり「ランダムに見えるが、実際には決定的なアルゴリズムで生成された数」です
 
-### PRNG の仕組み
+### [PRNG の仕組み](#prng-mechanism) {#prng-mechanism}
 
 <strong>PRNG</strong>（Pseudo-Random Number Generator、擬似乱数生成器）は、<strong>シード（seed）</strong>と呼ばれる初期値を入力として受け取り、そのシードから決定的に数列を生成するアルゴリズムです
 
@@ -98,7 +100,7 @@
 
 統計的な検定（均一性、独立性など）に合格する PRNG は、シミュレーションやゲームなどの用途には十分です
 
-### PRNG が暗号に使えない理由
+### [PRNG が暗号に使えない理由](#why-prng-not-for-cryptography) {#why-prng-not-for-cryptography}
 
 一般的な PRNG は、出力列の一部から<strong>内部状態を逆算</strong>できることがあります
 
@@ -114,21 +116,22 @@ a、c、m は固定の定数であり、出力された値をいくつか観測�
 
 ---
 
-## 暗号論的擬似乱数生成器（CSPRNG）
+## [暗号論的擬似乱数生成器（CSPRNG）](#csprng) {#csprng}
 
-### CSPRNG とは
+### [CSPRNG とは](#what-is-csprng) {#what-is-csprng}
 
 <strong>CSPRNG</strong>（Cryptographically Secure Pseudo-Random Number Generator、暗号論的擬似乱数生成器）は、暗号用途に使える擬似乱数生成器です
 
 CSPRNG は、一般的な PRNG よりも強い性質を持ちます
 
-| 性質               | PRNG                                         | CSPRNG                                                   |
+{: .labeled}
+| 性質 | PRNG | CSPRNG |
 | ------------------ | -------------------------------------------- | -------------------------------------------------------- |
-| 統計的なランダム性 | あり                                         | あり                                                     |
-| 予測不可能性       | なし（出力から次の値を予測可能な場合がある） | あり（出力から次の値を予測するのが計算量的に困難）       |
-| 逆推測耐性         | なし（内部状態を逆算できる場合がある）       | あり（内部状態が漏洩しても過去の出力を逆算するのが困難） |
+| 統計的なランダム性 | あり | あり |
+| 予測不可能性 | なし（出力から次の値を予測可能な場合がある） | あり（出力から次の値を予測するのが計算量的に困難） |
+| 逆推測耐性 | なし（内部状態を逆算できる場合がある） | あり（内部状態が漏洩しても過去の出力を逆算するのが困難） |
 
-### CSPRNG が満たすべき条件
+### [CSPRNG が満たすべき条件](#csprng-requirements) {#csprng-requirements}
 
 CSPRNG は以下の 2 つの条件を満たします
 
@@ -144,9 +147,9 @@ CSPRNG は以下の 2 つの条件を満たします
 
 ---
 
-## エントロピー
+## [エントロピー](#entropy) {#entropy}
 
-### エントロピーとは
+### [エントロピーとは](#what-is-entropy) {#what-is-entropy}
 
 CSPRNG は決定的なアルゴリズムであるため、良い出力を生成するには<strong>良い入力（シード）</strong>が必要です
 
@@ -160,26 +163,27 @@ CSPRNG は決定的なアルゴリズムであるため、良い出力を生成�
 
 6 面のサイコロを 1 回投げた結果は約 2.6 ビットのエントロピーを持ちます
 
-### エントロピー源
+### [エントロピー源](#entropy-sources) {#entropy-sources}
 
 コンピュータがエントロピーを得るには、<strong>物理的な現象</strong>からの入力が必要です
 
 決定的なアルゴリズムからはエントロピーは生まれないため、ハードウェアや環境のノイズに頼ります
 
-| エントロピー源                       | 説明                                                                         |
+{: .labeled}
+| エントロピー源 | 説明 |
 | ------------------------------------ | ---------------------------------------------------------------------------- |
-| ハードウェア乱数生成器               | CPU 内蔵の乱数生成器（Intel の RDRAND 命令など）が電気的ノイズから乱数を生成 |
-| デバイスの割り込みタイミング         | キーボード入力、マウス移動、ディスク I/O の完了タイミングの微小なゆらぎ      |
-| ネットワークパケットの到着タイミング | パケットが到着する時刻の微小なゆらぎ                                         |
-| ジッター                             | CPU クロックの微小な変動                                                     |
+| ハードウェア乱数生成器 | CPU 内蔵の乱数生成器（Intel の RDRAND 命令など）が電気的ノイズから乱数を生成 |
+| デバイスの割り込みタイミング | キーボード入力、マウス移動、ディスク I/O の完了タイミングの微小なゆらぎ |
+| ネットワークパケットの到着タイミング | パケットが到着する時刻の微小なゆらぎ |
+| ジッター | CPU クロックの微小な変動 |
 
 これらの物理的な入力は予測が困難であり、エントロピーの源として利用できます
 
 ---
 
-## OS が提供する乱数源
+## [OS が提供する乱数源](#os-random-sources) {#os-random-sources}
 
-### エントロピープール
+### [エントロピープール](#entropy-pool) {#entropy-pool}
 
 OS のカーネルは、上記のエントロピー源から集めた乱数を<strong>エントロピープール</strong>に蓄積します
 
@@ -192,7 +196,7 @@ OS のカーネルは、上記のエントロピー源から集めた乱数を<s
 [CPU ジッター]        ─┘
 ```
 
-### Linux の乱数インターフェース
+### [Linux の乱数インターフェース](#linux-random-interface) {#linux-random-interface}
 
 Linux カーネルは、暗号用の乱数を取得するためのインターフェースを提供しています
 
@@ -214,11 +218,11 @@ Linux 3.17 で追加されたシステムコールで、CSPRNG が初期化さ�
 
 ---
 
-## 乱数の品質が低いとき何が起きるか
+## [乱数の品質が低いとき何が起きるか](#low-quality-random-consequences) {#low-quality-random-consequences}
 
 乱数の品質が暗号の安全性を決定的に左右することを、実際の事例で見てみましょう
 
-### Debian OpenSSL の事例（2008 年）
+### [Debian OpenSSL の事例（2008 年）](#debian-openssl-case) {#debian-openssl-case}
 
 2006 年、Debian Linux のメンテナが OpenSSL のソースコードを修正しました
 
@@ -238,7 +242,7 @@ Linux のプロセス ID は通常 32768 までの値を取るため、生成さ
 
 影響を受けた鍵は全て再生成する必要がありました
 
-### 教訓
+### [教訓](#lessons-learned) {#lessons-learned}
 
 Debian OpenSSL の事例は、以下の教訓を示しています
 
@@ -248,48 +252,50 @@ Debian OpenSSL の事例は、以下の教訓を示しています
 
 ---
 
-## まとめ
+## [まとめ](#summary) {#summary}
 
-| ポイント                         | 説明                                                                                      |
+{: .labeled}
+| ポイント | 説明 |
 | -------------------------------- | ----------------------------------------------------------------------------------------- |
-| 暗号の安全性は乱数に依存する     | 鍵、ナンス、ソルト、トークンなど、暗号システムの多くの要素に予測不可能な乱数が必要        |
-| 一般的な PRNG は暗号には使えない | 出力から次の値を予測できる可能性があるため、暗号用途には CSPRNG が必要                    |
-| CSPRNG にはエントロピーが必要    | 良い乱数を出力するには、ハードウェアノイズなどの物理的エントロピー源が不可欠              |
-| OS が乱数源を提供する            | Linux の /dev/urandom や getrandom() は、カーネル内の CSPRNG を通じて暗号用乱数を提供する |
-| 乱数の品質低下は壊滅的           | Debian OpenSSL の事例のように、エントロピー不足は暗号システム全体の安全性を崩壊させる     |
+| 暗号の安全性は乱数に依存する | 鍵、ナンス、ソルト、トークンなど、暗号システムの多くの要素に予測不可能な乱数が必要 |
+| 一般的な PRNG は暗号には使えない | 出力から次の値を予測できる可能性があるため、暗号用途には CSPRNG が必要 |
+| CSPRNG にはエントロピーが必要 | 良い乱数を出力するには、ハードウェアノイズなどの物理的エントロピー源が不可欠 |
+| OS が乱数源を提供する | Linux の /dev/urandom や getrandom() は、カーネル内の CSPRNG を通じて暗号用乱数を提供する |
+| 乱数の品質低下は壊滅的 | Debian OpenSSL の事例のように、エントロピー不足は暗号システム全体の安全性を崩壊させる |
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語                              | 説明                                                                                           |
+{: .labeled}
+| 用語 | 説明 |
 | --------------------------------- | ---------------------------------------------------------------------------------------------- |
-| 擬似乱数（pseudo-random numbers） | ランダムに見えるが、決定的なアルゴリズムで生成された数列                                       |
-| PRNG                              | Pseudo-Random Number Generator の略で、シードから決定的に数列を生成する擬似乱数生成器          |
-| CSPRNG                            | Cryptographically Secure Pseudo-Random Number Generator の略で、暗号用途に使える擬似乱数生成器 |
-| シード                            | 擬似乱数生成器に与える初期値                                                                   |
-| エントロピー                      | 情報理論における不確実性の量で、暗号の文脈では攻撃者にとっての予測困難さを表す                 |
-| エントロピープール                | OS カーネルが物理的エントロピー源から集めた乱数を蓄積する領域                                  |
-| 線形合同法                        | 数式で次の値を計算する単純な擬似乱数生成アルゴリズム（暗号には不適切）                         |
+| 擬似乱数（pseudo-random numbers） | ランダムに見えるが、決定的なアルゴリズムで生成された数列 |
+| PRNG | Pseudo-Random Number Generator の略で、シードから決定的に数列を生成する擬似乱数生成器 |
+| CSPRNG | Cryptographically Secure Pseudo-Random Number Generator の略で、暗号用途に使える擬似乱数生成器 |
+| シード | 擬似乱数生成器に与える初期値 |
+| エントロピー | 情報理論における不確実性の量で、暗号の文脈では攻撃者にとっての予測困難さを表す |
+| エントロピープール | OS カーネルが物理的エントロピー源から集めた乱数を蓄積する領域 |
+| 線形合同法 | 数式で次の値を計算する単純な擬似乱数生成アルゴリズム（暗号には不適切） |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 <strong>Linux 乱数</strong>
 
-- [random(7) - Linux manual page](https://man7.org/linux/man-pages/man7/random.7.html)
+- [random(7) - Linux manual page](https://man7.org/linux/man-pages/man7/random.7.html){:target="\_blank"}
   - Linux カーネルの乱数生成器の説明
 
-- [getrandom(2) - Linux manual page](https://man7.org/linux/man-pages/man2/getrandom.2.html)
+- [getrandom(2) - Linux manual page](https://man7.org/linux/man-pages/man2/getrandom.2.html){:target="\_blank"}
   - getrandom() システムコールの仕様
 
 <strong>NIST 推奨</strong>
 
-- [NIST SP 800-90A - Recommendation for Random Number Generation Using Deterministic Random Bit Generators](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)
+- [NIST SP 800-90A - Recommendation for Random Number Generation Using Deterministic Random Bit Generators](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final){:target="\_blank"}
   - NIST による暗号用乱数生成の推奨事項
 
 <strong>Debian OpenSSL</strong>
 
-- [DSA-1571 - openssl -- predictable random number generator](https://www.debian.org/security/2008/dsa-1571)
+- [DSA-1571 - openssl -- predictable random number generator](https://www.debian.org/security/2008/dsa-1571){:target="\_blank"}
   - Debian OpenSSL の脆弱性に関する公式アドバイザリ

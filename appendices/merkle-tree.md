@@ -1,24 +1,25 @@
-<div align="right">
-<img src="https://img.shields.io/badge/AI-ASSISTED_STUDY-3b82f6?style=for-the-badge&labelColor=1e293b&logo=bookstack&logoColor=white" alt="AI Assisted Study" />
-</div>
+---
+layout: default
+title: マークル木はどうやって改ざんを検出するのか
+---
 
-# マークル木はどうやって改ざんを検出するのか
+# [マークル木はどうやって改ざんを検出するのか](#merkle-tree) {#merkle-tree}
 
-## はじめに
+## [はじめに](#introduction) {#introduction}
 
-[03-certificate](../03-certificate.md) では、Certificate Transparency（CT）のログ構造として<strong>マークル木</strong>が登場しました
+[03-certificate](../../03-certificate/) では、Certificate Transparency（CT）のログ構造として<strong>マークル木</strong>が登場しました
 
-03-certificate では、マークル木を「[01-cryptography](../01-cryptography.md) で学んだハッシュ関数の応用で、大量の証明書を効率的に管理し、特定の証明書がログに含まれていることを少ないデータ量で証明できます」と紹介しました
+03-certificate では、マークル木を「[01-cryptography](../../01-cryptography/) で学んだハッシュ関数の応用で、大量の証明書を効率的に管理し、特定の証明書がログに含まれていることを少ないデータ量で証明できます」と紹介しました
 
 しかし、具体的にどうやって「少ないデータ量で証明できる」のかは説明しませんでした
 
-また、[07-supply-chain](../07-supply-chain.md) で学んだ Sigstore の Rekor（透明性ログ）も同じデータ構造を使っています
+また、[07-supply-chain](../../07-supply-chain/) で学んだ Sigstore の Rekor（透明性ログ）も同じデータ構造を使っています
 
 この補足資料では、マークル木の構造と、なぜ少ないデータ量で「特定のデータがログに含まれること」を証明できるのかを学びます
 
 ---
 
-## このページで学ぶこと
+## [このページで学ぶこと](#what-you-will-learn) {#what-you-will-learn}
 
 - マークル木がどのような構造を持つか
 - 包含証明（Inclusion Proof）がなぜ効率的に機能するか
@@ -26,21 +27,21 @@
 
 ---
 
-## 目次
+## [目次](#table-of-contents) {#table-of-contents}
 
-1. [ハッシュリストの限界](#ハッシュリストの限界)
-2. [マークル木の構造](#マークル木の構造)
-3. [ルートハッシュの意味](#ルートハッシュの意味)
-4. [包含証明（Inclusion Proof）](#包含証明inclusion-proof)
-5. [Certificate Transparency での応用](#certificate-transparency-での応用)
-6. [Sigstore での応用](#sigstore-での応用)
-7. [まとめ](#まとめ)
-8. [用語集](#用語集)
-9. [参考資料](#参考資料)
+1. [ハッシュリストの限界](#hash-list-limitations)
+2. [マークル木の構造](#merkle-tree-structure)
+3. [ルートハッシュの意味](#root-hash-meaning)
+4. [包含証明（Inclusion Proof）](#inclusion-proof)
+5. [Certificate Transparency での応用](#certificate-transparency-application)
+6. [Sigstore での応用](#sigstore-application)
+7. [まとめ](#summary)
+8. [用語集](#glossary)
+9. [参考資料](#references)
 
 ---
 
-## ハッシュリストの限界
+## [ハッシュリストの限界](#hash-list-limitations) {#hash-list-limitations}
 
 01-cryptography で学んだとおり、ハッシュ関数はデータの完全性（改ざんされていないこと）を検証するために使います
 
@@ -63,7 +64,7 @@
 
 ---
 
-## マークル木の構造
+## [マークル木の構造](#merkle-tree-structure) {#merkle-tree-structure}
 
 <strong>マークル木</strong>（Merkle tree）は、1979 年に暗号学者 <strong>Ralph Merkle</strong> が発明した、ハッシュ値を木構造で組み合わせるデータ構造です
 
@@ -108,7 +109,7 @@ HAB と HCD を結合 → H(HAB + HCD) = ルートハッシュ
 
 ---
 
-## ルートハッシュの意味
+## [ルートハッシュの意味](#root-hash-meaning) {#root-hash-meaning}
 
 ルートハッシュは、木に含まれる<strong>全てのデータの要約</strong>です
 
@@ -124,9 +125,9 @@ H(C) が変わる → HCD が変わる → ルートハッシュが変わる
 
 ---
 
-## 包含証明（Inclusion Proof）
+## [包含証明（Inclusion Proof）](#inclusion-proof) {#inclusion-proof}
 
-### 仕組み
+### [仕組み](#mechanism) {#mechanism}
 
 包含証明は、<strong>特定のデータが木に含まれていること</strong>を、木全体を渡さずに証明する仕組みです
 
@@ -155,18 +156,19 @@ H(C) が変わる → HCD が変わる → ルートハッシュが変わる
 3. 計算した HAB と提供された HCD を結合してルートハッシュを計算する
 4. 計算したルートハッシュが信頼済みのルートハッシュと一致するか確認する
 
-### 効率性
+### [効率性](#efficiency) {#efficiency}
 
 包含証明に必要なハッシュ値の数は、<strong>木の高さ</strong>に等しくなります
 
 木の高さはデータ数の対数（log2）であるため、データが増えても必要なハッシュ値の数は緩やかにしか増えません
 
-| データ数               | ハッシュリストで必要な値 | マークル木で必要な値（包含証明） |
+{: .labeled}
+| データ数 | ハッシュリストで必要な値 | マークル木で必要な値（包含証明） |
 | ---------------------- | ------------------------ | -------------------------------- |
-| 8                      | 8                        | 3                                |
-| 1,024                  | 1,024                    | 10                               |
-| 1,048,576（約 100 万） | 1,048,576                | 20                               |
-| 10 億                  | 10 億                    | 30                               |
+| 8 | 8 | 3 |
+| 1,024 | 1,024 | 10 |
+| 1,048,576（約 100 万） | 1,048,576 | 20 |
+| 10 億 | 10 億 | 30 |
 
 10 億件のデータの中から 1 件の包含を証明するのに、わずか <strong>30 個のハッシュ値</strong>で済みます
 
@@ -174,13 +176,13 @@ H(C) が変わる → HCD が変わる → ルートハッシュが変わる
 
 ---
 
-## Certificate Transparency での応用
+## [Certificate Transparency での応用](#certificate-transparency-application) {#certificate-transparency-application}
 
 03-certificate で学んだ Certificate Transparency（CT）は、認証局が発行した全ての証明書を<strong>公開ログ</strong>に記録する仕組みです
 
 CT ログはマークル木を使って証明書を管理しています
 
-### CT ログの仕組み
+### [CT ログの仕組み](#ct-log-mechanism) {#ct-log-mechanism}
 
 CT ログに証明書が追加されると、その証明書はマークル木のリーフノードとなります
 
@@ -192,7 +194,7 @@ CT ログサーバーは、ルートハッシュまでの経路上の兄弟ノ�
 
 検証者はこれらのハッシュ値を使ってルートハッシュを再計算し、署名されたルートハッシュと一致するかを確認します
 
-### なぜ CT にマークル木が適しているか
+### [なぜ CT にマークル木が適しているか](#why-merkle-tree-for-ct) {#why-merkle-tree-for-ct}
 
 CT ログには数億の証明書が記録されています
 
@@ -204,7 +206,7 @@ CT ログには数億の証明書が記録されています
 
 ---
 
-## Sigstore での応用
+## [Sigstore での応用](#sigstore-application) {#sigstore-application}
 
 07-supply-chain で学んだ Sigstore の <strong>Rekor</strong> も、マークル木を使った透明性ログです
 
@@ -212,11 +214,12 @@ Rekor は、ソフトウェアの署名記録を公開ログに記録します
 
 CT ログと同じ原理で、以下が実現されています
 
-| 機能           | マークル木の役割                                             |
+{: .labeled}
+| 機能 | マークル木の役割 |
 | -------------- | ------------------------------------------------------------ |
-| 署名記録の追加 | 新しい署名記録をリーフノードとして追加                       |
-| 存在の証明     | 包含証明で、特定の署名記録がログに含まれることを効率的に証明 |
-| 改ざんの検出   | ルートハッシュの変化で、過去の記録の改ざんを検出             |
+| 署名記録の追加 | 新しい署名記録をリーフノードとして追加 |
+| 存在の証明 | 包含証明で、特定の署名記録がログに含まれることを効率的に証明 |
+| 改ざんの検出 | ルートハッシュの変化で、過去の記録の改ざんを検出 |
 
 CT ログが「証明書の透明性」を実現するように、Rekor は「ソフトウェア署名の透明性」を実現しています
 
@@ -224,39 +227,41 @@ CT ログが「証明書の透明性」を実現するように、Rekor は「�
 
 ---
 
-## まとめ
+## [まとめ](#summary) {#summary}
 
-| ポイント                                     | 説明                                            |
+{: .labeled}
+| ポイント | 説明 |
 | -------------------------------------------- | ----------------------------------------------- |
-| ハッシュリストは非効率                       | データ数に比例して検証コストが増加する          |
-| マークル木はハッシュ値を木構造で組み合わせる | リーフ → 中間ノード → ルートハッシュの階層構造  |
-| ルートハッシュは全データの要約               | どのデータが変更されてもルートハッシュが変わる  |
-| 包含証明は対数的に効率的                     | 10 億件のデータでも 30 個のハッシュ値で証明可能 |
-| CT と Sigstore で使われている                | 追加専用の透明性ログとの相性が良い              |
+| ハッシュリストは非効率 | データ数に比例して検証コストが増加する |
+| マークル木はハッシュ値を木構造で組み合わせる | リーフ → 中間ノード → ルートハッシュの階層構造 |
+| ルートハッシュは全データの要約 | どのデータが変更されてもルートハッシュが変わる |
+| 包含証明は対数的に効率的 | 10 億件のデータでも 30 個のハッシュ値で証明可能 |
+| CT と Sigstore で使われている | 追加専用の透明性ログとの相性が良い |
 
 ---
 
-## 用語集
+## [用語集](#glossary) {#glossary}
 
-| 用語           | 説明                                                                                             |
+{: .labeled}
+| 用語 | 説明 |
 | -------------- | ------------------------------------------------------------------------------------------------ |
-| マークル木     | ハッシュ値を木構造で組み合わせたデータ構造（Ralph Merkle が 1979 年に発明）                      |
-| リーフノード   | マークル木の最下層にある、元データのハッシュ値を持つノード                                       |
-| 中間ノード     | 2 つの子ノードのハッシュ値を結合してハッシュ化したノード                                         |
-| ルートハッシュ | マークル木の最上位のハッシュ値で、全データの要約                                                 |
-| 包含証明       | 特定のデータがマークル木に含まれていることを、木全体を渡さずに証明する仕組み                     |
-| SCT            | Signed Certificate Timestamp の略で、CT ログが証明書の記録を証明するために発行するタイムスタンプ |
+| マークル木 | ハッシュ値を木構造で組み合わせたデータ構造（Ralph Merkle が 1979 年に発明） |
+| リーフノード | マークル木の最下層にある、元データのハッシュ値を持つノード |
+| 中間ノード | 2 つの子ノードのハッシュ値を結合してハッシュ化したノード |
+| ルートハッシュ | マークル木の最上位のハッシュ値で、全データの要約 |
+| 包含証明 | 特定のデータがマークル木に含まれていることを、木全体を渡さずに証明する仕組み |
+| SCT | Signed Certificate Timestamp の略で、CT ログが証明書の記録を証明するために発行するタイムスタンプ |
 
 ---
 
-## 参考資料
+## [参考資料](#references) {#references}
 
 <strong>マークル木</strong>
 
-- [RFC 6962 - Certificate Transparency](https://datatracker.ietf.org/doc/html/rfc6962)
+- [RFC 6962 - Certificate Transparency](https://datatracker.ietf.org/doc/html/rfc6962){:target="\_blank"}
   - Certificate Transparency の仕様（マークル木の使用方法を含む）
 
 <strong>Sigstore</strong>
 
-- [Rekor - Transparency Log](https://docs.sigstore.dev/logging/overview/)
+- [Rekor - Transparency Log](https://docs.sigstore.dev/logging/overview/){:target="\_blank"}
   - Sigstore の透明性ログ Rekor の概要
